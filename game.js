@@ -17,32 +17,40 @@
   let player = null;
   let cpu = null;
   let game = null;
+  let matchSerial = 0;
   let touchAttack = null;
   let touchStickPointer = null;
   let touchStickOrigin = null;
 
   const fighterData = {
-    modi: { id: "modi", name: "NARENDRA MODI", title: "THE JAN SABHA SHOWMAN", color: "#f3ebd9", accent: "#ef9d45", dark: "#293a54", skin: "#bc8066", hair: "#eee7dc", style: "politician", special: "CHAKRAVYUH CHARGE", portrait: "public/assets/portraits/narendra-modi.webp", faceCrop: [.15, .04, .70, .49] },
-    rahul: { id: "rahul", name: "RAHUL GANDHI", title: "THE PEOPLE'S ROADRUNNER", color: "#eee9db", accent: "#5cb6a3", dark: "#26384b", skin: "#bd8069", hair: "#d1d0c8", style: "politician", special: "JAN YATRA JAB", portrait: "public/assets/portraits/rahul-gandhi.webp", faceCrop: [.13, .04, .74, .64] },
+    tariff: { id: "tariff", name: "TARIFF TAAU", title: "THE DEALMAKER", color: "#f1e9d9", accent: "#f4c66c", dark: "#263247", skin: "#c58d72", hair: "#e7b956", style: "politician", special: "TARIFF TORNADO", sprite: "public/assets/fighters/tariff-taau.png", portrait: "public/assets/fighters/tariff-taau.png" },
+    yatra: { id: "yatra", name: "YATRA BOY", title: "THE PEOPLE'S ROADRUNNER", color: "#eee9db", accent: "#5cb6a3", dark: "#26384b", skin: "#bd8069", hair: "#d1d0c8", style: "politician", special: "JAN YATRA JAB", sprite: "public/assets/fighters/yatra-boy.png", portrait: "public/assets/fighters/yatra-boy.png" },
+    mbapu: { id: "mbapu", name: "MBAPU", title: "THE SAGE OF SABAR", color: "#f4eee1", accent: "#e8c96d", dark: "#756c62", skin: "#c99c81", hair: "#ece5d7", style: "sage", special: "MANCH CHHODO", sprite: "public/assets/fighters/mbapu.png", portrait: "public/assets/fighters/mbapu.png" },
+    mitraman: { id: "mitraman", name: "MITRAMAN", title: "THE FESTIVAL STATESMAN", color: "#fff1d2", accent: "#ef9d45", dark: "#633d31", skin: "#bd8066", hair: "#eee7dc", style: "politician", special: "MITRA CHAKRA", sprite: "public/assets/fighters/mitraman.png", portrait: "public/assets/fighters/mitraman.png" },
+    deedee: { id: "deedee", name: "DEEDEE", title: "THE BLUE-BORDER BOSS", color: "#f2eee2", accent: "#55a9ca", dark: "#344251", skin: "#bb826b", hair: "#28221e", style: "politician", special: "BENGAL BOUNCE", sprite: "public/assets/fighters/deedee.png", portrait: "public/assets/fighters/deedee.png" },
+    toka: { id: "toka", name: "TOKA MAN", title: "THE PEOPLE'S AUDITOR", color: "#d7e7df", accent: "#6cbca2", dark: "#34444a", skin: "#bd8066", hair: "#262322", style: "politician", special: "MOHALLA METER", sprite: "public/assets/fighters/toka-man.png", portrait: "public/assets/fighters/toka-man.png" },
+    suttibabu: { id: "suttibabu", name: "SUTTI BABU", title: "THE QUIET TACTICIAN", color: "#ece7d9", accent: "#b5b0a2", dark: "#4b4a49", skin: "#b9846a", hair: "#d9d5ca", style: "politician", special: "SUSHASAN SHUFFLE", sprite: "public/assets/fighters/sutti-babu.png", portrait: "public/assets/fighters/sutti-babu.png" },
     akhilesh: { id: "akhilesh", name: "AKHILESH YADAV", title: "THE CYCLE RALLY ACE", color: "#f1eadb", accent: "#ee6870", dark: "#293849", skin: "#b9775a", hair: "#26201e", style: "politician", special: "CYCLE RALLY", portrait: "public/assets/portraits/akhilesh-yadav.webp", faceCrop: [.10, .05, .80, .72] },
     shanti: { id: "shanti", name: "SHANTI SAGE", title: "THE PEACEFUL PUGILIST", color: "#f4e9d0", accent: "#e9ae40", dark: "#7b6548", skin: "#bd805f", hair: "#f4eadc", style: "sage", special: "SABAR & SHANTI" },
     kesar: { id: "kesar", name: "KESAR KAKA", title: "THE FESTIVAL FRONTMAN", color: "#f17834", accent: "#ffdc76", dark: "#963d2b", skin: "#a96048", hair: "#eee7d7", style: "performer", special: "CHAKRA UTSAV" }
   };
 
   const portraitImages = {};
+  const fighterSprites = {};
   Object.values(fighterData).forEach((data) => {
-    if (!data.portrait) return;
-    const image = new Image(); image.decoding = "async"; image.src = data.portrait; portraitImages[data.id] = image;
+    if (data.portrait) { const image = new Image(); image.decoding = "async"; image.src = data.portrait; portraitImages[data.id] = image; }
+    if (data.sprite) { const image = new Image(); image.decoding = "async"; image.src = data.sprite; fighterSprites[data.id] = image; }
   });
-  const arenaImages = { assembly: new Image(), market: new Image() };
+  const arenaImages = { assembly: new Image(), market: new Image(), sansar: new Image() };
   arenaImages.assembly.src = "public/assets/arena-sansad.webp";
   arenaImages.market.src = "public/assets/arena-jantar.webp";
+  arenaImages.sansar.src = "public/assets/stages/sansar-diwas.png";
   const musicTracks = [
     { label: "MUSIC · MEME", name: "Circus Theme (Ragtime Version)", src: "public/assets/audio/circus-theme-ragtime-version.mp3" },
     { label: "MUSIC · BHANGRA", name: "Bhangra Bass", src: "public/assets/audio/bhangra-bass.mp3" }
   ];
 
-  const settings = { playerFighter: "modi", cpuFighter: "rahul", stage: "assembly", difficulty: "normal" };
+  const settings = { playerFighter: "tariff", cpuFighter: "yatra", stage: "sansar", difficulty: "normal", mode: "cpu" };
   const attackData = {
     punch: { duration: 0.30, activeStart: 0.13, activeEnd: 0.23, damage: 7, range: 108, knockback: 90, meter: 9, color: "#ffdc76" },
     kick: { duration: 0.43, activeStart: 0.18, activeEnd: 0.33, damage: 11, range: 128, knockback: 155, meter: 13, color: "#ef7592" },
@@ -53,16 +61,19 @@
   const ui = {
     title: document.getElementById("titleScreen"), select: document.getElementById("selectScreen"),
     result: document.getElementById("resultScreen"), pause: document.getElementById("pauseOverlay"),
+    legalGate: document.getElementById("legalGate"), acceptNotice: document.getElementById("acceptNotice"),
     hud: document.getElementById("hud"), touch: document.getElementById("touchControls"),
     sound: document.getElementById("soundToggle"), music: document.getElementById("musicTrackToggle"),
     musicPlayer: document.getElementById("musicPlayer"), playerPortrait: document.getElementById("playerPortrait"),
     cpuPortrait: document.getElementById("cpuPortrait"), cpuCycle: document.getElementById("cpuCycle"), playerHealth: document.getElementById("playerHealth"),
     playerEnergy: document.getElementById("playerEnergy"), cpuHealth: document.getElementById("cpuHealth"),
     cpuEnergy: document.getElementById("cpuEnergy"), playerName: document.getElementById("playerName"),
-    cpuName: document.getElementById("cpuName"), timer: document.getElementById("timer"),
+    cpuName: document.getElementById("cpuName"), cpuTag: document.getElementById("cpuTag"), timer: document.getElementById("timer"),
     round: document.getElementById("roundLabel"), combo: document.getElementById("comboText"),
     resultTitle: document.getElementById("resultTitle"), resultSub: document.getElementById("resultSub"),
-    cpuPreviewName: document.getElementById("cpuPreviewName"), playerRounds: document.getElementById("playerRounds"),
+    cpuPreviewName: document.getElementById("cpuPreviewName"), rivalLabel: document.getElementById("rivalLabel"),
+    modeLabel: document.getElementById("modeLabel"), postActionMessage: document.getElementById("postActionMessage"),
+    playerRounds: document.getElementById("playerRounds"),
     cpuRounds: document.getElementById("cpuRounds"), bombWarning: document.getElementById("bombWarning"),
     announcement: document.getElementById("fightAnnouncement"), stick: document.getElementById("virtualStick"),
     stickKnob: document.getElementById("stickKnob"), paperHeadline: document.getElementById("paperHeadline"),
@@ -84,14 +95,14 @@
     ui.pause.classList.add("hidden");
     if (next !== "fight") ui.announcement.classList.add("hidden");
     ui.hud.classList.toggle("hidden", next !== "fight");
-    ui.touch.classList.toggle("hidden", next !== "fight");
+    ui.touch.classList.toggle("hidden", next !== "fight" || settings.mode === "friend");
     if (next === "title") ui.title.classList.remove("hidden");
     if (next === "select") ui.select.classList.remove("hidden");
     if (next === "result") ui.result.classList.remove("hidden");
   }
 
   function startSelect() {
-    ensureAudio(); startMusic(); playTone(560, 0.07, "triangle"); setScreen("select");
+    ensureAudio(); startMusic(); playTone(560, 0.07, "triangle"); updateSelectionUI(); setScreen("select");
   }
 
   function setHudPortrait(node, data) {
@@ -111,9 +122,11 @@
   }
 
   function createGame() {
+    const matchId = ++matchSerial;
     player = new Fighter(fighterData[settings.playerFighter], 258, 1, true);
-    cpu = new Fighter(fighterData[settings.cpuFighter], 702, -1, false);
+    cpu = new Fighter(fighterData[settings.cpuFighter], 702, -1, settings.mode === "friend");
     game = {
+      matchId,
       time: 60, intro: 2.1, paused: false, phase: "fight", effects: [], shake: 0,
       round: 1, playerRounds: 0, cpuRounds: 0, breakTimer: 0, nextRound: false,
       winner: null, message: "", bomb: null, bombClock: 10, callout: null, elapsed: 0,
@@ -121,13 +134,15 @@
     };
     ui.playerName.textContent = fighterData[settings.playerFighter].name;
     ui.cpuName.textContent = fighterData[settings.cpuFighter].name;
+    ui.cpuTag.textContent = settings.mode === "friend" ? "P2" : "CPU";
+    ui.cpuCycle.textContent = settings.mode === "friend" ? "CHANGE PLAYER 2 ↻" : "CHANGE RIVAL ↻";
     setHudPortrait(ui.playerPortrait, fighterData[settings.playerFighter]);
     setHudPortrait(ui.cpuPortrait, fighterData[settings.cpuFighter]);
     ui.announcement.classList.add("hidden");
     updateHud(); setScreen("fight"); startMusic();
-    speakAnnouncement("Round ek. Taiyaar ho jao!", "hi-IN");
+    speakAnnouncement("Round one. Get ready!", "en-US");
     playTone(260, 0.11, "triangle");
-    window.setTimeout(() => { if (game && game.phase === "fight" && game.round === 1) speakAnnouncement("Fight!", "en-US"); }, 1050);
+    window.setTimeout(() => { if (game && game.matchId === matchId && game.phase === "fight" && game.round === 1) speakAnnouncement("Fight!", "en-US"); }, 1050);
   }
 
   function startFight() { ensureAudio(); createGame(); }
@@ -143,20 +158,21 @@
   function endRound(reason) {
     if (!game || game.phase !== "fight") return;
     game.phase = "round-end";
-    const draw = reason === "time" && Math.abs(player.health - cpu.health) < 1;
-    const playerWon = !draw && player.health > cpu.health;
+    const tiedOnHealth = reason === "time" && Math.abs(player.health - cpu.health) < 1;
+    const playerWon = tiedOnHealth || player.health === cpu.health ? player.damageDealt >= cpu.damageDealt : player.health > cpu.health;
     if (playerWon) game.playerRounds += 1;
-    else if (!draw) game.cpuRounds += 1;
-    game.lastWinner = draw ? "DRAW" : playerWon ? "PLAYER" : "CPU";
+    else game.cpuRounds += 1;
+    game.lastWinner = playerWon ? "PLAYER" : settings.mode === "friend" ? "P2" : "CPU";
     game.breakTimer = 1.55;
     game.round += 1;
-    const roundText = draw ? "ROUND DRAW" : playerWon ? `ROUND TO ${fighterData[settings.playerFighter].name}!` : "CPU TAKES THE ROUND";
-    announce(roundText, 1.45, playerWon ? "#a6f4af" : draw ? "#fff0bf" : "#ff9c94");
-    speakAnnouncement(draw ? "Round barabar!" : playerWon ? "Round jeet gaye!" : "Round unka!", "hi-IN");
+    const roundText = tiedOnHealth ? (playerWon ? "ROUND TIE-BREAK · P1 WINS" : "ROUND TIE-BREAK · P2 WINS") : playerWon ? `ROUND TO ${fighterData[settings.playerFighter].name}!` : `${settings.mode === "friend" ? "PLAYER 2" : "CPU"} TAKES THE ROUND`;
+    announce(roundText, 1.45, playerWon ? "#a6f4af" : "#ff9c94");
+    speakAnnouncement(tiedOnHealth ? "Round tie-break!" : playerWon ? "Round jeet gaye!" : "Round unka!", "hi-IN");
     playTone(playerWon ? 520 : 150, 0.22, playerWon ? "triangle" : "sawtooth");
     updateHud();
     if (game.playerRounds >= 2 || game.cpuRounds >= 2) {
-      window.setTimeout(() => finishMatch(game.playerRounds >= 2), 950);
+      const matchId = game.matchId;
+      window.setTimeout(() => { if (game && game.matchId === matchId) finishMatch(game.playerRounds >= 2); }, 950);
     } else {
       game.nextRound = true;
     }
@@ -167,16 +183,18 @@
     game.phase = "result";
     const playerName = fighterData[settings.playerFighter].name;
     const cpuName = fighterData[settings.cpuFighter].name;
-    game.winner = playerWon ? "YOU WIN!" : "GHEE KHATUM!";
-    game.message = playerWon ? `WELL FOUGHT, ${playerName}. WHAT A PERFECT COMBO.` : `THE NIGHT BELONGS TO ${cpuName}. RUN IT BACK?`;
+    game.winner = playerWon ? "YOU WIN!" : "GHEE KHATAM!";
+    game.message = playerWon ? `WELL FOUGHT, ${playerName}. WHAT A PERFECT COMBO.` : `${settings.mode === "friend" ? "PLAYER 2" : "THE NIGHT"} BELONGS TO ${cpuName}. RUN IT BACK?`;
     ui.resultTitle.textContent = game.winner;
     ui.resultSub.textContent = game.message;
-    ui.paperHeadline.textContent = playerWon ? `${playerName} TAKES THE NIGHT!` : `${cpuName} STEALS THE SPOTLIGHT!`;
+    ui.paperHeadline.textContent = playerWon && settings.playerFighter === "mbapu" ? "MBAPU WINS WITH SABAR & SHANTI!" : `${playerWon ? playerName : cpuName} WINS WITH STYLE!`;
     ui.resultRounds.textContent = `${game.playerRounds} — ${game.cpuRounds}`;
+    ui.postActionMessage.textContent = "";
     ui.result.classList.toggle("player-victory", playerWon);
-    speakAnnouncement(playerWon ? "You win! Bahut badhiya!" : "Ghee khatum! CPU jeet gaya!", "hi-IN");
+    speakAnnouncement(playerWon ? "You win! Bahut badhiya!" : `Ghee khatam! ${settings.mode === "friend" ? "Player two" : "CPU"} jeet gaya!`, "hi-IN");
     playTone(playerWon ? 660 : 130, 0.28, playerWon ? "triangle" : "sawtooth");
-    window.setTimeout(() => setScreen("result"), 680);
+    const matchId = game.matchId;
+    window.setTimeout(() => { if (game && game.matchId === matchId && game.phase === "result") setScreen("result"); }, 680);
   }
 
   class Fighter {
@@ -184,26 +202,34 @@
       this.data = data; this.id = data.id; this.name = data.name; this.title = data.title;
       this.color = data.color; this.accent = data.accent; this.dark = data.dark;
       this.skin = data.skin; this.hair = data.hair; this.style = data.style; this.special = data.special;
+      this.sprite = fighterSprites[data.id] || null; this.currentAttackSpec = null;
       this.portraitImage = data.portrait ? portraitImages[data.id] : null; this.faceCrop = data.faceCrop || null;
       this.x = x; this.y = GROUND; this.vx = 0; this.vy = 0; this.facing = facing;
-      this.health = 100; this.energy = 20; this.isPlayer = isPlayer; this.height = 160;
+      this.health = 100; this.energy = 20; this.damageDealt = 0; this.isPlayer = isPlayer; this.height = 160;
       this.attack = null; this.attackTimer = 0; this.attackHit = false; this.hitstun = 0;
       this.hurtFlash = 0; this.blocking = false; this.crouching = false; this.comboCount = 0;
       this.comboTimer = 0; this.aiClock = 0; this.aiBlock = 0; this.aiAttack = null;
-      this.aiMove = 0; this.anim = Math.random() * 10; this.step = 0;
+      this.aiMove = 0; this.anim = Math.random() * 10; this.step = 0; this.specialSpin = 0; this.specialSpinAngle = 0;
     }
     get grounded() { return this.y >= GROUND - 1; }
     reset(x, facing) {
-      this.x = x; this.y = GROUND; this.vx = 0; this.vy = 0; this.facing = facing; this.health = 100; this.energy = 20;
-      this.attack = null; this.attackTimer = 0; this.attackHit = false; this.hitstun = 0; this.hurtFlash = 0;
+      this.x = x; this.y = GROUND; this.vx = 0; this.vy = 0; this.facing = facing; this.health = 100; this.energy = 20; this.damageDealt = 0;
+      this.attack = null; this.attackTimer = 0; this.attackHit = false; this.hurtFlash = 0; this.currentAttackSpec = null;
       this.blocking = false; this.crouching = false; this.comboCount = 0; this.comboTimer = 0;
-      this.aiClock = 0; this.aiBlock = 0; this.aiAttack = null; this.aiMove = 0;
+      this.aiClock = 0; this.aiBlock = 0; this.aiAttack = null; this.aiMove = 0; this.specialSpin = 0; this.specialSpinAngle = 0;
     }
     perform(type) {
       if (!type || this.attack || this.hitstun > 0 || !this.grounded || !attackData[type]) return false;
       if (type === "super" && this.energy < 100) { if (this.isPlayer) announce("SHAKTI NOT READY", 0.65, "#f1cb73"); return false; }
-      this.attack = type; this.attackTimer = attackData[type].duration; this.attackHit = false; this.blocking = false;
-      if (type === "super") { this.energy = 0; announce(this.special, 1.05, this.accent); }
+      this.attack = type;
+      this.currentAttackSpec = type === "super" && this.id === "mbapu" ? { ...attackData.super, duration: 1.18, activeStart: .53, activeEnd: .79, damage: 36, range: 168, knockback: 280 }
+        : type === "super" && this.id === "mitraman" ? { ...attackData.super, duration: 1.02, activeStart: .34, activeEnd: .68, damage: 28, range: 286, knockback: 330 }
+          : attackData[type];
+      this.attackTimer = this.currentAttackSpec.duration; this.attackHit = false; this.blocking = false;
+      if (type === "super") {
+        this.energy = 0; announce(this.special, 1.05, this.accent); speakAnnouncement(this.special.replace(/\s+/g, " "), "en-US");
+        if (this.id === "mitraman") this.vy = -255;
+      }
       playActionSound(type); return true;
     }
     takeHit(amount, attackType, attacker) {
@@ -211,6 +237,7 @@
       const blocked = this.blocking && this.grounded && attackType !== "grab" && attackType !== "super";
       const actual = blocked ? amount * 0.18 : amount;
       this.health = clamp(this.health - actual, 0, 100);
+      if (attacker && typeof attacker.damageDealt === "number") attacker.damageDealt += actual;
       this.energy = clamp(this.energy + (blocked ? 7 : amount * 0.92), 0, 100);
       this.hitstun = blocked ? 0.10 : attackType === "super" ? 0.48 : 0.24;
       this.hurtFlash = blocked ? 0.10 : 0.18;
@@ -228,22 +255,32 @@
       this.hurtFlash = Math.max(0, this.hurtFlash - dt); this.aiBlock = Math.max(0, this.aiBlock - dt);
       this.comboTimer = Math.max(0, this.comboTimer - dt); if (this.comboTimer === 0) this.comboCount = 0;
       this.facing = enemy.x >= this.x ? 1 : -1;
+      this.specialSpin = Math.max(0, this.specialSpin - dt);
+      if (this.specialSpin > 0) this.specialSpinAngle += dt * 20;
       if (this.attack) {
-        this.attackTimer -= dt; const spec = attackData[this.attack]; const elapsed = spec.duration - this.attackTimer;
+        this.attackTimer -= dt; const spec = this.currentAttackSpec || attackData[this.attack]; const elapsed = spec.duration - this.attackTimer;
         if (!this.attackHit && elapsed >= spec.activeStart && elapsed <= spec.activeEnd) {
           this.attackHit = true;
           const distance = Math.abs(enemy.x - this.x);
           const vertical = Math.abs((enemy.y - enemy.height) - (this.y - this.height));
           if (distance <= spec.range && vertical < 116) {
             enemy.takeHit(spec.damage, this.attack, this); this.energy = clamp(this.energy + spec.meter, 0, 100);
+            if (this.attack === "super" && this.id === "mbapu") {
+              enemy.vy = -365; enemy.vx = this.facing * 390; enemy.specialSpin = .72;
+              game.effects.push({ type: "slam-ring", x: enemy.x, y: GROUND - 8, life: .72, max: .72, color: "#f6d36d", spin: 0 });
+            }
             if (this.isPlayer && this.comboCount >= 2) announce(`${this.comboCount} HIT COMBO!`, 0.8, "#fff1bb");
           }
           if (this.attack === "super") {
+            if (this.id === "mitraman") {
+              const fromX = this.x + this.facing * 55, fromY = this.y - 155;
+              game.effects.push({ type: "chakra", fromX, fromY, x: fromX, y: fromY, targetX: enemy.x, targetY: enemy.y - 110, life: .55, max: .55, color: "#ffd54c", spin: 0 });
+            }
             game.effects.push({ type: "wave", x: this.x + this.facing * 74, y: this.y - 108, life: 0.48, max: 0.48, color: this.accent, dir: this.facing });
             for (let i = 0; i < 9; i += 1) game.effects.push({ type: "paper", x: this.x + this.facing * (45 + Math.random() * 90), y: this.y - 100 - Math.random() * 80, life: 0.75 + Math.random() * 0.45, max: 1.2, color: i % 2 ? "#fff2d2" : this.accent, vx: this.facing * (60 + Math.random() * 100), vy: -110 - Math.random() * 100, spin: Math.random() * 6 });
           }
         }
-        if (this.attackTimer <= 0) this.attack = null;
+        if (this.attackTimer <= 0) { this.attack = null; this.currentAttackSpec = null; }
       }
       if (this.hitstun <= 0 && !this.attack) {
         const dir = input.right ? 1 : input.left ? -1 : 0;
@@ -263,12 +300,22 @@
   }
 
   function getPlayerInput() {
-    const left = keys.has("a") || keys.has("ArrowLeft"); const right = keys.has("d") || keys.has("ArrowRight");
-    const down = keys.has("s") || keys.has("ArrowDown"); const jump = keys.has("w") || keys.has("ArrowUp");
+    const useArrows = settings.mode !== "friend";
+    const left = keys.has("a") || useArrows && keys.has("ArrowLeft"); const right = keys.has("d") || useArrows && keys.has("ArrowRight");
+    const down = keys.has("s") || useArrows && keys.has("ArrowDown"); const jump = keys.has("w") || useArrows && keys.has("ArrowUp");
     const back = player && player.facing === 1 ? left : right;
     let attack = touchAttack; touchAttack = null;
     if (justPressed.has("j")) attack = "punch"; else if (justPressed.has("k")) attack = "kick";
     else if (justPressed.has("i")) attack = "grab"; else if (justPressed.has("l") || justPressed.has(" ")) attack = "super";
+    return { left, right, down, jump, block: back, attack };
+  }
+
+  function getFriendInput() {
+    const left = keys.has("ArrowLeft"), right = keys.has("ArrowRight"), down = keys.has("ArrowDown"), jump = keys.has("ArrowUp");
+    const back = cpu && cpu.facing === 1 ? left : right;
+    let attack = null;
+    if (justPressed.has("1")) attack = "punch"; else if (justPressed.has("2")) attack = "kick";
+    else if (justPressed.has("3")) attack = "grab"; else if (justPressed.has("4")) attack = "super";
     return { left, right, down, jump, block: back, attack };
   }
 
@@ -296,6 +343,12 @@
     for (let i = game.effects.length - 1; i >= 0; i -= 1) {
       const effect = game.effects[i]; effect.life -= dt;
       if (effect.type === "paper") { effect.x += effect.vx * dt; effect.y += effect.vy * dt; effect.vy += 260 * dt; effect.spin += dt * 8; }
+      if (effect.type === "chakra") {
+        const progress = clamp(1 - effect.life / effect.max, 0, 1);
+        effect.x = lerp(effect.fromX, effect.targetX, progress); effect.y = lerp(effect.fromY, effect.targetY, progress) - Math.sin(progress * Math.PI) * 28;
+        effect.spin += dt * 18;
+      }
+      if (effect.type === "slam-ring") effect.spin += dt * 7;
       if (effect.type === "dust") { effect.x += effect.vx || 0; effect.life -= dt * 0.2; }
       if (effect.life <= 0) game.effects.splice(i, 1);
     }
@@ -345,7 +398,8 @@
     }
     if (game.intro > 0) { game.intro -= dt; updateEffects(dt); return; }
     game.time = Math.max(0, game.time - dt);
-    player.update(dt, getPlayerInput(), cpu); cpu.update(dt, getCpuInput(dt), player);
+    player.update(dt, getPlayerInput(), cpu);
+    cpu.update(dt, settings.mode === "friend" ? getFriendInput() : getCpuInput(dt), player);
     if (player.x < cpu.x && player.x + 34 > cpu.x - 34) { const mid = (player.x + cpu.x) / 2; player.x = mid - 36; cpu.x = mid + 36; }
     updateBomb(dt); updateEffects(dt);
     if (player.health <= 0 || cpu.health <= 0) endRound("ko"); else if (game.time <= 0) endRound("time");
@@ -438,6 +492,17 @@
     ctx.restore();
   }
 
+  function drawSansarSigns(time) {
+    const signs = [{ x: 36, y: 328, text: "JAI HIND", color: "#df694b" }, { x: 914, y: 306, text: "VOTE!", color: "#477f62" }, { x: 873, y: 356, text: "BADLAV", color: "#4976b5" }];
+    signs.forEach((sign, index) => {
+      const bob = Math.sin(time * 2 + index) * 2;
+      ctx.save(); ctx.translate(sign.x, sign.y + bob); ctx.rotate(index % 2 ? -.04 : .04);
+      ctx.fillStyle = "#17192b"; ctx.fillRect(-2, 14, 4, 26);
+      ctx.fillStyle = "#f0e4ca"; roundedRect(ctx, -29, -11, 58, 23, 3); ctx.fill();
+      ctx.fillStyle = sign.color; ctx.font = "900 7px Trebuchet MS"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(sign.text, 0, 1); ctx.restore();
+    });
+  }
+
   function drawBackdrop(time, stage) {
     const image = arenaImages[stage];
     if (image && image.complete && image.naturalWidth > 0) ctx.drawImage(image, 0, 0, W, H);
@@ -460,8 +525,10 @@
       ctx.globalAlpha = alpha; ctx.fillStyle = i % 3 ? "#ffe6a6" : "#9de2d1"; ctx.beginPath(); ctx.arc(x, y, i % 4 === 0 ? 2 : 1.2, 0, Math.PI * 2); ctx.fill();
     }
     ctx.globalAlpha = 1; ctx.font = "bold 10px Trebuchet MS"; ctx.textAlign = "left";
-    ctx.lineWidth = 3; ctx.strokeStyle = "#071022bb"; ctx.strokeText(stage === "assembly" ? "JAN SABHA MAIDAN  /  DIWALI NIGHT" : "JANTAR PLAZA  /  LIGHTS ON, GLOVES UP", 24, 418);
-    ctx.fillStyle = "#ffe0a1"; ctx.fillText(stage === "assembly" ? "JAN SABHA MAIDAN  /  DIWALI NIGHT" : "JANTAR PLAZA  /  LIGHTS ON, GLOVES UP", 24, 418);
+    const stageTitle = stage === "sansar" ? "SANSAR  /  DIWALI SHOWDOWN" : stage === "assembly" ? "JAN SABHA MAIDAN  /  DIWALI NIGHT" : "JANTAR PLAZA  /  LIGHTS ON, GLOVES UP";
+    ctx.lineWidth = 3; ctx.strokeStyle = "#071022bb"; ctx.strokeText(stageTitle, 24, 418);
+    ctx.fillStyle = "#ffe0a1"; ctx.fillText(stageTitle, 24, 418);
+    if (stage === "sansar") drawSansarSigns(time);
   }
 
   function drawMenuCanvas(time) {
@@ -492,6 +559,18 @@
       ctx.save(); ctx.globalAlpha = .25 + Math.sin(time * 16) * .08; ctx.strokeStyle = accent; ctx.lineWidth = 7;
       ctx.beginPath(); ctx.arc(0, -105, 82 + Math.sin(time * 15) * 8, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
       for (let i = 0; i < 8; i += 1) { const a = time * 2 + i * Math.PI / 4; ctx.fillStyle = accent; ctx.globalAlpha = .8; ctx.beginPath(); ctx.arc(Math.cos(a) * 57, -111 + Math.sin(a) * 48, 3, 0, Math.PI * 2); ctx.fill(); } ctx.globalAlpha = 1;
+    }
+    if (f.sprite && f.sprite.complete && f.sprite.naturalWidth > 0) {
+      const leaning = f.hitstun > 0 ? -.12 : f.attack === "kick" ? -.14 : f.attack === "punch" || f.attack === "grab" ? .08 : 0;
+      const lift = f.id === "mitraman" && supering ? 24 + Math.sin(time * 15) * 7 : 0;
+      ctx.save(); ctx.translate(0, -94 - lift); ctx.rotate(f.specialSpin > 0 ? Math.sin(f.specialSpinAngle) * 1.08 : leaning); ctx.translate(0, 94 + crouch * .35);
+      if (f.attack === "punch" || f.attack === "kick") {
+        ctx.strokeStyle = f.attack === "kick" ? "#ef759288" : `${f.accent}88`; ctx.lineWidth = f.attack === "kick" ? 6 : 4;
+        ctx.beginPath(); ctx.arc(f.attack === "kick" ? 35 : 57, -104 + crouch, 37, -.72, .56); ctx.stroke();
+      }
+      ctx.globalAlpha = flash ? .82 : 1; ctx.drawImage(f.sprite, -66, -200 + crouch, 132, 200 - crouch); ctx.globalAlpha = 1;
+      if (f.blocking) { ctx.strokeStyle = "#fff1bd"; ctx.lineWidth = 4; ctx.globalAlpha = .8; ctx.beginPath(); ctx.arc(33, -98 + crouch, 46, -1.15, 1.15); ctx.stroke(); }
+      ctx.restore(); ctx.restore(); return;
     }
     const kick = attack === "kick";
     // Legs, ankle wraps and expressive footwork.
@@ -570,6 +649,16 @@
       } else if (effect.type === "wave") {
         ctx.strokeStyle = effect.color; ctx.lineWidth = 9; ctx.shadowColor = effect.color; ctx.shadowBlur = 22;
         ctx.beginPath(); ctx.arc(effect.x, effect.y, 28 + (1 - alpha) * 95, 0, Math.PI * 2); ctx.stroke();
+      } else if (effect.type === "chakra") {
+        ctx.translate(effect.x, effect.y); ctx.rotate(effect.spin); ctx.shadowColor = effect.color; ctx.shadowBlur = 17;
+        ctx.fillStyle = "#f5cf4d"; ctx.beginPath(); ctx.arc(0, 0, 18 + alpha * 5, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = "#fff0a4"; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, 25 + alpha * 5, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = "#e88b38"; ctx.lineWidth = 2;
+        for (let i = 0; i < 8; i += 1) { ctx.rotate(Math.PI / 4); ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(0, -35); ctx.stroke(); }
+      } else if (effect.type === "slam-ring") {
+        const radius = 24 + (1 - alpha) * 120; ctx.translate(effect.x, effect.y); ctx.rotate(effect.spin);
+        ctx.strokeStyle = effect.color; ctx.shadowColor = effect.color; ctx.shadowBlur = 20; ctx.lineWidth = 8 * alpha + 2;
+        ctx.beginPath(); ctx.ellipse(0, 0, radius, radius * .25, 0, 0, Math.PI * 2); ctx.stroke();
       } else if (effect.type === "paper") {
         ctx.translate(effect.x, effect.y); ctx.rotate(effect.spin); ctx.fillStyle = effect.color; ctx.fillRect(-7, -4, 14, 9); ctx.strokeStyle = "#c9bda3"; ctx.lineWidth = .7; ctx.strokeRect(-7, -4, 14, 9);
       } else if (effect.type === "blast") {
@@ -626,9 +715,14 @@
       const isPlayer = card.dataset.fighter === settings.playerFighter;
       const isCpu = card.dataset.fighter === settings.cpuFighter;
       card.classList.toggle("selected", isPlayer); card.classList.toggle("cpu-opponent", isCpu);
-      card.querySelector(".card-ribbon").textContent = isPlayer ? "1P · YOU" : isCpu ? "CPU RIVAL" : "AVAILABLE";
+      card.querySelector(".card-ribbon").textContent = isPlayer ? "1P · YOU" : isCpu ? settings.mode === "friend" ? "PLAYER 2" : "CPU RIVAL" : "AVAILABLE";
     });
     ui.cpuPreviewName.textContent = fighterData[settings.cpuFighter].name;
+    ui.rivalLabel.textContent = settings.mode === "friend" ? "PLAYER TWO" : "CPU OPPONENT";
+    ui.modeLabel.textContent = settings.mode === "friend" ? "LOCAL 2P · KEYBOARD" : "1P VS CPU";
+    ui.cpuCycle.textContent = settings.mode === "friend" ? "CHANGE PLAYER 2 ↻" : "CHANGE RIVAL ↻";
+    ui.cpuCycle.setAttribute("aria-label", settings.mode === "friend" ? "Choose Player 2 fighter" : "Choose next CPU opponent");
+    document.querySelectorAll("[data-mode]").forEach((button) => button.classList.toggle("active", button.dataset.mode === settings.mode));
   }
 
   function cycleCpuRival() {
@@ -641,6 +735,7 @@
   window.addEventListener("keydown", (event) => {
     const key = normalizeKey(event.key);
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(key)) event.preventDefault();
+    if (!ui.legalGate.classList.contains("hidden")) { if (key === "Enter") ui.acceptNotice.click(); return; }
     if (key === "Escape") { togglePause(); return; }
     if (key === "m") { toggleSound(); return; }
     if (key === "n") { cycleMusic(); return; }
@@ -659,6 +754,22 @@
   document.getElementById("selectAgainButton").addEventListener("click", () => setScreen("select"));
   document.getElementById("resumeButton").addEventListener("click", togglePause);
   document.getElementById("quitButton").addEventListener("click", () => { if (game) game.phase = "quit"; setScreen("select"); });
+  ui.acceptNotice.addEventListener("click", () => {
+    try { localStorage.setItem("rally-rumble-satire-acknowledged", "yes"); } catch (_) { /* Storage may be disabled. */ }
+    ui.legalGate.classList.add("hidden"); document.getElementById("startButton").focus();
+  });
+  document.querySelectorAll("[data-post-action]").forEach((button) => button.addEventListener("click", async () => {
+    const action = button.dataset.postAction;
+    if (action === "card") {
+      const shareText = `${ui.paperHeadline.textContent} — Sansad Times: ${ui.resultRounds.textContent}`;
+      try {
+        if (navigator.share) { await navigator.share({ title: "Sansad Times", text: shareText }); ui.postActionMessage.textContent = "DIWALI CARD READY TO SHARE."; }
+        else if (navigator.clipboard) { await navigator.clipboard.writeText(shareText); ui.postActionMessage.textContent = "DIWALI CARD CAPTION COPIED."; }
+        else ui.postActionMessage.textContent = shareText;
+      } catch (_) { ui.postActionMessage.textContent = "YOUR SANSAD TIMES CARD IS READY."; }
+    } else if (action === "feedback") ui.postActionMessage.textContent = "MAZAA AAYA — THANKS FOR PLAYING! NOTHING WAS SENT.";
+    else ui.postActionMessage.textContent = "VIRTUAL CHAI SERVED. NO PAYMENT IS REQUESTED.";
+  }));
   ui.sound.addEventListener("click", toggleSound);
   ui.music.addEventListener("click", cycleMusic);
   ui.cpuCycle.addEventListener("click", cycleCpuRival);
@@ -672,6 +783,9 @@
   }));
   document.querySelectorAll("[data-difficulty]").forEach((button) => button.addEventListener("click", () => {
     document.querySelectorAll("[data-difficulty]").forEach((item) => item.classList.remove("active")); button.classList.add("active"); settings.difficulty = button.dataset.difficulty;
+  }));
+  document.querySelectorAll("[data-mode]").forEach((button) => button.addEventListener("click", () => {
+    settings.mode = button.dataset.mode; updateSelectionUI(); playTone(430, .045, "triangle");
   }));
 
   document.querySelectorAll("[data-action]").forEach((button) => {
@@ -774,5 +888,6 @@
     } catch (_) { /* Browser voice packs are optional. */ }
   }
 
+  try { if (localStorage.getItem("rally-rumble-satire-acknowledged") === "yes") ui.legalGate.classList.add("hidden"); } catch (_) { /* Storage may be disabled. */ }
   updateSelectionUI(); updateMusicButton(); setScreen("title"); requestAnimationFrame(gameLoop);
 })();

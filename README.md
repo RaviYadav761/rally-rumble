@@ -1,8 +1,10 @@
-# Rally Rumble
+# Rally Rumble — Sansad Showdown
 
-Rally Rumble is a browser-native 2D festival fight game with a best-of-three player-versus-CPU match, selectable fighters and arenas, a Shakti meter, and the timed Sutli Bomb hazard. The updated roster keeps the original fictional fighters (Shanti Sage and Kesar Kaka) and adds satirical game representations of Narendra Modi, Rahul Gandhi, and Akhilesh Yadav using locally bundled, credited portrait assets. Two original generated 16:9 arenas provide the background art while Canvas continues to draw the fight, HUD, impacts, and hazards.
+A reference-driven update to the existing browser-native 2D Canvas fighting game. The current interim pass adds a Sansar/Diwali arena, a ten-fighter character-select roster, locally generated cartoon fighter art, signature-move effects, a local two-player keyboard option, and a bilingual fictional-satire notice. This is still a work in progress; visual frame matching, browser gameplay, mobile layout, and hosted deployment have not yet received final verification.
 
-This is a fictional satire/parody. Its combat, announcer lines, and scenarios are invented. No person, political party, photographer, source site, Government of India, or music creator endorses or is affiliated with the game. No real-person voice is cloned.
+The supplied gameplay clip was reviewed as the visual/gameplay reference. The public `fightkaro.com` page and the existing `RaviYadav761/rally-rumble` repository were inspected, but the implementation remains a separate update inside this repository; it does not reuse the public game's bundled code or claim a pixel-perfect match.
+
+This is a fictional parody for entertainment. Characters, combat and announcer lines are invented; no real person, political party, government body or organization is affiliated with or endorsing the game. No real-person voice is cloned, and no unlicensed meme audio from the reference clip is bundled.
 
 ## Run locally
 
@@ -16,27 +18,31 @@ Then open `http://localhost:4173/`.
 
 ## Controls
 
-On desktop, use `A/D` or the arrow keys to move, `W` or Up to jump, `S` or Down to crouch, and hold away from the opponent to block. Press `J` to punch, `K` to kick, `I` to grab, and `L` or Space for Super when the Shakti meter is full. Press `Esc` to pause, `M` to toggle audio, and `N` to switch between the two background tracks.
+**Player 1:** `A/D` move, `W` jump, `S` crouch, hold away from the opponent to block; `J` punch, `K` kick, `I` grab, and `L` or Space for Super when the Shakti meter is full. `Esc` pauses, `M` toggles audio, and `N` switches the soundtrack.
 
-On touch screens, use the virtual joystick and the on-screen Grab, Super, Kick, and Punch buttons. Landscape orientation is recommended for the current 16:9 fighting arena.
+**Local friend mode:** Player 1 uses the controls above; Player 2 uses the arrow keys to move/jump/crouch/block and `1` punch, `2` kick, `3` grab, `4` Super. This is same-device keyboard play, not online multiplayer.
 
-## Game flow and audio
+**Touch:** The single-player CPU mode provides a virtual joystick and on-screen Grab, Super, Kick and Punch controls. Landscape orientation is recommended for the 16:9 arena.
 
-Select a player fighter, cycle the CPU rival, choose Jan Sabha Maidan or Jantar Plaza, and set CPU difficulty. Matches have 60-second rounds and first-to-two scoring. The game includes CPU blocks/counters, timed bomb warnings/explosions, Hindi/browser-voice calls, and synthesized arcade hit effects. Start music after a user gesture with the Enter Arena or soundtrack button; the top-right audio control mutes both tracks and sound effects.
+## Current game flow
 
-The default soundtrack is the comedic “Circus Theme (Ragtime Version)” by Alexander Nakarada • Julius Fučík. Press `N` or click the music button for “Bhangra Bass” by Punch Deck. Both are CC BY-licensed tracks bundled locally and credited in the game’s asset disclosure and [`public/assets/CREDITS.md`](public/assets/CREDITS.md).
+Choose one of ten fighters, select the rival/player two, choose the Sansar, Jan Sabha Maidan or Jantar Plaza arena, and select CPU difficulty. CPU matches use 60-second rounds and first-to-two scoring, with a three-round tie-break rule. The build includes generated character sprites, move/hit effects, the Sutli Bomb hazard, browser-voice/synthesized callouts, and a Sansad Times results screen. The authored results actions do not submit feedback or request payment; the chai button is a no-payment joke, and card sharing is user-triggered.
 
-## Asset credits
+The existing attributed “Circus Theme (Ragtime Version)” by Alexander Nakarada • Julius Fučík and “Bhangra Bass” by Punch Deck remain available as locally bundled CC BY-licensed tracks. Their source URLs and attribution are listed in [`public/assets/CREDITS.md`](public/assets/CREDITS.md).
 
-The generated arena art was created for Rally Rumble. Portrait and music authors, source URLs, license links, attribution text, and the WebP/MP3 conversion notes are in [`public/assets/CREDITS.md`](public/assets/CREDITS.md). Reuse each third-party asset in accordance with its listed license.
+## Assets and credits
+
+New fictional fighter sprites and the Sansar stage illustration were generated specifically for this game. Existing portrait crops and the two music tracks retain their source/license information in [`public/assets/CREDITS.md`](public/assets/CREDITS.md). The cartoon sprites are stylized game art and are not depictions or endorsements by the real people referenced by the satire.
 
 ## Project files
 
-- `index.html` — game shell, roster, audio/credits controls, HUD, results, and touch input.
-- `styles.css` — title art, menus, HUD, responsive layout, and touch controls.
-- `game.js` — fighter state, AI, combat, Canvas rendering, stage images, input, voice calls, and audio.
-- `public/assets/` — optimized arena art, portraits, music tracks, and credits.
+- `index.html` — title and legal-gate UI, fighter selection, game HUD, results, and touch input.
+- `styles.css` — title, selection grid, HUD, responsive layout, results and touch controls.
+- `game.js` — fighter state, AI/local input, combat, Canvas rendering, stages, callouts and audio.
+- `docs/REFERENCE_SPEC.md` — reference video/page observations and visual/gameplay spec.
+- `docs/PROGRESS.md` and `TODO.md` — milestone notes and acceptance checklist.
+- `public/assets/` — generated stage/fighter art, existing portraits/music and credit notes.
 
 ## Deployment
 
-This repository currently has no GitHub Pages configuration. Run the local preview above or connect the repository to the hosting provider used for the desired public site; do not assume that a GitHub push automatically deploys to `fightkaro.com`.
+The interim update is pushed to the `main` branch. A GitHub push does not guarantee a public deployment: verify the linked Vercel project and production-domain mapping before reporting hosted status or changing any production domain. No deployment or domain repoint has been performed as part of this interim push.
