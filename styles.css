@@ -106,10 +106,10 @@ h2 { margin-bottom: 6px; font-size: clamp(25px, 4.5vw, 54px); line-height: .9; l
 .credits-panel summary:focus-visible, .cpu-cycle:focus-visible, .fighter-card:focus-visible { outline: 2px solid #ffe28a; outline-offset: 2px; }
 .credits-panel p { max-width: 465px; margin: 6px 0 0; font-size: 8px; line-height: 1.45; }
 .credits-panel a { color: #ffe39a; }
-.select-screen { display: flex; flex-direction: column; overflow: hidden; }
+.select-screen { display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
 .select-heading { flex: 0 0 auto; align-items: center; }
 .select-heading h2 { font-size: clamp(25px, 3.7vw, 44px); }
-.select-grid { flex: 1 1 auto; min-height: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 10px 0; }
+.select-grid { flex: 0 0 auto; min-height: auto; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 10px 0; }
 .fighter-card { min-width: 0; min-height: 112px; padding: 10px 12px; background: linear-gradient(145deg, #27334bdb, #141b31eF); }
 .fighter-card.selected { border-color: #f8d36c; box-shadow: 0 0 0 1px #f8d36c55, inset 0 0 18px #f4ca6817; }
 .fighter-card.cpu-opponent:not(.selected) { border-color: #6ac1ad; }
@@ -142,11 +142,11 @@ h2 { margin-bottom: 6px; font-size: clamp(25px, 4.5vw, 54px); line-height: .9; l
   .topbar-actions .icon-button { padding: 5px 5px; font-size: 7px; letter-spacing: .045em; }
   .brand { gap: 5px; font-size: 10px; }
   .brand-mark { width: 24px; height: 24px; }
-  .select-screen { display: flex; flex-direction: column; padding: 9px; overflow: hidden; }
+  .select-screen { display: flex; flex-direction: column; padding: 9px; overflow-x: hidden; overflow-y: auto; }
   .select-heading { gap: 4px; }
   .select-heading .eyebrow { margin-bottom: 5px; font-size: 7px; }
   .select-heading h2 { font-size: clamp(18px, 4.4vw, 27px); }
-  .select-grid { flex: 1 1 auto; min-height: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(102px, auto); gap: 6px; margin: 6px 0; overflow-y: auto; overscroll-behavior: contain; }
+  .select-grid { flex: 0 0 auto; min-height: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(102px, auto); gap: 6px; margin: 6px 0; overflow: visible; }
   .fighter-card { min-height: 102px; padding: 8px; }
   .fighter-card .card-ribbon { font-size: 7px; }
   .card-portrait { top: 23px; right: 6px; width: 54px; height: 61px; }
@@ -251,8 +251,8 @@ h2 { margin-bottom: 6px; font-size: clamp(25px, 4.5vw, 54px); line-height: .9; l
 .legal-card p:not(.eyebrow) { color: #ded8ca; font-size: clamp(10px, 1.5vw, 14px); line-height: 1.5; }
 .legal-card .primary-button { margin-top: 5px; }
 @media (max-width: 760px) {
-  .select-screen { padding: 9px; overflow: hidden; }
-  .select-grid { flex: 1 1 auto; min-height: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(98px, auto); gap: 6px; overflow-y: auto; overscroll-behavior: contain; }
+  .select-screen { padding: 9px; overflow-x: hidden; overflow-y: auto; }
+  .select-grid { flex: 0 0 auto; min-height: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(98px, auto); gap: 6px; overflow: visible; }
   .fighter-card { min-height: 98px; padding: 7px; }
   .card-portrait { top: 20px; right: 4px; width: 48px; height: 55px; }
   .fighter-card strong { margin-top: 44px; font-size: 9px; }

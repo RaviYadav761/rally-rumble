@@ -23,13 +23,13 @@
   let touchStickOrigin = null;
 
   const fighterData = {
-    tariff: { id: "tariff", name: "TARIFF TAAU", title: "THE DEALMAKER", color: "#f1e9d9", accent: "#f4c66c", dark: "#263247", skin: "#c58d72", hair: "#e7b956", style: "politician", special: "TARIFF TORNADO", sprite: "public/assets/fighters/tariff-taau.png", portrait: "public/assets/fighters/tariff-taau.png" },
-    yatra: { id: "yatra", name: "YATRA BOY", title: "THE PEOPLE'S ROADRUNNER", color: "#eee9db", accent: "#5cb6a3", dark: "#26384b", skin: "#bd8069", hair: "#d1d0c8", style: "politician", special: "JAN YATRA JAB", sprite: "public/assets/fighters/yatra-boy.png", portrait: "public/assets/fighters/yatra-boy.png" },
-    mbapu: { id: "mbapu", name: "MBAPU", title: "THE SAGE OF SABAR", color: "#f4eee1", accent: "#e8c96d", dark: "#756c62", skin: "#c99c81", hair: "#ece5d7", style: "sage", special: "MANCH CHHODO", sprite: "public/assets/fighters/mbapu.png", portrait: "public/assets/fighters/mbapu.png" },
-    mitraman: { id: "mitraman", name: "MITRAMAN", title: "THE FESTIVAL STATESMAN", color: "#fff1d2", accent: "#ef9d45", dark: "#633d31", skin: "#bd8066", hair: "#eee7dc", style: "politician", special: "MITRA CHAKRA", sprite: "public/assets/fighters/mitraman.png", portrait: "public/assets/fighters/mitraman.png" },
-    deedee: { id: "deedee", name: "DEEDEE", title: "THE BLUE-BORDER BOSS", color: "#f2eee2", accent: "#55a9ca", dark: "#344251", skin: "#bb826b", hair: "#28221e", style: "politician", special: "BENGAL BOUNCE", sprite: "public/assets/fighters/deedee.png", portrait: "public/assets/fighters/deedee.png" },
-    toka: { id: "toka", name: "TOKA MAN", title: "THE PEOPLE'S AUDITOR", color: "#d7e7df", accent: "#6cbca2", dark: "#34444a", skin: "#bd8066", hair: "#262322", style: "politician", special: "MOHALLA METER", sprite: "public/assets/fighters/toka-man.png", portrait: "public/assets/fighters/toka-man.png" },
-    suttibabu: { id: "suttibabu", name: "SUTTI BABU", title: "THE QUIET TACTICIAN", color: "#ece7d9", accent: "#b5b0a2", dark: "#4b4a49", skin: "#b9846a", hair: "#d9d5ca", style: "politician", special: "SUSHASAN SHUFFLE", sprite: "public/assets/fighters/sutti-babu.png", portrait: "public/assets/fighters/sutti-babu.png" },
+    tariff: { id: "tariff", name: "TARIFF TAAU", title: "THE DEALMAKER", color: "#f1e9d9", accent: "#f4c66c", dark: "#263247", skin: "#c58d72", hair: "#e7b956", style: "politician", special: "TARIFF TORNADO", sprite: "public/assets/fighters/tariff-taau.webp", portrait: "public/assets/fighters/tariff-taau.webp" },
+    yatra: { id: "yatra", name: "YATRA BOY", title: "THE PEOPLE'S ROADRUNNER", color: "#eee9db", accent: "#5cb6a3", dark: "#26384b", skin: "#bd8069", hair: "#d1d0c8", style: "politician", special: "JAN YATRA JAB", sprite: "public/assets/fighters/yatra-boy.webp", portrait: "public/assets/fighters/yatra-boy.webp" },
+    mbapu: { id: "mbapu", name: "MBAPU", title: "THE SAGE OF SABAR", color: "#f4eee1", accent: "#e8c96d", dark: "#756c62", skin: "#c99c81", hair: "#ece5d7", style: "sage", special: "MANCH CHHODO", sprite: "public/assets/fighters/mbapu.webp", portrait: "public/assets/fighters/mbapu.webp" },
+    mitraman: { id: "mitraman", name: "MITRAMAN", title: "THE FESTIVAL STATESMAN", color: "#fff1d2", accent: "#ef9d45", dark: "#633d31", skin: "#bd8066", hair: "#eee7dc", style: "politician", special: "MITRA CHAKRA", sprite: "public/assets/fighters/mitraman.webp", portrait: "public/assets/fighters/mitraman.webp" },
+    deedee: { id: "deedee", name: "DEEDEE", title: "THE BLUE-BORDER BOSS", color: "#f2eee2", accent: "#55a9ca", dark: "#344251", skin: "#bb826b", hair: "#28221e", style: "politician", special: "BENGAL BOUNCE", sprite: "public/assets/fighters/deedee.webp", portrait: "public/assets/fighters/deedee.webp" },
+    toka: { id: "toka", name: "TOKA MAN", title: "THE PEOPLE'S AUDITOR", color: "#d7e7df", accent: "#6cbca2", dark: "#34444a", skin: "#bd8066", hair: "#262322", style: "politician", special: "MOHALLA METER", sprite: "public/assets/fighters/toka-man.webp", portrait: "public/assets/fighters/toka-man.webp" },
+    suttibabu: { id: "suttibabu", name: "SUTTI BABU", title: "THE QUIET TACTICIAN", color: "#ece7d9", accent: "#b5b0a2", dark: "#4b4a49", skin: "#b9846a", hair: "#d9d5ca", style: "politician", special: "SUSHASAN SHUFFLE", sprite: "public/assets/fighters/sutti-babu.webp", portrait: "public/assets/fighters/sutti-babu.webp" },
     akhilesh: { id: "akhilesh", name: "AKHILESH YADAV", title: "THE CYCLE RALLY ACE", color: "#f1eadb", accent: "#ee6870", dark: "#293849", skin: "#b9775a", hair: "#26201e", style: "politician", special: "CYCLE RALLY", portrait: "public/assets/portraits/akhilesh-yadav.webp", faceCrop: [.10, .05, .80, .72] },
     shanti: { id: "shanti", name: "SHANTI SAGE", title: "THE PEACEFUL PUGILIST", color: "#f4e9d0", accent: "#e9ae40", dark: "#7b6548", skin: "#bd805f", hair: "#f4eadc", style: "sage", special: "SABAR & SHANTI" },
     kesar: { id: "kesar", name: "KESAR KAKA", title: "THE FESTIVAL FRONTMAN", color: "#f17834", accent: "#ffdc76", dark: "#963d2b", skin: "#a96048", hair: "#eee7d7", style: "performer", special: "CHAKRA UTSAV" }
@@ -44,9 +44,9 @@
   const arenaImages = { assembly: new Image(), market: new Image(), sansar: new Image() };
   arenaImages.assembly.src = "public/assets/arena-sansad.webp";
   arenaImages.market.src = "public/assets/arena-jantar.webp";
-  arenaImages.sansar.src = "public/assets/stages/sansar-diwas.png";
+  arenaImages.sansar.src = "public/assets/stages/sansar-diwas.webp";
   const musicTracks = [
-    { label: "MUSIC · MEME", name: "Circus Theme (Ragtime Version)", src: "public/assets/audio/circus-theme-ragtime-version.mp3" },
+    { label: "MUSIC · RAGTIME", name: "Circus Theme (Ragtime Version)", src: "public/assets/audio/circus-theme-ragtime-version.mp3" },
     { label: "MUSIC · BHANGRA", name: "Bhangra Bass", src: "public/assets/audio/bhangra-bass.mp3" }
   ];
 

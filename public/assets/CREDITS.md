@@ -5,11 +5,11 @@ The political characters are presented as fictional, satirical game characters. 
 ## Generated stage art
 
 - `arena-sansad.webp` and `arena-jantar.webp` — original AI-generated illustrations created for the earlier Rally Rumble build, November 2026. Compressed from generated PNGs to WebP for browser delivery.
-- `stages/sansar-diwas.png` — original AI-generated Sansar/Diwali night-arena illustration created for the reference-driven update, November 2026. No third-party stage background was copied.
+- `stages/sansar-diwas.webp` — original AI-generated Sansar/Diwali night-arena illustration created for the reference-driven update, November 2026. No third-party stage background was copied.
 
 ## Generated fictional fighter art
 
-- `fighters/tariff-taau.png`, `fighters/yatra-boy.png`, `fighters/mbapu.png`, `fighters/mitraman.png`, `fighters/deedee.png`, `fighters/toka-man.png`, and `fighters/sutti-babu.png` — original AI-generated fictional fighter illustrations created for this game update, November 2026. These stylized characters are game parody art, not photographs, official portraits or endorsements. The code may apply simple pose transforms and combat effects at runtime; the images themselves are not sprite sheets.
+- `fighters/tariff-taau.webp`, `fighters/yatra-boy.webp`, `fighters/mbapu.webp`, `fighters/mitraman.webp`, `fighters/deedee.webp`, `fighters/toka-man.webp`, and `fighters/sutti-babu.webp` — original AI-generated fictional fighter illustrations created for this game update, November 2026. These stylized characters are game parody art, not photographs, official portraits or endorsements. The code may apply simple pose transforms and combat effects at runtime; the images themselves are not sprite sheets.
 
 ## Portraits
 

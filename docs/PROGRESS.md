@@ -2,24 +2,33 @@
 
 ## Milestone 1 — reference inspection and written plan
 
-- Inspected the full supplied 168.3-second, 1600×720 gameplay video using sampled frames and audio/text analysis.
-- Inspected `https://fightkaro.com/`: game title/entry markup, canvas/loading state, audio toggle and bilingual satire notice. The in-site legal acknowledgement was not accepted.
+- Inspected the supplied 168.3-second, 1600×720 gameplay video using sampled frames and audio/text analysis.
+- Inspected `https://fightkaro.com/`: game title/entry markup, canvas/loading state, audio toggle and bilingual satire notice. The site's legal acknowledgement was not accepted.
 - Inspected the existing `RaviYadav761/rally-rumble` repository. It is a browser-native 2D Canvas game with keyboard/touch combat, player-vs-CPU, two stages, fighter portraits and attributed audio.
-- Wrote `docs/REFERENCE_SPEC.md`, revised `plan.md` for a 2D Canvas recreation of the video's 2.5D visual/gameplay flow, and replaced `TODO.md` with explicit outcome/acceptance criteria.
-- This documentation-only milestone was pushed to `main` in commit `f6246a4`.
+- Wrote `docs/REFERENCE_SPEC.md`, revised `plan.md` for a reference-driven 2D Canvas recreation of the video's 2.5D visual/gameplay flow, and replaced `TODO.md` with explicit outcome/acceptance criteria.
+- The documentation-only milestone was pushed to `main` in commit `f6246a4`.
 
-## Milestone 2 — interim game, UI and generated art (in progress)
+## Milestone 2 — interim game, UI and generated art
 
 - Added seven generated fictional fighter illustrations and a generated Sansar/Diwali stage image under `public/assets/`.
 - Updated the select UI to a ten-character roster, Sansar/Jan Sabha/Jantar stage choices, CPU difficulty, CPU-vs-player/friend mode, rival selection and 1P/2P labeling.
-- Integrated generated fighter artwork in the Canvas rendering path, custom Mbapu slam and Mitraman chakra effects, hit/round callouts, a tie-breaker for three-round matches and keyboard controls for local Player 2.
+- Integrated generated fighter artwork in Canvas rendering, custom Mbapu slam and Mitraman chakra effects, hit/round callouts, first-to-two scoring and keyboard controls for local Player 2.
 - Added the bilingual satire acknowledgement overlay and Sansad Times result actions. Card sharing is user-triggered; feedback is not transmitted and the chai action does not request payment.
-- Updated README, asset licenses/credits and this progress record. Existing attributed CC BY music and source/license information for retained portrait crops remain documented. No audio was copied from memes in the reference.
-- Validation completed before this interim push: `node --check game.js`, `git diff --check`, ten unique fighter IDs, all HTML image paths, required UI hooks and JS asset paths.
-- **Not yet verified:** browser playthrough, every combat state/round transition, soundtrack and speech behavior, desktop/mobile visual fit, generated art consistency, or live Vercel deployment/domain mapping. This is an interim build, not a claim of pixel-perfect frame matching.
+- Existing attributed CC BY music and source/license information for retained portrait crops remain documented. No audio was copied from memes in the reference.
+- The earlier interim implementation was pushed to `main` in commit `62b5bab`.
 
-## Remaining milestones
+## Milestone 3 — targeted QA and fixes (current)
 
-1. Run a browser-based playthrough of CPU and friend modes; verify selection, round scoring/tie-breaks, move effects, hazard, pause, result/rematch and audio on real viewport sizes.
-2. Refine assets/animation and compare the captured game states against the supplied video; check mobile/desktop UI, keyboard/touch safe areas, performance and accessibility.
-3. Inspect the linked Vercel project/deployment status. Confirm repository/domain mapping before any production deployment; do not repoint `fightkaro.com` without explicit confirmation.
+- Fixed a real responsive defect: the phone-width CSS overrode the scroll treatment, hiding stage, mode and difficulty controls beneath the roster. The full selection panel now scrolls at 390×844 portrait and 844×390 landscape; the fight action is reachable at the bottom.
+- Replaced the misleading `MUSIC · MEME` text with the actual selected-track label (Ragtime/Bhangra).
+- Converted seven 1536×2304 transparent fighter images and the 2560×1440 stage art from PNG to quality-90 WebP. This reduces these eight assets from 28,778,640 bytes to 2,273,638 bytes (about 92% smaller); all references and credits were updated.
+- Browser tests passed at 1365×900 desktop, 844×390 phone landscape and 390×844 phone portrait: legal gate, selection and scroll, match start/HUD, touch-action visibility, pause/resume, mute and local asset requests. No local page errors or failed HTTP resources were observed.
+- A deterministic browser run exercised the actual match state machine with test-only health setup: two round wins to 2–0 result, feedback/no-payment messaging, rematch, friend-mode Player 2 punch mapping and soundtrack cycling all passed. The test bridge existed only in the temporary QA response and was not added to game code.
+- `node --check game.js` and `git diff --check` pass.
+- Vercel check: the `rally-rumble` project summary reports a READY production deployment and only `*.vercel.app` domains; the live `rally-rumble-five.vercel.app` page returns HTTP 200 but its title is still `Rally Rumble — Street Fight`, not the current `Sansad Showdown` build. `fightkaro.com` is not among the domains reported for this project. The exact Git source/commit mapping was not confirmed, so no domain was changed or claimed as deployed.
+
+## Remaining work / acceptance gaps
+
+1. Push this QA/performance correction set to the existing GitHub `main` branch, then recheck whether the Vercel project automatically builds the same source. If its live page remains stale, investigate the existing repo-to-project mapping rather than changing `fightkaro.com` or repointing domains.
+2. Run a longer, manual gameplay comparison against the entire supplied video, including the hazard, every move/effect, repeated tie-break scenarios, full local two-player match and audio playback on real browser/device combinations.
+3. Recheck final visual art/animation fidelity, keyboard/touch accessibility and performance on actual phones. This original Canvas adaptation is not claimed to be pixel-perfect or frame-for-frame identical.

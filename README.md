@@ -1,6 +1,6 @@
 # Rally Rumble — Sansad Showdown
 
-A reference-driven update to the existing browser-native 2D Canvas fighting game. The current interim pass adds a Sansar/Diwali arena, a ten-fighter character-select roster, locally generated cartoon fighter art, signature-move effects, a local two-player keyboard option, and a bilingual fictional-satire notice. This is still a work in progress; visual frame matching, browser gameplay, mobile layout, and hosted deployment have not yet received final verification.
+A reference-driven update to the existing browser-native 2D Canvas fighting game. The current pass adds a Sansar/Diwali arena, a ten-fighter character-select roster, locally generated cartoon fighter art, signature-move effects, a local two-player keyboard option, and a bilingual fictional-satire notice. Targeted browser QA now covers desktop/phone layouts, match state/result/rematch and touch controls. A full-length video comparison, real-device checks and alignment with the existing Vercel project are still open.
 
 The supplied gameplay clip was reviewed as the visual/gameplay reference. The public `fightkaro.com` page and the existing `RaviYadav761/rally-rumble` repository were inspected, but the implementation remains a separate update inside this repository; it does not reuse the public game's bundled code or claim a pixel-perfect match.
 
@@ -45,4 +45,4 @@ New fictional fighter sprites and the Sansar stage illustration were generated s
 
 ## Deployment
 
-The interim update is pushed to the `main` branch. A GitHub push does not guarantee a public deployment: verify the linked Vercel project and production-domain mapping before reporting hosted status or changing any production domain. No deployment or domain repoint has been performed as part of this interim push.
+The current Vercel `rally-rumble-five.vercel.app` alias responds, but still serves the older “Rally Rumble — Street Fight” title. The Vercel project summary lists `*.vercel.app` domains, not `fightkaro.com`; GitHub/Vercel source alignment is not yet verified. Do not claim the new build is live or change/repoint `fightkaro.com` without confirming the existing mapping.
