@@ -1,15 +1,18 @@
-# Rally Rumble — follow-up checklist
+# Rally Rumble — reference recreation TODO
 
-## Completed in this update
-- [x] Added Narendra Modi, Rahul Gandhi, and Akhilesh Yadav to the selectable roster alongside Shanti Sage and Kesar Kaka; sourced portrait credits and fictional-satire/non-endorsement notes are included.
-- [x] Added two original generated arena backgrounds and integrated them into stage selection and gameplay.
-- [x] Bundled two locally playable, licensed music tracks: a comedic ragtime cue and an Indian-action track. Added in-game track switching, the master audio toggle, and source/license credits; preserved the existing fictional browser announcer and arcade sound effects.
-- [x] Improved the responsive roster and touch UI. Local browser preview checked at desktop size, 390×844 portrait, and 844×390 landscape; roster scroll, CPU-rival cycling, 44-pixel action targets, and 16:9 landscape rendering were verified.
-- [x] Exercised fighter selection, CPU rival cycling, a right-move input, both arena backgrounds, match/HUD/results, soundtrack switching/playback, and mute/unmute in the local browser preview.
-- [x] `node --check game.js`, `git diff --check`, duplicate HTML-ID detection, and local asset-reference checks passed.
-- [x] Commit and push the current changes to `RaviYadav761/rally-rumble` on `main`, then confirm that the remote commit matches.
+## Reference-driven outcomes
 
-## Remaining outside this release
-- [ ] Test on a physical Android touchscreen; the available cloud browser can only simulate mobile viewport sizes and pointer-independent layout.
-- [ ] Compare frame-by-frame with the user's phone/game video. No video file was present in the task workspace, so this update follows the public reference and written request rather than an exact video match.
-- [ ] Deploy to `fightkaro.com` after the user confirms its hosting/deployment method. The repository has no GitHub Pages site configured; the GitHub push by itself does not update that domain.
+- [ ] **Neta selection और entry flow:** दिए गए video की शुरुआत जैसी `SELECT YOUR NETA` character-select screen बनानी है। इसमें Tariff Taau, Yatra Boy, Mbapu, Mitraman, Deedee, Toka Man और Sutti Babu के portrait/cards हों; पुराने Shanti Sage और Kesar Kaka roster में बने रहें। VS matchup, player/CPU rival पहचान, `Play with a Friend`, `Fight!`, difficulty Easy/Normal/Hard और stage selection options दिखाई दें और काम करें। Selection के बाद छोटा “Downloading [fighter]…” loading cue आए।
+- [ ] **तीन-round combat match:** player और CPU के बीच 60-second timer के साथ best-of-three match हो। ऊपर दोनों fighters के नाम, health/Shakti bars, round pips और timer दिखें। Punch, kick, grab, jump, crouch/block, hit/counter, CPU AI, round reset और round-win score काम करें। Match flow Round 1 → Round 2 → Final Round हो और दो round जीतने पर match समाप्त हो।
+- [ ] **वीडियो के special moves और hazard:** Mitraman का `Mitra Chakra` हवा में उठने, सुनहरा chakra/disc प्रभाव और impact के साथ चले। Mbapu का `Manch Chhodo` grab-spin-slam, glowing gold ring तथा particles के साथ चले। `Lamba Bhashan Combo` और `Vikas Uppercut` जैसे move callouts दिखें। Sutli Bomb hazard पर `SUTLI BOMB — Ring se bahar bhaago!` warning और blast/avoid behavior चले। Round KO overlay में `GHEE KHATAM!` और परिणाम में जीत/हार स्पष्ट हो।
+- [ ] **Sansar/Diwali stage और visual style:** `Sansar` arena में रात का courtyard, parliament-like background silhouette, large colourful mandala floor, Diwali string lights, kandils/lanterns, candles और VOTE/JAI HIND/BADLAV sign पकड़े crowd silhouettes हों। Existing Jan Sabha Maidan और Jantar Plaza stages भी उपलब्ध रहें। Side-on 2.5D presentation, readable fighter silhouettes, hit sparks, gold/multicolor rings और special-move particles हों।
+- [ ] **Desktop और mobile input/UI:** Desktop keyboard actions मौजूदा controls के साथ काम करें। Touch screen पर lower-left virtual joystick और lower-right `GRAB`, `SUPER`, `PUNCH`, `KICK` buttons हों। Selection/menu controls, portrait/landscape layout, safe-area, scrolling roster, pause/resume और usable touch hit areas फोन तथा desktop दोनों पर उपलब्ध हों। `Play with a Friend` mode local same-device 2-player हो; online service इस offline repo में न जोड़ी जाए।
+- [ ] **Audio और fictional callouts:** Existing attributed Bhangra/comedic music tracks, mute/music switching और synthesized fight SFX बने रहें। Audio user gesture के बाद शुरू हो। Hindi/Hinglish fictional announcer cues Round 1/2/Final, move/impact और You Win results पर आएँ। किसी real person's voice की cloning या बिना स्पष्ट rights के video से meme audio निकालकर bundle न किया जाए।
+- [ ] **Sansad Times victory/results:** जीत के बाद newspaper card में `SANSAD TIMES`, `MBAPU WINS WITH SABAR & SHANTI!`, round score, humorous headline text तथा `REMATCH`, `CHARACTER SELECT`, `DIWALI CARD BHEJO`, `MAZA AAYA?`, `EK CHAI PILAAO` actions हों। Rematch और Character Select navigation वास्तव में काम करे; अन्य post-game actions स्पष्ट, usable buttons हों।
+- [ ] **Generated art, credits और satire notice:** Video के अनुरूप consistent cartoon/parody fighter art और Sansar stage asset तैयार/एकीकृत हों। Selection portrait और HUD portrait सही fighter से जुड़े हों। Credits/README में generated art और retained third-party music/portrait attribution रहे। गेम में स्पष्ट Hindi/English fictional satire तथा non-affiliation notice रहे; real-world allegation/factual claim के रूप में संवाद प्रस्तुत न हों।
+- [ ] **GitHub और hosting handoff:** हर पूरा milestone `RaviYadav761/rally-rumble` के `main` branch पर commit/push हो; प्रत्येक push के बाद remote SHA verify हो। Vercel project/deployment और domain mapping निरीक्षण के बाद ही deployment status बताया जाए। `fightkaro.com` production को बदलना या repoint करना बिना पुष्टि नहीं होगा।
+
+## Delivered in earlier version — preserve unless replaced by the approved update
+
+- [x] Existing browser-native HTML/CSS/Canvas framework, 1P vs CPU combat loop, original fictional fighters, keyboard/touch controls, two prior arenas, credits and two CC BY music tracks are present in the repository.
+- [x] A prior version of this checklist exists in Git history; its reported UI checks are not evidence that the new video-matching outcomes above have been delivered.
