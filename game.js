@@ -106,8 +106,8 @@
   function finishFight(reason) {
     if (!game || game.phase !== "fight") return;
     game.phase = "result";
-    const playerWins = player.health > cpu.health;
-    const draw = Math.abs(player.health - cpu.health) < 1 && reason === "time";
+    const draw = (player.health <= 0 && cpu.health <= 0) || (Math.abs(player.health - cpu.health) < 1 && reason === "time");
+    const playerWins = !draw && player.health > cpu.health;
     game.winner = draw ? "DRAW" : playerWins ? "YOU WIN!" : "CPU WINS";
     game.message = draw ? "Nobody blinked. Run it back." : playerWins ? "That was a clean combo." : "The CPU stole the round. Try a different angle.";
     ui.resultTitle.textContent = game.winner;
@@ -532,7 +532,7 @@
   });
   document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("pointerdown", (event) => {
     event.preventDefault();
-    if (screen !== "fight" || !game || game.paused) return;
+    if (screen !== "fight" || !game || game.paused || game.intro > 0) return;
     const action = button.dataset.action;
     player.perform(action);
   }));
