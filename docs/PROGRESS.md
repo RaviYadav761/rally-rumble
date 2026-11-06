@@ -26,9 +26,10 @@
 - A deterministic browser run exercised the actual match state machine with test-only health setup: two round wins to 2–0 result, feedback/no-payment messaging, rematch, friend-mode Player 2 punch mapping and soundtrack cycling all passed. The test bridge existed only in the temporary QA response and was not added to game code.
 - `node --check game.js` and `git diff --check` pass.
 - Vercel check: the `rally-rumble` project summary reports a READY production deployment and only `*.vercel.app` domains; the live `rally-rumble-five.vercel.app` page returns HTTP 200 but its title is still `Rally Rumble — Street Fight`, not the current `Sansad Showdown` build. `fightkaro.com` is not among the domains reported for this project. The exact Git source/commit mapping was not confirmed, so no domain was changed or claimed as deployed.
+- Pushed these corrections to GitHub `main` as commit `0919b6a4f2df0c58c2f29abd05af0d925b703df7`; the remote SHA matches and the working tree is clean. Post-push, the Vercel project still reports its old READY production deployment and the public alias still serves `Street Fight`; no updated deployment appeared in the checks.
 
 ## Remaining work / acceptance gaps
 
-1. Push this QA/performance correction set to the existing GitHub `main` branch, then recheck whether the Vercel project automatically builds the same source. If its live page remains stale, investigate the existing repo-to-project mapping rather than changing `fightkaro.com` or repointing domains.
+1. Resolve the Vercel source/deployment mapping. The GitHub push did not produce a visible updated deployment. A preview deployment in the existing `rally-rumble` Vercel project would let us test this commit without changing production domains; production deployment or any domain change needs explicit approval.
 2. Run a longer, manual gameplay comparison against the entire supplied video, including the hazard, every move/effect, repeated tie-break scenarios, full local two-player match and audio playback on real browser/device combinations.
 3. Recheck final visual art/animation fidelity, keyboard/touch accessibility and performance on actual phones. This original Canvas adaptation is not claimed to be pixel-perfect or frame-for-frame identical.
