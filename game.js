@@ -11,8 +11,7 @@
   const justPressed = new Set();
   let audioContext = null;
   let soundOn = true;
-  let musicTimer = null;
-  let musicBeat = 0;
+  let musicIndex = 0;
   let lastFrame = performance.now();
   let screen = "title";
   let player = null;
@@ -23,11 +22,27 @@
   let touchStickOrigin = null;
 
   const fighterData = {
-    shanti: { name: "SHANTI SAGE", title: "THE PEACEFUL PUGILIST", color: "#f4e9d0", accent: "#e9ae40", dark: "#7b6548", skin: "#bd805f", hair: "#f4eadc", style: "sage", special: "SABAR & SHANTI" },
-    kesar: { name: "KESAR KAKA", title: "THE FESTIVAL FRONTMAN", color: "#f17834", accent: "#ffdc76", dark: "#963d2b", skin: "#a96048", hair: "#eee7d7", style: "performer", special: "CHAKRA UTSAV" }
+    modi: { id: "modi", name: "NARENDRA MODI", title: "THE JAN SABHA SHOWMAN", color: "#f3ebd9", accent: "#ef9d45", dark: "#293a54", skin: "#bc8066", hair: "#eee7dc", style: "politician", special: "CHAKRAVYUH CHARGE", portrait: "public/assets/portraits/narendra-modi.webp", faceCrop: [.15, .04, .70, .49] },
+    rahul: { id: "rahul", name: "RAHUL GANDHI", title: "THE PEOPLE'S ROADRUNNER", color: "#eee9db", accent: "#5cb6a3", dark: "#26384b", skin: "#bd8069", hair: "#d1d0c8", style: "politician", special: "JAN YATRA JAB", portrait: "public/assets/portraits/rahul-gandhi.webp", faceCrop: [.13, .04, .74, .64] },
+    akhilesh: { id: "akhilesh", name: "AKHILESH YADAV", title: "THE CYCLE RALLY ACE", color: "#f1eadb", accent: "#ee6870", dark: "#293849", skin: "#b9775a", hair: "#26201e", style: "politician", special: "CYCLE RALLY", portrait: "public/assets/portraits/akhilesh-yadav.webp", faceCrop: [.10, .05, .80, .72] },
+    shanti: { id: "shanti", name: "SHANTI SAGE", title: "THE PEACEFUL PUGILIST", color: "#f4e9d0", accent: "#e9ae40", dark: "#7b6548", skin: "#bd805f", hair: "#f4eadc", style: "sage", special: "SABAR & SHANTI" },
+    kesar: { id: "kesar", name: "KESAR KAKA", title: "THE FESTIVAL FRONTMAN", color: "#f17834", accent: "#ffdc76", dark: "#963d2b", skin: "#a96048", hair: "#eee7d7", style: "performer", special: "CHAKRA UTSAV" }
   };
 
-  const settings = { playerFighter: "shanti", cpuFighter: "kesar", stage: "assembly", difficulty: "normal" };
+  const portraitImages = {};
+  Object.values(fighterData).forEach((data) => {
+    if (!data.portrait) return;
+    const image = new Image(); image.decoding = "async"; image.src = data.portrait; portraitImages[data.id] = image;
+  });
+  const arenaImages = { assembly: new Image(), market: new Image() };
+  arenaImages.assembly.src = "public/assets/arena-sansad.webp";
+  arenaImages.market.src = "public/assets/arena-jantar.webp";
+  const musicTracks = [
+    { label: "MUSIC · MEME", name: "Circus Theme (Ragtime Version)", src: "public/assets/audio/circus-theme-ragtime-version.mp3" },
+    { label: "MUSIC · BHANGRA", name: "Bhangra Bass", src: "public/assets/audio/bhangra-bass.mp3" }
+  ];
+
+  const settings = { playerFighter: "modi", cpuFighter: "rahul", stage: "assembly", difficulty: "normal" };
   const attackData = {
     punch: { duration: 0.30, activeStart: 0.13, activeEnd: 0.23, damage: 7, range: 108, knockback: 90, meter: 9, color: "#ffdc76" },
     kick: { duration: 0.43, activeStart: 0.18, activeEnd: 0.33, damage: 11, range: 128, knockback: 155, meter: 13, color: "#ef7592" },
@@ -39,7 +54,9 @@
     title: document.getElementById("titleScreen"), select: document.getElementById("selectScreen"),
     result: document.getElementById("resultScreen"), pause: document.getElementById("pauseOverlay"),
     hud: document.getElementById("hud"), touch: document.getElementById("touchControls"),
-    sound: document.getElementById("soundToggle"), playerHealth: document.getElementById("playerHealth"),
+    sound: document.getElementById("soundToggle"), music: document.getElementById("musicTrackToggle"),
+    musicPlayer: document.getElementById("musicPlayer"), playerPortrait: document.getElementById("playerPortrait"),
+    cpuPortrait: document.getElementById("cpuPortrait"), cpuCycle: document.getElementById("cpuCycle"), playerHealth: document.getElementById("playerHealth"),
     playerEnergy: document.getElementById("playerEnergy"), cpuHealth: document.getElementById("cpuHealth"),
     cpuEnergy: document.getElementById("cpuEnergy"), playerName: document.getElementById("playerName"),
     cpuName: document.getElementById("cpuName"), timer: document.getElementById("timer"),
@@ -77,6 +94,12 @@
     ensureAudio(); startMusic(); playTone(560, 0.07, "triangle"); setScreen("select");
   }
 
+  function setHudPortrait(node, data) {
+    if (!node) return;
+    if (data.portrait) { node.src = data.portrait; node.hidden = false; }
+    else { node.removeAttribute("src"); node.hidden = true; }
+  }
+
   function announce(text, duration = 1.2, color = "#ffe17b") {
     if (!game) return;
     const callout = { text, time: duration, max: duration, color };
@@ -98,6 +121,8 @@
     };
     ui.playerName.textContent = fighterData[settings.playerFighter].name;
     ui.cpuName.textContent = fighterData[settings.cpuFighter].name;
+    setHudPortrait(ui.playerPortrait, fighterData[settings.playerFighter]);
+    setHudPortrait(ui.cpuPortrait, fighterData[settings.cpuFighter]);
     ui.announcement.classList.add("hidden");
     updateHud(); setScreen("fight"); startMusic();
     speakAnnouncement("Round ek. Taiyaar ho jao!", "hi-IN");
@@ -143,22 +168,23 @@
     const playerName = fighterData[settings.playerFighter].name;
     const cpuName = fighterData[settings.cpuFighter].name;
     game.winner = playerWon ? "YOU WIN!" : "GHEE KHATUM!";
-    game.message = playerWon ? `SABAR, ${playerName} & ONE LAST PERFECT COMBO.` : `THE NIGHT BELONGS TO ${cpuName}. RUN IT BACK?`;
+    game.message = playerWon ? `WELL FOUGHT, ${playerName}. WHAT A PERFECT COMBO.` : `THE NIGHT BELONGS TO ${cpuName}. RUN IT BACK?`;
     ui.resultTitle.textContent = game.winner;
     ui.resultSub.textContent = game.message;
     ui.paperHeadline.textContent = playerWon ? `${playerName} TAKES THE NIGHT!` : `${cpuName} STEALS THE SPOTLIGHT!`;
     ui.resultRounds.textContent = `${game.playerRounds} — ${game.cpuRounds}`;
     ui.result.classList.toggle("player-victory", playerWon);
-    speakAnnouncement(playerWon ? "You win! Bahut badhiya!" : "Ghee khatum! Kesar jeet gaye!", "hi-IN");
+    speakAnnouncement(playerWon ? "You win! Bahut badhiya!" : "Ghee khatum! CPU jeet gaya!", "hi-IN");
     playTone(playerWon ? 660 : 130, 0.28, playerWon ? "triangle" : "sawtooth");
     window.setTimeout(() => setScreen("result"), 680);
   }
 
   class Fighter {
     constructor(data, x, facing, isPlayer) {
-      this.data = data; this.name = data.name; this.title = data.title;
+      this.data = data; this.id = data.id; this.name = data.name; this.title = data.title;
       this.color = data.color; this.accent = data.accent; this.dark = data.dark;
       this.skin = data.skin; this.hair = data.hair; this.style = data.style; this.special = data.special;
+      this.portraitImage = data.portrait ? portraitImages[data.id] : null; this.faceCrop = data.faceCrop || null;
       this.x = x; this.y = GROUND; this.vx = 0; this.vy = 0; this.facing = facing;
       this.health = 100; this.energy = 20; this.isPlayer = isPlayer; this.height = 160;
       this.attack = null; this.attackTimer = 0; this.attackHit = false; this.hitstun = 0;
@@ -413,31 +439,29 @@
   }
 
   function drawBackdrop(time, stage) {
-    const grad = ctx.createLinearGradient(0, 0, 0, H);
-    if (stage === "market") { grad.addColorStop(0, "#171a3e"); grad.addColorStop(.52, "#63374e"); grad.addColorStop(1, "#21162d"); }
-    else { grad.addColorStop(0, "#080f2a"); grad.addColorStop(.55, "#1b3151"); grad.addColorStop(1, "#32213b"); }
-    ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
-    ctx.save();
-    for (let i = 0; i < 45; i += 1) {
-      const x = (i * 179 + 31) % W; const y = (i * 67 + 22) % 205;
-      ctx.globalAlpha = .22 + (Math.sin(time * 2 + i) + 1) * .22; ctx.fillStyle = i % 4 ? "#f8e5b0" : "#b2d6eb";
-      ctx.beginPath(); ctx.arc(x, y, i % 5 === 0 ? 1.6 : .9, 0, Math.PI * 2); ctx.fill();
+    const image = arenaImages[stage];
+    if (image && image.complete && image.naturalWidth > 0) ctx.drawImage(image, 0, 0, W, H);
+    else {
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      if (stage === "market") { grad.addColorStop(0, "#171a3e"); grad.addColorStop(.52, "#63374e"); grad.addColorStop(1, "#21162d"); }
+      else { grad.addColorStop(0, "#080f2a"); grad.addColorStop(.55, "#1b3151"); grad.addColorStop(1, "#32213b"); }
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H); drawArchitecture(stage);
     }
-    ctx.globalAlpha = .22; ctx.fillStyle = "#ffb657"; ctx.beginPath(); ctx.arc(792, 110, 61, 0, Math.PI * 2); ctx.fill();
-    ctx.globalAlpha = 1; ctx.fillStyle = "#f7d89c"; ctx.beginPath(); ctx.arc(792, 110, 42, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#53607a"; ctx.globalAlpha = .15; ctx.beginPath(); ctx.arc(777, 96, 42, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-    drawArchitecture(stage);
-    for (let i = 0; i < 8; i += 1) drawLantern(55 + i * 122, 78 + (i % 2) * 18, i % 3 ? "#edaa59" : "#f0c568", time, .83 + (i % 3) * .05);
-    ctx.fillStyle = "#211a2a"; ctx.fillRect(0, 395, W, 145);
-    const floorGrad = ctx.createLinearGradient(0, GROUND, 0, H); floorGrad.addColorStop(0, "#53404a"); floorGrad.addColorStop(1, "#191728");
-    ctx.fillStyle = floorGrad; ctx.fillRect(0, GROUND, W, H - GROUND);
-    ctx.strokeStyle = "#f4cf8a22"; ctx.lineWidth = 1;
-    for (let i = -9; i < 20; i += 1) { ctx.beginPath(); ctx.moveTo(W / 2, GROUND); ctx.lineTo(i * 105 + W / 2, H); ctx.stroke(); }
-    ctx.strokeStyle = "#f4cf8a55"; ctx.beginPath(); ctx.moveTo(0, GROUND + 2); ctx.lineTo(W, GROUND + 2); ctx.stroke();
-    drawRangoli(time);
-    for (let i = 0; i < 19; i += 1) drawDiya(25 + i * 51, 456 + Math.sin(i * 1.1) * 9, time, .75 + (i % 3) * .1);
-    ctx.fillStyle = "#f0c884"; ctx.globalAlpha = .78; ctx.font = "bold 10px Trebuchet MS"; ctx.textAlign = "left";
-    ctx.fillText(stage === "assembly" ? "JAN SABHA MAIDAN  /  DIWALI NIGHT" : "JANTAR PLAZA  /  LIGHTS ON, GLOVES UP", 24, 420); ctx.globalAlpha = 1;
+    const shade = ctx.createLinearGradient(0, 0, 0, H);
+    shade.addColorStop(0, "#07102235"); shade.addColorStop(.56, "#0710220b"); shade.addColorStop(1, "#06101f56");
+    ctx.fillStyle = shade; ctx.fillRect(0, 0, W, H);
+    const floorShade = ctx.createLinearGradient(0, GROUND - 10, 0, H);
+    floorShade.addColorStop(0, "#08102004"); floorShade.addColorStop(1, "#08102042");
+    ctx.fillStyle = floorShade; ctx.fillRect(0, GROUND - 10, W, H - GROUND + 10);
+    ctx.strokeStyle = "#fff0cf59"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, GROUND + 1); ctx.lineTo(W, GROUND + 1); ctx.stroke();
+    for (let i = 0; i < 16; i += 1) {
+      const x = (i * 127 + time * (i % 2 ? 8 : -5) + W) % W;
+      const y = 75 + (i * 41) % (GROUND - 105); const alpha = .18 + (Math.sin(time * 2.5 + i) + 1) * .16;
+      ctx.globalAlpha = alpha; ctx.fillStyle = i % 3 ? "#ffe6a6" : "#9de2d1"; ctx.beginPath(); ctx.arc(x, y, i % 4 === 0 ? 2 : 1.2, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1; ctx.font = "bold 10px Trebuchet MS"; ctx.textAlign = "left";
+    ctx.lineWidth = 3; ctx.strokeStyle = "#071022bb"; ctx.strokeText(stage === "assembly" ? "JAN SABHA MAIDAN  /  DIWALI NIGHT" : "JANTAR PLAZA  /  LIGHTS ON, GLOVES UP", 24, 418);
+    ctx.fillStyle = "#ffe0a1"; ctx.fillText(stage === "assembly" ? "JAN SABHA MAIDAN  /  DIWALI NIGHT" : "JANTAR PLAZA  /  LIGHTS ON, GLOVES UP", 24, 418);
   }
 
   function drawMenuCanvas(time) {
@@ -494,23 +518,29 @@
     else if (f.blocking) { handX = 43; handY = -123 + crouch; }
     limb(22, -105 + crouch, handX, handY, 13, dark); limb(handX - 3, handY, handX, handY, 10, f.skin);
     ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(handX, handY, supering ? 16 : 9, 0, Math.PI * 2); ctx.fill();
-    // Face and costume silhouette, intentionally original fantasy-performer designs.
+    // Real, attributed portrait crops give the satirical roster an immediate likeness.
     ctx.fillStyle = dark; ctx.beginPath(); ctx.arc(0, -157 + crouch, 29, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = f.skin; ctx.beginPath(); ctx.ellipse(0, -158 + crouch, 24, 26, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = f.hair;
-    if (f.style === "sage") { ctx.beginPath(); ctx.arc(0, -177 + crouch, 22, Math.PI, Math.PI * 2); ctx.fill(); }
-    else {
-      ctx.beginPath(); ctx.arc(0, -163 + crouch, 25, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = f.hair; ctx.beginPath(); ctx.moveTo(-18, -147 + crouch); ctx.quadraticCurveTo(-27, -119 + crouch, 0, -125 + crouch); ctx.quadraticCurveTo(25, -120 + crouch, 18, -147 + crouch); ctx.closePath(); ctx.fill();
-    }
-    // Headwrap / topknot accent gives each silhouette a distinct read.
-    ctx.fillStyle = accent; roundedRect(ctx, -24, -180 + crouch, 48, 9, 4); ctx.fill();
-    if (f.style === "sage") {
-      ctx.strokeStyle = "#493b31"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(-8, -157 + crouch, 7, 6, 0, 0, Math.PI * 2); ctx.ellipse(8, -157 + crouch, 7, 6, 0, 0, Math.PI * 2); ctx.moveTo(-1, -157 + crouch); ctx.lineTo(1, -157 + crouch); ctx.stroke();
-      ctx.fillStyle = "#57483e"; ctx.fillRect(-3, -150 + crouch, 6, 2);
+    if (f.portraitImage && f.portraitImage.complete && f.portraitImage.naturalWidth > 0) {
+      const [cx, cy, cw, ch] = f.faceCrop;
+      ctx.save(); ctx.beginPath(); ctx.arc(0, -157 + crouch, 24, 0, Math.PI * 2); ctx.clip();
+      ctx.drawImage(f.portraitImage, cx * f.portraitImage.naturalWidth, cy * f.portraitImage.naturalHeight, cw * f.portraitImage.naturalWidth, ch * f.portraitImage.naturalHeight, -24, -181 + crouch, 48, 48);
+      ctx.restore(); ctx.strokeStyle = accent; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(0, -157 + crouch, 24, 0, Math.PI * 2); ctx.stroke();
     } else {
-      ctx.strokeStyle = "#594036"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-14, -160 + crouch); ctx.lineTo(-5, -158 + crouch); ctx.moveTo(5, -158 + crouch); ctx.lineTo(14, -160 + crouch); ctx.stroke();
-      ctx.fillStyle = "#754d3f"; ctx.beginPath(); ctx.arc(0, -150 + crouch, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = f.skin; ctx.beginPath(); ctx.ellipse(0, -158 + crouch, 24, 26, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = f.hair;
+      if (f.style === "sage") { ctx.beginPath(); ctx.arc(0, -177 + crouch, 22, Math.PI, Math.PI * 2); ctx.fill(); }
+      else {
+        ctx.beginPath(); ctx.arc(0, -163 + crouch, 25, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = f.hair; ctx.beginPath(); ctx.moveTo(-18, -147 + crouch); ctx.quadraticCurveTo(-27, -119 + crouch, 0, -125 + crouch); ctx.quadraticCurveTo(25, -120 + crouch, 18, -147 + crouch); ctx.closePath(); ctx.fill();
+      }
+      ctx.fillStyle = accent; roundedRect(ctx, -24, -180 + crouch, 48, 9, 4); ctx.fill();
+      if (f.style === "sage") {
+        ctx.strokeStyle = "#493b31"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(-8, -157 + crouch, 7, 6, 0, 0, Math.PI * 2); ctx.ellipse(8, -157 + crouch, 7, 6, 0, 0, Math.PI * 2); ctx.moveTo(-1, -157 + crouch); ctx.lineTo(1, -157 + crouch); ctx.stroke();
+        ctx.fillStyle = "#57483e"; ctx.fillRect(-3, -150 + crouch, 6, 2);
+      } else {
+        ctx.strokeStyle = "#594036"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-14, -160 + crouch); ctx.lineTo(-5, -158 + crouch); ctx.moveTo(5, -158 + crouch); ctx.lineTo(14, -160 + crouch); ctx.stroke();
+        ctx.fillStyle = "#754d3f"; ctx.beginPath(); ctx.arc(0, -150 + crouch, 2, 0, Math.PI * 2); ctx.fill();
+      }
     }
     ctx.fillStyle = accent; ctx.font = "bold 8px Trebuchet MS"; ctx.textAlign = "center"; ctx.fillText(f.name.split(" ")[0], 0, -78 + crouch);
     if (f.blocking) { ctx.strokeStyle = "#fff1bd"; ctx.lineWidth = 4; ctx.globalAlpha = .8; ctx.beginPath(); ctx.arc(34, -95 + crouch, 37, -1.15, 1.15); ctx.stroke(); ctx.globalAlpha = 1; }
@@ -588,11 +618,32 @@
   }
   function normalizeKey(key) { return key.length === 1 ? key.toLowerCase() : key; }
 
+  function updateSelectionUI() {
+    if (settings.playerFighter === settings.cpuFighter) {
+      settings.cpuFighter = Object.keys(fighterData).find((id) => id !== settings.playerFighter);
+    }
+    document.querySelectorAll(".fighter-card").forEach((card) => {
+      const isPlayer = card.dataset.fighter === settings.playerFighter;
+      const isCpu = card.dataset.fighter === settings.cpuFighter;
+      card.classList.toggle("selected", isPlayer); card.classList.toggle("cpu-opponent", isCpu);
+      card.querySelector(".card-ribbon").textContent = isPlayer ? "1P · YOU" : isCpu ? "CPU RIVAL" : "AVAILABLE";
+    });
+    ui.cpuPreviewName.textContent = fighterData[settings.cpuFighter].name;
+  }
+
+  function cycleCpuRival() {
+    const opponents = Object.keys(fighterData).filter((id) => id !== settings.playerFighter);
+    const current = opponents.indexOf(settings.cpuFighter);
+    settings.cpuFighter = opponents[(current + 1) % opponents.length]; updateSelectionUI();
+    ensureAudio(); playTone(445, .05, "triangle");
+  }
+
   window.addEventListener("keydown", (event) => {
     const key = normalizeKey(event.key);
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(key)) event.preventDefault();
     if (key === "Escape") { togglePause(); return; }
     if (key === "m") { toggleSound(); return; }
+    if (key === "n") { cycleMusic(); return; }
     if (screen === "title" && key === "Enter") { startSelect(); return; }
     if (screen === "select" && key === "Enter") { startFight(); return; }
     if (screen === "result" && key === "Enter") { createGame(); return; }
@@ -609,12 +660,11 @@
   document.getElementById("resumeButton").addEventListener("click", togglePause);
   document.getElementById("quitButton").addEventListener("click", () => { if (game) game.phase = "quit"; setScreen("select"); });
   ui.sound.addEventListener("click", toggleSound);
+  ui.music.addEventListener("click", cycleMusic);
+  ui.cpuCycle.addEventListener("click", cycleCpuRival);
 
   document.querySelectorAll(".fighter-card").forEach((card) => card.addEventListener("click", () => {
-    document.querySelectorAll(".fighter-card").forEach((item) => item.classList.remove("selected")); card.classList.add("selected");
-    settings.playerFighter = card.dataset.fighter; settings.cpuFighter = settings.playerFighter === "shanti" ? "kesar" : "shanti";
-    ui.cpuPreviewName.textContent = fighterData[settings.cpuFighter].name;
-    document.querySelectorAll(".fighter-card").forEach((item) => { item.querySelector(".card-ribbon").textContent = item.dataset.fighter === settings.playerFighter ? "1P · YOU" : "CPU RIVAL"; });
+    settings.playerFighter = card.dataset.fighter; updateSelectionUI();
     ensureAudio(); playTone(430, 0.05, "triangle");
   }));
   document.querySelectorAll("[data-stage]").forEach((button) => button.addEventListener("click", () => {
@@ -691,21 +741,29 @@
   function playImpactSound(type) { playNoise(type === "super" ? .24 : .12, type === "super" ? .21 : .15, 120); playTone(type === "super" ? 65 : 115, type === "super" ? .24 : .07, "sawtooth", .045); }
   function playBombSound() { playNoise(.42, .26, 80); playTone(55, .36, "sawtooth", .08); window.setTimeout(() => playTone(310, .15, "triangle", .04), 55); }
   function startMusic() {
-    if (!soundOn || musicTimer) return; ensureAudio(); if (!audioContext) return;
-    const notes = [220, 261.63, 293.66, 349.23, 392, 349.23, 293.66, 261.63];
-    musicTimer = window.setInterval(() => {
-      if (!soundOn || !audioContext || audioContext.state !== "running") return;
-      const beat = musicBeat++ % 16;
-      if (beat % 4 === 0) playTone(82.4, .17, "triangle", .020);
-      if (beat % 2 === 0) playTone(notes[(beat / 2) % notes.length], .13, "sine", .017);
-      if (beat % 4 === 2) { playNoise(.045, .018, 2200); playTone(690, .028, "square", .007); }
-    }, 215);
+    if (!soundOn || !ui.musicPlayer) return;
+    const track = musicTracks[musicIndex];
+    if (ui.musicPlayer.dataset.trackIndex !== String(musicIndex)) {
+      ui.musicPlayer.pause(); ui.musicPlayer.src = track.src; ui.musicPlayer.dataset.trackIndex = String(musicIndex); ui.musicPlayer.load();
+    }
+    ui.musicPlayer.volume = .30;
+    const playback = ui.musicPlayer.play();
+    if (playback && typeof playback.catch === "function") playback.catch(() => {});
   }
-  function stopMusic() { if (musicTimer) { clearInterval(musicTimer); musicTimer = null; } }
+  function stopMusic() { if (ui.musicPlayer) ui.musicPlayer.pause(); }
+  function updateMusicButton() {
+    const track = musicTracks[musicIndex]; ui.music.textContent = track.label;
+    ui.music.setAttribute("aria-label", `Change soundtrack. Current track: ${track.name}`); ui.music.title = track.name;
+  }
+  function cycleMusic() {
+    musicIndex = (musicIndex + 1) % musicTracks.length; updateMusicButton();
+    if (soundOn) startMusic(); playTone(440, .05, "triangle");
+  }
   function toggleSound() {
-    soundOn = !soundOn; ui.sound.textContent = soundOn ? "SOUND ON" : "SOUND OFF";
+    soundOn = !soundOn; ui.sound.textContent = soundOn ? "AUDIO ON" : "AUDIO OFF";
     ui.sound.setAttribute("aria-pressed", String(soundOn));
-    if (soundOn) { ensureAudio(); startMusic(); playTone(490, .055, "triangle"); } else stopMusic();
+    if (soundOn) { ensureAudio(); startMusic(); playTone(490, .055, "triangle"); }
+    else { stopMusic(); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); }
   }
   function speakAnnouncement(text, lang) {
     if (!soundOn || !("speechSynthesis" in window)) return;
@@ -716,5 +774,5 @@
     } catch (_) { /* Browser voice packs are optional. */ }
   }
 
-  setScreen("title"); requestAnimationFrame(gameLoop);
+  updateSelectionUI(); updateMusicButton(); setScreen("title"); requestAnimationFrame(gameLoop);
 })();

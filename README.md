@@ -1,6 +1,8 @@
 # Rally Rumble
 
-Rally Rumble is an original browser-native 2D fighting game with a festive night-arena theme. Choose a fictional fighter, challenge the CPU in a best-of-three match, build your Shakti meter, and watch for the timed Sutli Bomb. The characters and vector artwork are original; the project does not include real-person likenesses or copied reference-site assets.
+Rally Rumble is a browser-native 2D festival fight game with a best-of-three player-versus-CPU match, selectable fighters and arenas, a Shakti meter, and the timed Sutli Bomb hazard. The updated roster keeps the original fictional fighters (Shanti Sage and Kesar Kaka) and adds satirical game representations of Narendra Modi, Rahul Gandhi, and Akhilesh Yadav using locally bundled, credited portrait assets. Two original generated 16:9 arenas provide the background art while Canvas continues to draw the fight, HUD, impacts, and hazards.
+
+This is a fictional satire/parody. Its combat, announcer lines, and scenarios are invented. No person, political party, photographer, source site, Government of India, or music creator endorses or is affiliated with the game. No real-person voice is cloned.
 
 ## Run locally
 
@@ -14,18 +16,27 @@ Then open `http://localhost:4173/`.
 
 ## Controls
 
-On desktop, use `A/D` or the arrow keys to move, `W` or Up to jump, `S` or Down to crouch, and hold away from the opponent to block. Press `J` to punch, `K` to kick, `I` to grab, and `L` or Space for Super when the Shakti meter is full. Press `Esc` to pause and `M` to toggle sound.
+On desktop, use `A/D` or the arrow keys to move, `W` or Up to jump, `S` or Down to crouch, and hold away from the opponent to block. Press `J` to punch, `K` to kick, `I` to grab, and `L` or Space for Super when the Shakti meter is full. Press `Esc` to pause, `M` to toggle audio, and `N` to switch between the two background tracks.
 
-On touch screens, use the virtual joystick and the four on-screen attack buttons. Landscape orientation is recommended.
+On touch screens, use the virtual joystick and the on-screen Grab, Super, Kick, and Punch buttons. Landscape orientation is recommended for the current 16:9 fighting arena.
 
-## Game flow
+## Game flow and audio
 
-The game includes fighter, arena and CPU-difficulty selection; 60-second rounds; first-to-two round scoring; a Shakti/super meter; CPU blocks and counters; a warning-and-explosion Sutli Bomb hazard; hit effects, Hindi/browser-voice fight calls and synthesized arcade audio; pause, newspaper-style match results and rematch.
+Select a player fighter, cycle the CPU rival, choose Jan Sabha Maidan or Jantar Plaza, and set CPU difficulty. Matches have 60-second rounds and first-to-two scoring. The game includes CPU blocks/counters, timed bomb warnings/explosions, Hindi/browser-voice calls, and synthesized arcade hit effects. Start music after a user gesture with the Enter Arena or soundtrack button; the top-right audio control mutes both tracks and sound effects.
 
-## Customizing fighters
+The default soundtrack is the comedic “Circus Theme (Ragtime Version)” by Alexander Nakarada • Julius Fučík. Press `N` or click the music button for “Bhangra Bass” by Punch Deck. Both are CC BY-licensed tracks bundled locally and credited in the game’s asset disclosure and [`public/assets/CREDITS.md`](public/assets/CREDITS.md).
 
-Fighter colors, style data and special-move names live in `fighterData` in `game.js`. `drawFighter()` draws the original vector characters; replace or extend that rendering function to add a later sprite sheet while keeping the `Fighter` combat state and methods intact.
+## Asset credits
 
-## License note
+The generated arena art was created for Rally Rumble. Portrait and music authors, source URLs, license links, attribution text, and the WebP/MP3 conversion notes are in [`public/assets/CREDITS.md`](public/assets/CREDITS.md). Reuse each third-party asset in accordance with its listed license.
 
-The repository does not include the supplied video's characters, logos, artwork, audio, or other proprietary assets. Its festival arena and fighters are original fictional designs.
+## Project files
+
+- `index.html` — game shell, roster, audio/credits controls, HUD, results, and touch input.
+- `styles.css` — title art, menus, HUD, responsive layout, and touch controls.
+- `game.js` — fighter state, AI, combat, Canvas rendering, stage images, input, voice calls, and audio.
+- `public/assets/` — optimized arena art, portraits, music tracks, and credits.
+
+## Deployment
+
+This repository currently has no GitHub Pages configuration. Run the local preview above or connect the repository to the hosting provider used for the desired public site; do not assume that a GitHub push automatically deploys to `fightkaro.com`.

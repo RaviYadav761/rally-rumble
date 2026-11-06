@@ -4,45 +4,58 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#080f2a" />
-    <meta name="description" content="Rally Rumble — a festive, original browser fighting game. Pick a fighter, dodge the sutli bomb and win the night." />
+    <meta name="description" content="Rally Rumble — a fictional political-satire browser fighter. Pick a character, dodge the Sutli Bomb, and win the night." />
     <title>Rally Rumble — Festival Fight Night</title>
+    <link rel="preload" as="image" href="public/assets/arena-sansad.webp" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="game-shell" aria-label="Rally Rumble browser game">
       <div class="topbar">
         <div class="brand"><span class="brand-mark">RR</span><span>RALLY RUMBLE</span></div>
-        <div class="topbar-note">FESTIVAL FIGHT NIGHT <i></i> JAN SABHA MAIDAN</div>
-        <button class="icon-button" id="soundToggle" aria-label="Toggle game sound" aria-pressed="true">SOUND ON</button>
+        <div class="topbar-note">SATIRE FIGHT NIGHT <i></i> JAN SABHA MAIDAN</div>
+        <div class="topbar-actions">
+          <button class="icon-button" id="musicTrackToggle" aria-label="Change soundtrack">MUSIC · MEME</button>
+          <button class="icon-button" id="soundToggle" aria-label="Toggle music and game sound" aria-pressed="true">AUDIO ON</button>
+        </div>
       </div>
       <section class="game-wrap" aria-label="Game arena">
-        <canvas id="gameCanvas" width="960" height="540" aria-label="Diwali night fighting arena"></canvas>
+        <canvas id="gameCanvas" width="960" height="540" aria-label="Rally Rumble fictional satire fighting arena"></canvas>
         <div id="hud" class="hud hidden" aria-live="polite">
           <div class="fighter-hud player-hud">
-            <div class="hud-name"><span id="playerName">SHANTI SAGE</span><span class="player-tag">1P</span></div>
-            <div class="meter-caption"><span>SHAKTI</span><span>VITALITY</span></div>
-            <div class="bar health-bar" aria-label="Player vitality"><span id="playerHealth"></span></div>
-            <div class="bar energy-bar" aria-label="Player Shakti meter"><span id="playerEnergy"></span></div>
-            <div id="playerRounds" class="round-pips" aria-label="Player round wins"><i></i><i></i></div>
+            <img class="hud-portrait" id="playerPortrait" alt="" />
+            <div class="hud-details">
+              <div class="hud-name"><span id="playerName">NARENDRA MODI</span><span class="player-tag">1P</span></div>
+              <div class="meter-caption"><span>SHAKTI</span><span>VITALITY</span></div>
+              <div class="bar health-bar" aria-label="Player vitality"><span id="playerHealth"></span></div>
+              <div class="bar energy-bar" aria-label="Player Shakti meter"><span id="playerEnergy"></span></div>
+              <div id="playerRounds" class="round-pips" aria-label="Player round wins"><i></i><i></i></div>
+            </div>
           </div>
           <div class="round-center"><span id="roundLabel">ROUND 1</span><strong id="timer">60</strong><small id="comboText"></small></div>
           <div class="fighter-hud cpu-hud">
-            <div class="hud-name"><span class="cpu-tag">CPU</span><span id="cpuName">KESAR KAKA</span></div>
-            <div class="meter-caption"><span>VITALITY</span><span>SHAKTI</span></div>
-            <div class="bar health-bar" aria-label="Opponent vitality"><span id="cpuHealth"></span></div>
-            <div class="bar energy-bar" aria-label="Opponent Shakti meter"><span id="cpuEnergy"></span></div>
-            <div id="cpuRounds" class="round-pips cpu-pips" aria-label="Opponent round wins"><i></i><i></i></div>
+            <img class="hud-portrait" id="cpuPortrait" alt="" />
+            <div class="hud-details">
+              <div class="hud-name"><span class="cpu-tag">CPU</span><span id="cpuName">RAHUL GANDHI</span></div>
+              <div class="meter-caption"><span>VITALITY</span><span>SHAKTI</span></div>
+              <div class="bar health-bar" aria-label="Opponent vitality"><span id="cpuHealth"></span></div>
+              <div class="bar energy-bar" aria-label="Opponent Shakti meter"><span id="cpuEnergy"></span></div>
+              <div id="cpuRounds" class="round-pips cpu-pips" aria-label="Opponent round wins"><i></i><i></i></div>
+            </div>
           </div>
         </div>
         <div id="fightAnnouncement" class="fight-announcement hidden" aria-live="assertive"></div>
         <div id="bombWarning" class="bomb-warning hidden" role="alert"><b>SUTLI BOMB</b><span>Ring se bahar bhaago!</span></div>
+
         <div id="titleScreen" class="screen title-screen">
           <div class="title-copy">
             <p class="eyebrow">JAN SABHA MAIDAN · DIWALI NIGHT</p>
             <h1>RALLY<br /><em>RUMBLE</em></h1>
-            <p class="lede">Lanterns up. Gloves on. One unforgettable night under the lights.</p>
+            <p class="lede">Lanterns up. Gloves on. One unforgettable, fictional fight night under the lights.</p>
             <button class="primary-button" id="startButton">ENTER THE ARENA <span>ENTER ↗</span></button>
             <p class="microcopy">A / D MOVE · W JUMP · J PUNCH · K KICK · I GRAB · L SUPER</p>
+            <p class="satire-note">A playful game parody. All fight scenarios and announcer lines are fictional; no person or party is affiliated with or endorsing the game.</p>
+            <details class="credits-panel"><summary>ASSET CREDITS & LICENSES</summary><p>Original generated arenas. Licensed portraits and tracks are credited in the <a href="public/assets/CREDITS.md" target="_blank" rel="noopener">full credits file</a>; no person or creator endorses this game.</p></details>
           </div>
           <div class="title-art" aria-hidden="true">
             <div class="sun-disc"></div><div class="poster-word">FIGHT!</div>
@@ -51,23 +64,39 @@
             <div class="art-lantern lantern-a"></div><div class="art-lantern lantern-b"></div>
           </div>
         </div>
+
         <div id="selectScreen" class="screen select-screen hidden">
           <div class="select-heading">
-            <div><p class="eyebrow">STEP 01 / 03 · PICK YOUR NETA</p><h2>CHOOSE YOUR FIGHTER</h2></div>
+            <div><p class="eyebrow">PICK YOUR CORNER · 1P VS CPU</p><h2>CHOOSE YOUR FIGHTER</h2></div>
+            <span class="roster-hint">SCROLL ROSTER ↓</span>
             <button class="text-button" id="backToTitle">BACK</button>
           </div>
-          <div class="select-grid">
-            <button class="fighter-card selected" data-fighter="shanti" aria-label="Choose Shanti Sage">
-              <span class="card-ribbon">1P · YOU</span><span class="card-avatar avatar-shanti" aria-hidden="true"></span>
-              <strong>SHANTI SAGE</strong><small>THE PEACEFUL PUGILIST</small>
+          <div class="select-grid" aria-label="Fighter roster">
+            <button class="fighter-card" data-fighter="modi" aria-label="Choose Narendra Modi">
+              <span class="card-ribbon">1P · YOU</span><img class="card-portrait" src="public/assets/portraits/narendra-modi.webp" alt="" /><strong>NARENDRA MODI</strong><small>THE JAN SABHA SHOWMAN</small>
+              <span class="stats" aria-label="Speed, power, spirit"><i style="width:73%"></i><i style="width:82%"></i><i style="width:84%"></i></span>
+            </button>
+            <button class="fighter-card" data-fighter="rahul" aria-label="Choose Rahul Gandhi">
+              <span class="card-ribbon">CPU RIVAL</span><img class="card-portrait" src="public/assets/portraits/rahul-gandhi.webp" alt="" /><strong>RAHUL GANDHI</strong><small>THE PEOPLE'S ROADRUNNER</small>
+              <span class="stats" aria-label="Speed, power, spirit"><i style="width:86%"></i><i style="width:72%"></i><i style="width:80%"></i></span>
+            </button>
+            <button class="fighter-card" data-fighter="akhilesh" aria-label="Choose Akhilesh Yadav">
+              <span class="card-ribbon">CPU RIVAL</span><img class="card-portrait" src="public/assets/portraits/akhilesh-yadav.webp" alt="" /><strong>AKHILESH YADAV</strong><small>THE CYCLE RALLY ACE</small>
+              <span class="stats" aria-label="Speed, power, spirit"><i style="width:84%"></i><i style="width:75%"></i><i style="width:78%"></i></span>
+            </button>
+            <button class="fighter-card" data-fighter="shanti" aria-label="Choose Shanti Sage">
+              <span class="card-ribbon">CPU RIVAL</span><span class="card-avatar avatar-shanti" aria-hidden="true"></span><strong>SHANTI SAGE</strong><small>THE PEACEFUL PUGILIST</small>
               <span class="stats" aria-label="Speed, power, spirit"><i style="width:78%"></i><i style="width:62%"></i><i style="width:88%"></i></span>
             </button>
             <button class="fighter-card" data-fighter="kesar" aria-label="Choose Kesar Kaka">
-              <span class="card-ribbon">CPU RIVAL</span><span class="card-avatar avatar-kesar" aria-hidden="true"></span>
-              <strong>KESAR KAKA</strong><small>THE FESTIVAL FRONTMAN</small>
+              <span class="card-ribbon">CPU RIVAL</span><span class="card-avatar avatar-kesar" aria-hidden="true"></span><strong>KESAR KAKA</strong><small>THE FESTIVAL FRONTMAN</small>
               <span class="stats" aria-label="Speed, power, spirit"><i style="width:70%"></i><i style="width:86%"></i><i style="width:76%"></i></span>
             </button>
-            <div class="cpu-preview"><span class="vs-stamp">VS</span><p>CPU OPPONENT</p><strong id="cpuPreviewName">KESAR KAKA</strong><small>SMART STREET AI</small></div>
+            <div class="cpu-preview">
+              <span class="vs-stamp">VS</span><p>CPU OPPONENT</p><strong id="cpuPreviewName">RAHUL GANDHI</strong>
+              <button class="cpu-cycle" id="cpuCycle" aria-label="Choose next CPU opponent">CHANGE RIVAL ↻</button>
+              <small>SMART STREET AI</small>
+            </div>
           </div>
           <div class="select-controls">
             <div class="option-row"><span>ARENA</span><button class="option active" data-stage="assembly">JAN SABHA MAIDAN</button><button class="option" data-stage="market">JANTAR PLAZA</button></div>
@@ -75,17 +104,18 @@
             <button class="primary-button compact" id="fightButton">START THE FIGHT <span>ENTER</span></button>
           </div>
         </div>
+
         <div id="resultScreen" class="screen result-screen hidden">
           <div class="newspaper">
             <p class="paper-masthead">THE RUMBLE POST <span>EXTRA · FESTIVAL EDITION</span></p>
             <div class="paper-rule"></div>
             <p class="eyebrow">THE DUST HAS SETTLED</p>
             <h2 id="resultTitle">YOU WIN!</h2>
-            <h3 id="paperHeadline">SABAR &amp; SHANTI TAKE THE NIGHT!</h3>
+            <h3 id="paperHeadline">RALLY RUMBLE TAKES THE NIGHT!</h3>
             <p class="paper-sub">ROUND SCORE <strong id="resultRounds">2 — 0</strong></p>
-            <p id="resultSub" class="result-copy">SABAR, SHANTI &amp; ONE LAST PERFECT COMBO.</p>
+            <p id="resultSub" class="result-copy">ONE LAST PERFECT COMBO.</p>
             <div class="result-actions"><button class="primary-button compact" id="rematchButton">RUN IT BACK</button><button class="secondary-button" id="selectAgainButton">CHARACTER SELECT</button></div>
-            <p class="paper-footer">LIGHTS, LAUGHTER &amp; A LITTLE FRIENDLY RUMBLE</p>
+            <p class="paper-footer">A FICTIONAL GAME · NO ENDORSEMENT IMPLIED</p>
           </div>
         </div>
         <div id="pauseOverlay" class="pause-overlay hidden">
@@ -99,8 +129,9 @@
             <button class="kick" data-action="kick">KICK</button><button class="punch" data-action="punch">PUNCH</button>
           </div>
         </div>
+        <audio id="musicPlayer" preload="none" loop></audio>
       </section>
-      <footer class="footer-note"><span>ORIGINAL FICTIONAL FIGHTERS · MADE FOR A FRIENDLY RUMBLE</span><span>ESC PAUSE · M SOUND</span></footer>
+      <footer class="footer-note"><span>FICTIONAL SATIRE · NO ENDORSEMENT OR AFFILIATION IMPLIED</span><span>ESC PAUSE · M AUDIO · N MUSIC</span></footer>
     </main>
     <script src="game.js"></script>
   </body>
