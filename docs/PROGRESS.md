@@ -27,6 +27,7 @@
 - `node --check game.js` and `git diff --check` pass.
 - Vercel check: the `rally-rumble` project summary reports a READY production deployment and only `*.vercel.app` domains; the live `rally-rumble-five.vercel.app` page returns HTTP 200 but its title is still `Rally Rumble — Street Fight`, not the current `Sansad Showdown` build. `fightkaro.com` is not among the domains reported for this project. The exact Git source/commit mapping was not confirmed, so no domain was changed or claimed as deployed.
 - Pushed these corrections to GitHub `main` as commit `0919b6a4f2df0c58c2f29abd05af0d925b703df7`; the remote SHA matches and the working tree is clean. Post-push, the Vercel project still reports its old READY production deployment and the public alias still serves `Street Fight`; no updated deployment appeared in the checks.
+- Follow-up live browser check: all four project aliases returned HTTP 200 and served the older `Original Street Fighter Prototype` UI (title `Rally Rumble — Street Fight`). Clicking its start button reaches its older fighter-select screen; that stale build reported no browser console errors or failed network requests. The current ten-fighter Sansad Showdown changes are not what Vercel is serving.
 
 ## Remaining work / acceptance gaps
 
