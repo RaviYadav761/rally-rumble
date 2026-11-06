@@ -1,6 +1,6 @@
 # Rally Rumble
 
-Rally Rumble is an original browser-native 2D fighting game prototype. It borrows the broad interaction pattern of a landscape arcade fighter from the supplied reference, but uses original names, procedural vector fighters, original copy, and original stage art.
+Rally Rumble is an original browser-native 2D fighting game with a festive night-arena theme. Choose a fictional fighter, challenge the CPU in a best-of-three match, build your Shakti meter, and watch for the timed Sutli Bomb. The characters and vector artwork are original; the project does not include real-person likenesses or copied reference-site assets.
 
 ## Run locally
 
@@ -14,14 +14,18 @@ Then open `http://localhost:4173/`.
 
 ## Controls
 
-Use `A/D` or the arrow keys to move, `W` or Up to jump, `S` or Down to crouch, and hold the direction away from the opponent to block. Use `J` for punch, `K` for kick, `I` for grab, and `L` or Space for super when the meter is full. Press `Esc` to pause and `M` to mute.
+On desktop, use `A/D` or the arrow keys to move, `W` or Up to jump, `S` or Down to crouch, and hold away from the opponent to block. Press `J` to punch, `K` to kick, `I` to grab, and `L` or Space for Super when the Shakti meter is full. Press `Esc` to pause and `M` to toggle sound.
 
-Mobile players get on-screen directional and attack buttons after starting a fight. The layout is designed for landscape play but remains usable on smaller screens.
+On touch screens, use the virtual joystick and the four on-screen attack buttons. Landscape orientation is recommended.
 
-## Replacing the placeholder character
+## Game flow
 
-The current fighters are drawn by `drawFighter()` in `game.js` so the game has no external asset dependency. A supplied sprite or PNG can be integrated in that function later, preserving the `Fighter` state and combat methods.
+The game includes fighter, arena and CPU-difficulty selection; 60-second rounds; first-to-two round scoring; a Shakti/super meter; CPU blocks and counters; a warning-and-explosion Sutli Bomb hazard; hit effects, Hindi/browser-voice fight calls and synthesized arcade audio; pause, newspaper-style match results and rematch.
+
+## Customizing fighters
+
+Fighter colors, style data and special-move names live in `fighterData` in `game.js`. `drawFighter()` draws the original vector characters; replace or extend that rendering function to add a later sprite sheet while keeping the `Fighter` combat state and methods intact.
 
 ## License note
 
-This repository intentionally does not include the reference site's characters, logos, artwork, text, or other proprietary assets.
+The repository does not include the supplied video's characters, logos, artwork, audio, or other proprietary assets. Its festival arena and fighters are original fictional designs.

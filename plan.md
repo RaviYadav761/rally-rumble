@@ -1,22 +1,20 @@
 # Rally Rumble — implementation plan
 
 ## Scope
-A browser-native, landscape-first 2D fighting game inspired by the interaction pattern of the supplied reference, without copying its characters, branding, text, artwork, or proprietary assets.
+A browser-native, landscape-first 2D arcade fighting game inspired by the supplied video's broad match flow and festive arena mood, while keeping all characters, text, code-drawn art, and audio original.
 
 ## Product decisions
-- Single-player: player versus CPU.
-- Screens: title, fighter/stage/difficulty select, fight, pause, result.
-- Controls: A/D or arrows move, W/up jump, S/down crouch, opposite direction blocks, J punch, K kick, I grab, L/Space super, Esc pause.
-- Mobile: on-screen directional and attack controls.
-- Visuals: original procedural vector fighters and a neon street-rooftop stage, designed to remain replaceable with a user-provided sprite later.
-- No server, login, multiplayer, database, or payment dependency.
+- Single-player: player versus adaptive CPU.
+- Match: first to two rounds, with a 60-second timer in each round, health/Shakti meters, round markers, hit-stun and visible combo feedback.
+- Inputs: A/D or arrows move, W/Up jump, S/Down crouch, hold away to block, J punch, K kick, I grab, L/Space super, Esc pause, M sound toggle. Touch uses an on-screen joystick and four action buttons.
+- Hazard: a timed Sutli Bomb displays a warning before exploding, with damage and knockback for fighters that remain nearby.
+- Screens: title, fighter/arena/difficulty select, fight, pause, newspaper-style match result, and replay.
+- Visuals/audio: original fictional fighters, a warm night-festival arena with civic-inspired architecture, lanterns, crowd signs, rangoli and diyas, generated via canvas/CSS/Web Audio, plus optional browser text-to-speech announcements.
+- No backend, login, multiplayer, database, payments, copied logos, or real-person likenesses.
 
 ## Project structure
-- `index.html`: accessible shell, canvas, HUD, menus, touch controls.
-- `styles.css`: responsive landscape layout, typography, HUD and menu styling.
-- `game.js`: state machine, input, fighters, CPU logic, combat, drawing, audio feedback.
+- `index.html`: accessible game shell, round HUD, selection/results screens and touch controls.
+- `styles.css`: responsive landscape-first presentation, HUD and menu styling.
+- `game.js`: game state, keyboard/touch input, CPU, combat, hazards, procedural rendering and browser audio.
 - `public/manus-routes.json`: route manifest for the single-page game.
 - `README.md`: controls, development and customization notes.
-
-## Implementation notes
-The game uses a single HTML canvas for deterministic rendering and plain JavaScript so the deployment has no build dependency. Fighter art is drawn from reusable vector functions (`drawFighter`) and can later be replaced by sprite-sheet rendering without changing combat state. The combat loop keeps state separate from rendering and uses bounded timers for attacks, hit-stun, blocking, super meter and round results.

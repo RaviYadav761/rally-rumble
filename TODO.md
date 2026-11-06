@@ -1,14 +1,15 @@
-# TODO
+# Rally Rumble — follow-up checklist
 
-## Playable browser game
-- [ ] Open in a browser as a landscape-first web game rather than a static mockup.
-- [ ] Provide title/start, fighter selection, stage selection, difficulty selection, fight, pause, result and rematch flows.
-- [ ] Support player versus CPU with movement, jump, crouch, block, punch, kick, grab, super, combo feedback, health bars, super meters and a round timer.
-- [ ] Support desktop keyboard controls and mobile touch controls.
-- [ ] Use original placeholder fighters and art, with a replaceable path for the user's later character sprite.
-- [ ] Keep the interface in clear English and avoid copying the reference site's protected characters, logo, text or assets.
+## Implemented browser game
+- [x] Landscape-first title, fighter/arena/difficulty selection, fight, pause, best-of-three round, newspaper result and rematch flows.
+- [x] Player-versus-CPU movement, jump, crouch, block, punch, kick, grab, super, combos, health/Shakti HUD and 60-second rounds.
+- [x] Desktop keyboard and mobile virtual joystick/attack controls.
+- [x] Original fictional vector fighters and a Diwali-inspired arena with civic-stage scenery, lanterns, rangoli and diyas.
+- [x] Timed Sutli Bomb warning and explosion, hit/attack effects, browser voice calls and synthesized arcade/percussion audio.
+- [x] Original artwork and copy; no reference-site assets or real-person likenesses.
 
-## Delivery
-- [ ] Run syntax and HTTP smoke checks.
-- [ ] Create and push a GitHub repository.
-- [ ] Deploy the static game to Vercel and verify the deployment response.
+## Verification and release
+- [x] Browser play-through in the local preview: title, selection, movement, punch/hit, HUD, announcements and match results; JavaScript syntax and DOM lookups passed.
+- [x] Push the verified changes to the repository's `main` branch.
+- [ ] Test the joystick/buttons on a physical Android touchscreen.
+- [x] Checked hosting: this repository has no GitHub Pages site and no linked Vercel project; no public deployment has been created.
