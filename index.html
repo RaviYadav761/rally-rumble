@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#090d1a" />
+    <meta name="description" content="Rally Rumble — an original browser fighting game." />
+    <title>Rally Rumble — Street Fight</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Rally Rumble browser game">
+      <div class="topbar">
+        <div class="brand"><span class="brand-mark">RR</span><span>RALLY RUMBLE</span></div>
+        <div class="topbar-note">ORIGINAL STREET FIGHTER PROTOTYPE</div>
+        <button class="icon-button" id="soundToggle" aria-label="Toggle sound">SOUND ON</button>
+      </div>
+
+      <section class="game-wrap">
+        <canvas id="gameCanvas" width="960" height="540" aria-label="Game arena"></canvas>
+
+        <div id="hud" class="hud hidden">
+          <div class="fighter-hud player-hud">
+            <div class="hud-name"><span id="playerName">NEON BHAI</span><span id="playerScore">1P</span></div>
+            <div class="bar health-bar"><span id="playerHealth"></span></div>
+            <div class="bar energy-bar"><span id="playerEnergy"></span></div>
+          </div>
+          <div class="round-center"><span id="roundLabel">ROUND 1</span><strong id="timer">60</strong><small id="comboText"></small></div>
+          <div class="fighter-hud cpu-hud">
+            <div class="hud-name"><span id="cpuScore">CPU</span><span id="cpuName">ROAD RANI</span></div>
+            <div class="bar health-bar"><span id="cpuHealth"></span></div>
+            <div class="bar energy-bar"><span id="cpuEnergy"></span></div>
+          </div>
+        </div>
+
+        <div id="titleScreen" class="screen title-screen">
+          <div class="title-copy">
+            <p class="eyebrow">THE STREET IS YOURS</p>
+            <h1>RALLY<br /><em>RUMBLE</em></h1>
+            <p class="lede">Punch in. Turn up. Own the rooftop.</p>
+            <button class="primary-button" id="startButton">PRESS ENTER / TAP TO START</button>
+            <p class="microcopy">A/D or arrows move · J punch · K kick · L super</p>
+          </div>
+          <div class="title-art" aria-hidden="true">
+            <div class="sun-disc"></div>
+            <div class="poster-word">FIGHT!</div>
+            <div class="hero-silhouette hero-neon"></div>
+            <div class="hero-silhouette hero-road"></div>
+            <div class="burst burst-a"></div><div class="burst burst-b"></div>
+          </div>
+        </div>
+
+        <div id="selectScreen" class="screen select-screen hidden">
+          <div class="select-heading">
+            <div><p class="eyebrow">STEP 01 / 03</p><h2>CHOOSE YOUR FIGHTER</h2></div>
+            <button class="text-button" id="backToTitle">BACK</button>
+          </div>
+          <div class="select-grid">
+            <button class="fighter-card selected" data-fighter="neon">
+              <span class="card-ribbon">1P · YOU</span><span class="card-avatar avatar-neon"></span>
+              <strong>NEON BHAI</strong><small>THE NIGHT RUNNER</small>
+              <span class="stats"><i style="width:78%"></i><i style="width:62%"></i><i style="width:88%"></i></span>
+            </button>
+            <button class="fighter-card" data-fighter="road">
+              <span class="card-ribbon">1P · YOU</span><span class="card-avatar avatar-road"></span>
+              <strong>ROAD RANI</strong><small>THE BLOCK PARTY</small>
+              <span class="stats"><i style="width:68%"></i><i style="width:84%"></i><i style="width:72%"></i></span>
+            </button>
+            <div class="cpu-preview"><span class="vs-stamp">VS</span><p>CPU OPPONENT</p><strong id="cpuPreviewName">ROAD RANI</strong><small>SMART STREET AI</small></div>
+          </div>
+          <div class="select-controls">
+            <div class="option-row"><span>STAGE</span><button class="option active" data-stage="rooftop">ROOFTOP 99</button><button class="option" data-stage="market">NIGHT MARKET</button></div>
+            <div class="option-row"><span>CPU</span><button class="option" data-difficulty="easy">EASY</button><button class="option active" data-difficulty="normal">NORMAL</button><button class="option" data-difficulty="hard">HARD</button></div>
+            <button class="primary-button compact" id="fightButton">START THE FIGHT <span>ENTER</span></button>
+          </div>
+        </div>
+
+        <div id="resultScreen" class="screen result-screen hidden">
+          <p class="eyebrow">THE DUST HAS SETTLED</p>
+          <h2 id="resultTitle">YOU WIN!</h2>
+          <p id="resultSub">That was a clean combo.</p>
+          <div class="result-actions"><button class="primary-button compact" id="rematchButton">REMATCH</button><button class="secondary-button" id="selectAgainButton">CHARACTER SELECT</button></div>
+        </div>
+
+        <div id="pauseOverlay" class="pause-overlay hidden"><p class="eyebrow">TIME OUT</p><h2>FIGHT PAUSED</h2><button class="primary-button compact" id="resumeButton">RESUME</button><button class="text-button" id="quitButton">QUIT TO SELECT</button></div>
+
+        <div id="touchControls" class="touch-controls hidden" aria-label="Touch controls">
+          <div class="touch-dpad"><button data-key="ArrowLeft">◀</button><button data-key="ArrowUp">▲</button><button data-key="ArrowDown">▼</button><button data-key="ArrowRight">▶</button></div>
+          <div class="touch-actions"><button class="punch" data-action="punch">PUNCH</button><button class="kick" data-action="kick">KICK</button><button class="grab" data-action="grab">GRAB</button><button class="super" data-action="super">SUPER</button></div>
+        </div>
+      </section>
+
+      <footer class="footer-note"><span>ORIGINAL FAN-STYLE PROTOTYPE · NO REAL PERSONS DEPICTED</span><span>ESC PAUSE · M MUTE</span></footer>
+    </main>
+    <script src="game.js"></script>
+  </body>
+</html>
