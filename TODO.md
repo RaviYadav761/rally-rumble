@@ -16,3 +16,17 @@
 
 - [x] Existing browser-native HTML/CSS/Canvas framework, 1P vs CPU combat loop, original fictional fighters, keyboard/touch controls, two prior arenas, credits and two CC BY music tracks are present in the repository.
 - [x] A prior version of this checklist exists in Git history; its reported UI checks are not evidence that the new video-matching outcomes above have been delivered.
+
+
+## User-requested refinements
+
+- [x] **लड़ाई में हाथ-पैर की साफ़, सही movement:** “properly हाथ हो पैर हो हाथ movement हो fighting का जैसे कि fighting करते हैं तो हाथ कैसे fight होता है”; desktop और mobile दोनों में character के हाथ punch/block/grab/super पर अलग से चलें, पैर walk/jump/kick/crouch पर सही pose लें, और attack में wind-up, hit तथा recovery दिखें—सिर्फ़ पूरा sprite झुकता हुआ न लगे।
+- [x] **शुरुआत में mobile landscape gate:** “गेम शुरुआत में rotate करने के लिए बोले rotate करेंगे तभी तभी मतलब ऐसा अगर rotate नहीं करेंगे तब तक गेम नहीं होगा”; touch-capable फोन पर fight portrait में आगे न बढ़े, पहले स्पष्ट rotate-phone संदेश दिखे, और landscape होते ही gate एक बार हटे। Match चलते समय वापस portrait हो तो pause हो और rotate करने पर बिना बार-बार popup के फिर चले; desktop बाधित न हो।
+- [x] **Mobile को playable game जैसा बनाना:** “ऐसा नहीं होना चाहिए कि लगे कि वेबसाइट में खेल रहे हैं”; gameplay 16:9 arena में screen के भीतर रहे, touch controls बड़े और safe-area में रहें, scrolling/website chrome का अनुभव घटाने के लिए user-triggered fullscreen उपलब्ध हो, और fullscreen API न हो तो सामान्य play बना रहे।
+- [x] **Character feel और lag सुधारना:** “character को improvement करो… हाथ movement ये सब होना चाहिए और lag का भी”; game loop foreground में स्थिर रहे, tab hidden होने पर fight/audio safely pause हो, mobile पर भारी rendering/dependency न हो, और attack effects/character motion frame-step से स्थिर चलें।
+- [x] **Original meme-style announcer/dialogue:** “memes में डाल दो… meme का जो dialogue होता है… थोड़ा इसमें आवाज़ पूरा real मतलब add करो”; sample में बीच-बीच में आने वाले superpower/announcer cue की timing और ऊर्जावान arcade feel के अनुरूप fictional Hindi/Hinglish meme one-liners और fighter super-move voice cues सुनाई दें। एक ही original generic announcer voice रखें; reference audio copy या किसी वास्तविक व्यक्ति की voice imitation नहीं। Audio पहली user interaction के बाद ही बजे और mute control लागू रहे।
+
+## Validation boundary
+
+Local Chromium smoke checks cover portrait gating, landscape entry/resume, touch buttons and desktop keyboard; `node --check`, `git diff --check` and all 11 MP3 decode checks passed.
+Physical Android/fullscreen behavior on the target device and the deployment status at the supplied Vercel URL are not claimed; see the progress log for deployment observations.

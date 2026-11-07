@@ -18,6 +18,7 @@
         <div class="topbar-note">SANSAD SHOWDOWN <i></i> DIWALI FIGHT NIGHT</div>
         <div class="topbar-actions">
           <button class="icon-button" id="musicTrackToggle" aria-label="Change soundtrack">MUSIC · TRACK</button>
+          <button class="icon-button" id="fullScreenToggle" aria-label="Enter full screen">⛶ FULLSCREEN</button>
           <button class="icon-button" id="soundToggle" aria-label="Toggle music and game sound" aria-pressed="true">AUDIO ON</button>
         </div>
       </div>
@@ -155,6 +156,16 @@
           </div>
         </div>
         <audio id="musicPlayer" preload="none" loop></audio>
+        <div id="orientationGate" class="orientation-gate hidden" role="dialog" aria-modal="true" aria-labelledby="orientationTitle" aria-live="assertive">
+          <div class="orientation-card">
+            <span class="rotate-mark" aria-hidden="true">↻</span>
+            <p class="eyebrow">LANDSCAPE MODE · GAME READY</p>
+            <h2 id="orientationTitle">ROTATE YOUR PHONE</h2>
+            <p>Turn your phone sideways to open the fight arena. The match waits here until landscape is ready.</p>
+            <button class="secondary-button" data-fullscreen>ENTER FULLSCREEN</button>
+            <small>ROTATE ONCE · THE GAME RESUMES AUTOMATICALLY</small>
+          </div>
+        </div>
         <div id="legalGate" class="legal-gate" role="dialog" aria-modal="true" aria-labelledby="legalTitle">
           <div class="legal-card"><p class="eyebrow">IMPORTANT · ZAROORI SUCHNA</p><h2 id="legalTitle">A SATIRE GAME</h2><p>This is a fictional parody made for humour and entertainment. Characters, fights and announcer lines are invented; no real person, political party, government body or organization is affiliated with or endorsing this game.</p><p lang="hi">यह केवल काल्पनिक व्यंग्य-खेल है। पात्र, मुकाबले और संवाद मनोरंजन के लिए बनाए गए हैं; किसी वास्तविक व्यक्ति, दल या संस्था का समर्थन/संबंध निहित नहीं है।</p><button class="primary-button" id="acceptNotice">I UNDERSTAND · CONTINUE</button></div>
         </div>

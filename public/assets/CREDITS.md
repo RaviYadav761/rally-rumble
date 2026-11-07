@@ -22,6 +22,10 @@ The political characters are presented as fictional, satirical game characters. 
 - `audio/circus-theme-ragtime-version.mp3` — **Circus Theme (Ragtime Version)** by Alexander Nakarada • Julius Fučík. Source/download: [Free Stock Music track page](https://www.free-stock-music.com/alexander-nakarada-circus-theme-ragtime-version.html). Attribution: “Circus Theme (Ragtime Version) by Alexander Nakarada • Julius Fučík | https://creatorchords.com — Royalty Free Music by https://www.free-stock-music.com.” License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Re-encoded from 320 kbps to 128 kbps for browser delivery.
 - `audio/bhangra-bass.mp3` — **Bhangra Bass** by Punch Deck. Source/download: [Free Stock Music track page](https://www.free-stock-music.com/punch-deck-bhangra-bass.html). Attribution: “Bhangra Bass by Punch Deck | https://soundcloud.com/punch-deck — Royalty Free Music by https://www.free-stock-music.com.” License: [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/deed.en_US). Re-encoded from 320 kbps to 128 kbps for browser delivery.
 
+## Original announcer voice lines
+
+- `audio/announcer/*.mp3` — short original Hindi in-game announcements, fictional super-move calls, meme-style one-liners, result cues and the Sutli Bomb warning, generated for Rally Rumble in November 2026 using one generic Hindi commercial-announcer voice (`hi-in-commercial-2`). No identifiable real person's voice is imitated, and no voice/audio was extracted from the user-supplied reference video.
+
 ## Reference and scope
 
 The user supplied a 168.3-second gameplay clip and named [fightkaro.com](https://fightkaro.com/) as references; both were inspected for visual direction. The update is an original implementation inside the separate Rally Rumble repository, not the public game's bundled code. A pixel-perfect frame-by-frame match has not yet been verified.

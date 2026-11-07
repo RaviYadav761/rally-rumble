@@ -6,6 +6,16 @@
 
 `fightkaro.com` पर अभी `Sansad Showdown — Political Satire Fighter` शीर्षक का WebGL/Canvas पेज, “Loading neta assets…” state, audio control और Hindi/English satire notice दिखता है। कानूनी notice को स्वीकार किए बिना gameplay स्क्रीन तक navigation नहीं की गई। इसलिए gameplay के विस्तृत व्यवहार का प्राथमिक reference उपयोगकर्ता का वीडियो है; वेबसाइट का URL शीर्षक/brand context और legal notice के लिए है।
 
+इस संशोधन का user-provided current deployment URL `https://rally-rumble-i8od.vercel.app/` है। GitHub source update और Vercel पर उस specific URL का deployment mapping अलग से verify होगा; repository push को live publish होने का प्रमाण नहीं माना जाएगा।
+
+## इस सुधार अनुरोध का कार्यक्षेत्र
+
+- वर्तमान लड़ाई में full-body fighter art स्थिर है, इसलिए fight render में अलग animated head/torso/arm/leg parts वाला Canvas rig बनेगा। Idle breathing, directional footwork, jump/crouch/block, punch wind-up → impact → follow-through, kick chamber → extension → recovery, grab और hit-recoil की अलग timing होगी; selection cards और HUD में मौजूदा artwork सुरक्षित रहेगा।
+- Touch-capable मोबाइल पर match portrait orientation में शुरू नहीं होगा। Match screen पर rotate 안내 दिखेगा; landscape होते ही केवल एक बार gate बंद होकर लड़ाई सामान्य रूप से शुरू होगी। लड़ते समय portrait में लौटने पर match pause होकर यही gate दिखाएगा; हर frame या बार-बार popup नहीं आएगा। Desktop और keyboard play पर orientation gate नहीं लगेगा।
+- मोबाइल को browser page जैसा कम महसूस कराने के लिए user gesture के बाद optional Full Screen control और canvas-preserving 16:9 fight layout होगा; fullscreen/orientation API अनुपलब्ध हो तो सामान्य browser play चलता रहेगा।
+- Sample की timing से प्रेरित short fictional meme/callout lines और signature-super voice cues शामिल होंगे। एक consistent generic Hindi arcade-announcer voice और synthesized fight SFX उपयोग होंगे; sample की असली आवाज़, किसी पहचाने जाने वाले व्यक्ति की imitation, या unlicensed video audio को bundle नहीं किया जाएगा।
+- Lag घटाने के लिए visible-tab frame updates, fixed animation delta cap, सीमित transient particles, gesture-gated audio और existing lightweight Canvas pipeline ही रखे जाएँगे; नया heavy engine/backend नहीं जोड़ा जाएगा।
+
 ## आवश्यक gameplay और सामग्री
 
 - शुरुआत में “SELECT YOUR NETA” स्क्रीन, fighter portrait/cards, VS प्रस्तुति और CPU rival चयन हो। मुख्य video roster में Tariff Taau, Yatra Boy, Mbapu, Mitraman, Deedee, Toka Man और Sutti Babu शामिल हों; मौजूदा Shanti Sage और Kesar Kaka भी roster में बने रहें। नाम parody-style हों और स्पष्ट fictional satire notice रहे।
@@ -18,7 +28,7 @@
 
 ## कार्यान्वयन का तरीका
 
-मौजूदा `game.js` में fighter state/CPU/combat loop को आधार बनाकर roster data, round flow, attacks, stage hazards और Canvas render layers बढ़ेंगे। `index.html` में selection/options/HUD/results को reference के labels के अनुरूप रखा जाएगा। `styles.css` में 16:9 arena, compact HUD, neon/gold accents, scrolling roster और touch-safe controls होंगे। Character art को consistent transparent 2D game sprites के रूप में बनाया जाएगा; stage artwork अलग 16:9 layer रहेगा, जबकि HUD, foreground, lights, particles और hazards Canvas/CSS से render होंगे। Portraits को selection cards और HUD दोनों में reuse किया जाएगा। Existing music files/credits को सुरक्षित रखा जाएगा; नए generated assets को `public/assets/` में अलग folders में रखा और credits में दर्ज किया जाएगा।
+मौजूदा `game.js` के fighter state/CPU/combat loop के साथ fight rendering 2D articulated Canvas rig से होगी: generated character art से head/identity crop होगा, जबकि arms/hands, legs/feet, torso sway, guard, recovery, hit-recoil और signature attack poses independently animate होंगे। `index.html` में selection/options/HUD/results के साथ orientation/fullscreen layer है; `styles.css` में 16:9 arena, compact HUD, touch safe-area और landscape prompt होंगे। Existing stages, cards, music aur credits सुरक्षित रहेंगे; नई original announcer MP3s `public/assets/audio/announcer/` में हैं और CREDITS में सूचीबद्ध हैं।
 
 ## Design दिशा
 
@@ -34,7 +44,7 @@
 
 **Interaction philosophy:** हर action को छोटा, स्पष्ट feedback; selection पर तुरंत fighter/rival पहचान; mobile controls बड़े और screen safe-areas से दूर।
 
-**Animation:** idle breathing/bob, run, jump, punch, kick, grab, hitstun, knockdown और victory pose के अलग sprite states; special moves में anticipation → active effect → impact → recovery timing; reduced-motion preference का सम्मान।
+**Animation:** idle breathing/bob और opposition footwork; hip/knee/ankle leg articulation; shoulder/elbow/wrist/fist arm articulation; jump, punch, kick, grab, block और hitstun के anticipation → active effect → impact → recovery poses; reduced-motion preference का सम्मान।
 
 **Typography system:** bold condensed system face for HUD/announcer; newspaper result में serif masthead; Hindi/Hinglish labels को छोटे HUD आकार पर भी पढ़ने योग्य रखा जाए।
 
@@ -50,9 +60,9 @@
 - `styles.css`: responsive shell, fighter-select cards, HUD, mobile safe-area और reduced-motion presentation।
 - `game.js`: existing Canvas fighter/AI/input/audio loop, round state machine, attacks, hazards, stage and sprite rendering।
 - `public/assets/portraits/`: वर्तमान licensed portrait assets।
-- `public/assets/fighters/`: नई generated fighter sprite/pose sheets, roster icons और related transparent art।
+- `public/assets/fighters/`: roster cards और battle-face crops के लिए generated fictional fighter identity art।
 - `public/assets/stages/`: Sansar का नया generated background; पुराने arena images root assets में फिलहाल सुरक्षित रहेंगे।
-- `public/assets/audio/` और `public/assets/CREDITS.md`: मौजूदा licensed music, synthesized effects की जानकारी और नए asset credits।
+- `public/assets/audio/` और `public/assets/CREDITS.md`: मौजूदा licensed music, generated Hindi announcer MP3 clips, synthesized effects की जानकारी और नए asset credits।
 - `docs/REFERENCE_SPEC.md`: video frame/timeline observations और live page audit।
 - `README.md`, `TODO.md`, `plan.md`: उपयोग, acceptance clauses, प्रगति और architecture के दस्तावेज़।
 

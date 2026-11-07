@@ -21,6 +21,7 @@
   let touchAttack = null;
   let touchStickPointer = null;
   let touchStickOrigin = null;
+  let orientationChangeFrame = 0;
 
   const fighterData = {
     tariff: { id: "tariff", name: "TARIFF TAAU", title: "THE DEALMAKER", color: "#f1e9d9", accent: "#f4c66c", dark: "#263247", skin: "#c58d72", hair: "#e7b956", style: "politician", special: "TARIFF TORNADO", sprite: "public/assets/fighters/tariff-taau.webp", portrait: "public/assets/fighters/tariff-taau.webp" },
@@ -49,6 +50,11 @@
     { label: "MUSIC · RAGTIME", name: "Circus Theme (Ragtime Version)", src: "public/assets/audio/circus-theme-ragtime-version.mp3" },
     { label: "MUSIC · BHANGRA", name: "Bhangra Bass", src: "public/assets/audio/bhangra-bass.mp3" }
   ];
+  const announcerClipIds = ["round-one", "round-two", "final-round", "mitra-chakra", "manch-chhodo", "super-move", "meme-combo", "meme-block", "win", "loss", "sutli-bomb"];
+  const announcerClips = Object.fromEntries(announcerClipIds.map((id) => {
+    const audio = new Audio(`public/assets/audio/announcer/${id}.mp3`); audio.preload = "none"; audio.volume = 0.92;
+    return [id, audio];
+  }));
 
   const settings = { playerFighter: "tariff", cpuFighter: "yatra", stage: "sansar", difficulty: "normal", mode: "cpu" };
   const attackData = {
@@ -62,6 +68,7 @@
     title: document.getElementById("titleScreen"), select: document.getElementById("selectScreen"),
     result: document.getElementById("resultScreen"), pause: document.getElementById("pauseOverlay"),
     legalGate: document.getElementById("legalGate"), acceptNotice: document.getElementById("acceptNotice"),
+    orientationGate: document.getElementById("orientationGate"), fullScreen: document.getElementById("fullScreenToggle"),
     hud: document.getElementById("hud"), touch: document.getElementById("touchControls"),
     sound: document.getElementById("soundToggle"), music: document.getElementById("musicTrackToggle"),
     musicPlayer: document.getElementById("musicPlayer"), playerPortrait: document.getElementById("playerPortrait"),
@@ -93,16 +100,77 @@
     screen = next;
     [ui.title, ui.select, ui.result].forEach((node) => node.classList.add("hidden"));
     ui.pause.classList.add("hidden");
+    if (next !== "fight") ui.orientationGate.classList.add("hidden");
     if (next !== "fight") ui.announcement.classList.add("hidden");
     ui.hud.classList.toggle("hidden", next !== "fight");
-    ui.touch.classList.toggle("hidden", next !== "fight" || settings.mode === "friend");
+    ui.touch.classList.toggle("hidden", next !== "fight" || settings.mode === "friend" || game && (game.paused || game.phase === "orientation"));
     if (next === "title") ui.title.classList.remove("hidden");
     if (next === "select") ui.select.classList.remove("hidden");
     if (next === "result") ui.result.classList.remove("hidden");
+    syncOrientationGate();
+  }
+
+  function isTouchPhone() {
+    const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+    return !!coarse || (navigator.maxTouchPoints > 0 && Math.min(window.innerWidth, window.innerHeight) <= 1024);
+  }
+  function isPortrait() {
+    const mediaPortrait = window.matchMedia && window.matchMedia("(orientation: portrait)").matches;
+    return !!mediaPortrait || window.innerHeight >= window.innerWidth;
+  }
+  function playRoundVoice(round) {
+    if (!game) return;
+    game.roundAnnounced = true;
+    const id = round >= 3 ? "final-round" : round === 2 ? "round-two" : "round-one";
+    const text = round >= 3 ? "Final round. Ab asli dhamal! Fight!" : round === 2 ? "Round two. Naya round, naya hungama!" : "Round one. Taiyaar ho? Fight!";
+    playVoice(id, text, "hi-IN");
+  }
+  function syncOrientationGate() {
+    const activeScreen = screen === "title" || screen === "select" || screen === "fight";
+    const gateNeeded = activeScreen && ui.legalGate.classList.contains("hidden") && isTouchPhone() && isPortrait();
+    if (gateNeeded) {
+      if (screen === "fight" && game && game.phase !== "orientation") {
+        game.orientationReturnPhase = game.phase; game.orientationWasPaused = game.paused;
+        game.phase = "orientation"; game.paused = true; keys.clear(); touchAttack = null; stopMusic(); stopAnnouncerClips();
+      }
+      ui.orientationGate.classList.remove("hidden"); ui.touch.classList.add("hidden");
+      return;
+    }
+    if (game && game.phase === "orientation") {
+      game.phase = game.orientationReturnPhase || "fight";
+      game.paused = !!game.orientationWasPaused;
+      const resumeFight = !game.paused && game.phase !== "result" && game.phase !== "quit";
+      if (resumeFight) {
+        startMusic();
+        if (!game.roundAnnounced) { game.intro = 2.1; playRoundVoice(game.round); }
+      } else stopMusic();
+      ui.pause.classList.toggle("hidden", !game.paused);
+    }
+    ui.orientationGate.classList.add("hidden");
+    ui.touch.classList.toggle("hidden", screen !== "fight" || settings.mode === "friend" || !!(game && game.paused));
+    if (screen === "title" && document.activeElement === ui.orientationGate) document.getElementById("startButton").focus();
+  }
+  function updateFullscreenButton() {
+    const active = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (!ui.fullScreen) return;
+    ui.fullScreen.textContent = active ? "⛶ EXIT FULL" : "⛶ FULLSCREEN";
+    ui.fullScreen.setAttribute("aria-label", active ? "Exit full screen" : "Enter full screen");
+  }
+  async function toggleFullscreen() {
+    try {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) await document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      } else {
+        const shell = document.querySelector(".game-shell");
+        if (shell.requestFullscreen) await shell.requestFullscreen({ navigationUI: "hide" });
+        else if (shell.webkitRequestFullscreen) shell.webkitRequestFullscreen();
+      }
+    } catch (_) { /* Fullscreen is optional; the standard page layout remains playable. */ }
+    updateFullscreenButton();
   }
 
   function startSelect() {
-    ensureAudio(); startMusic(); playTone(560, 0.07, "triangle"); updateSelectionUI(); setScreen("select");
+    ensureAudio(); primeAnnouncerClips(); startMusic(); playTone(560, 0.07, "triangle"); updateSelectionUI(); setScreen("select"); syncOrientationGate();
   }
 
   function setHudPortrait(node, data) {
@@ -127,9 +195,9 @@
     cpu = new Fighter(fighterData[settings.cpuFighter], 702, -1, settings.mode === "friend");
     game = {
       matchId,
-      time: 60, intro: 2.1, paused: false, phase: "fight", effects: [], shake: 0,
+      time: 60, intro: 2.1, paused: false, phase: "fight", effects: [], shake: 0, roundAnnounced: false, orientationReturnPhase: null, orientationWasPaused: false,
       round: 1, playerRounds: 0, cpuRounds: 0, breakTimer: 0, nextRound: false,
-      winner: null, message: "", bomb: null, bombClock: 10, callout: null, elapsed: 0,
+      winner: null, message: "", bomb: null, bombClock: 10, callout: null, elapsed: 0, lastVoiceAt: -Infinity,
       lastWinner: null
     };
     ui.playerName.textContent = fighterData[settings.playerFighter].name;
@@ -139,10 +207,8 @@
     setHudPortrait(ui.playerPortrait, fighterData[settings.playerFighter]);
     setHudPortrait(ui.cpuPortrait, fighterData[settings.cpuFighter]);
     ui.announcement.classList.add("hidden");
-    updateHud(); setScreen("fight"); startMusic();
-    speakAnnouncement("Round one. Get ready!", "en-US");
-    playTone(260, 0.11, "triangle");
-    window.setTimeout(() => { if (game && game.matchId === matchId && game.phase === "fight" && game.round === 1) speakAnnouncement("Fight!", "en-US"); }, 1050);
+    updateHud(); setScreen("fight"); startMusic(); syncOrientationGate();
+    if (game.phase !== "orientation") { playRoundVoice(1); playTone(260, 0.11, "triangle"); }
   }
 
   function startFight() { ensureAudio(); createGame(); }
@@ -151,7 +217,7 @@
     game.phase = "fight"; game.time = 60; game.intro = 1.9; game.bomb = null;
     game.bombClock = 12 + Math.random() * 5; game.effects.length = 0; game.shake = 0;
     player.reset(258, 1); cpu.reset(702, -1); updateHud();
-    speakAnnouncement(game.round >= 3 ? "Final round. Fight!" : `Round ${game.round}. Fight!`, "en-US");
+    playRoundVoice(game.round);
     announce(game.round >= 3 ? "FINAL ROUND" : `ROUND ${game.round}`, 1.3);
   }
 
@@ -191,7 +257,7 @@
     ui.resultRounds.textContent = `${game.playerRounds} — ${game.cpuRounds}`;
     ui.postActionMessage.textContent = "";
     ui.result.classList.toggle("player-victory", playerWon);
-    speakAnnouncement(playerWon ? "You win! Bahut badhiya!" : `Ghee khatam! ${settings.mode === "friend" ? "Player two" : "CPU"} jeet gaya!`, "hi-IN");
+    playVoice(playerWon ? "win" : "loss", playerWon ? "You win! Bahut badhiya!" : "Aaj nahi. Agli baazi tumhari!", "hi-IN");
     playTone(playerWon ? 660 : 130, 0.28, playerWon ? "triangle" : "sawtooth");
     const matchId = game.matchId;
     window.setTimeout(() => { if (game && game.matchId === matchId && game.phase === "result") setScreen("result"); }, 680);
@@ -227,7 +293,9 @@
           : attackData[type];
       this.attackTimer = this.currentAttackSpec.duration; this.attackHit = false; this.blocking = false;
       if (type === "super") {
-        this.energy = 0; announce(this.special, 1.05, this.accent); speakAnnouncement(this.special.replace(/\s+/g, " "), "en-US");
+        this.energy = 0; announce(this.special, 1.05, this.accent);
+        const voiceId = this.id === "mitraman" ? "mitra-chakra" : this.id === "mbapu" ? "manch-chhodo" : "super-move";
+        playVoice(voiceId, this.special.replace(/\s+/g, " "), "hi-IN"); game.lastVoiceAt = game.elapsed;
         if (this.id === "mitraman") this.vy = -255;
       }
       playActionSound(type); return true;
@@ -247,7 +315,10 @@
         game.shake = attackType === "super" ? 17 : 6;
         spawnImpact(this.x, this.y - 94, attackData[attackType].color, attackType === "super" ? 1.55 : 1);
         playImpactSound(attackType);
-      } else { spawnImpact(this.x, this.y - 95, "#eaf0f3", 0.55); playTone(245, 0.045, "square"); }
+      } else {
+        spawnImpact(this.x, this.y - 95, "#eaf0f3", 0.55); playTone(245, 0.045, "square");
+        if (attacker && attacker.isPlayer && game.elapsed - game.lastVoiceAt > 4.5) { playVoice("meme-block", "Bhashan baad mein, block pehle!", "hi-IN"); game.lastVoiceAt = game.elapsed; }
+      }
       if (attacker.isPlayer) { attacker.comboCount = attacker.comboTimer > 0 ? attacker.comboCount + 1 : 1; attacker.comboTimer = 1.05; }
     }
     update(dt, input, enemy) {
@@ -269,7 +340,10 @@
               enemy.vy = -365; enemy.vx = this.facing * 390; enemy.specialSpin = .72;
               game.effects.push({ type: "slam-ring", x: enemy.x, y: GROUND - 8, life: .72, max: .72, color: "#f6d36d", spin: 0 });
             }
-            if (this.isPlayer && this.comboCount >= 2) announce(`${this.comboCount} HIT COMBO!`, 0.8, "#fff1bb");
+            if (this.isPlayer && this.comboCount === 2) {
+              announce("2 HIT COMBO!", 0.8, "#fff1bb");
+              if (game.elapsed - game.lastVoiceAt > 3.5) { playVoice("meme-combo", "Ek aur punch, ek aur promise!", "hi-IN"); game.lastVoiceAt = game.elapsed; }
+            }
           }
           if (this.attack === "super") {
             if (this.id === "mitraman") {
@@ -362,7 +436,7 @@
     x = clamp(x, 130, W - 130);
     game.bomb = { x, y: GROUND - 260, timer: 2.55, phase: "fall", fuse: 0, radius: 110 };
     announce("SUTLI BOMB! RING SE BAHAR BHAGO!", 2.4, "#ff9862");
-    speakAnnouncement("Sutli bomb! Ring se bahar bhaago!", "hi-IN");
+    playVoice("sutli-bomb", "Sutli bomb! Ring se bahar bhaago!", "hi-IN");
     playTone(760, 0.08, "square");
   }
 
@@ -389,7 +463,7 @@
   }
 
   function updateFight(dt) {
-    if (!game || game.phase === "result" || game.paused) return;
+    if (!game || game.phase === "result" || game.phase === "orientation" || game.paused) return;
     game.elapsed += dt;
     if (game.phase === "round-end") {
       game.breakTimer -= dt; updateEffects(dt);
@@ -545,7 +619,7 @@
     ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
   }
 
-  function drawFighter(f, time) {
+  function drawFighterLegacy(f, time) {
     const crouch = f.crouching ? 20 : 0;
     const walking = f.grounded && Math.abs(f.vx) > 45 && !f.attack;
     const bob = f.grounded && !f.attack ? Math.sin(f.anim) * (walking ? 4 : 2.1) : 0;
@@ -626,6 +700,111 @@
     ctx.restore();
   }
 
+  function rigLine(x1, y1, x2, y2, width, color, outline) {
+    limb(x1, y1, x2, y2, width + 4, outline); limb(x1, y1, x2, y2, width, color);
+  }
+  function rigJoint(x, y, radius, color, outline) {
+    ctx.fillStyle = outline; ctx.beginPath(); ctx.arc(x, y, radius + 2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+  }
+  function easing(t) { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); }
+  function strikeExtension(f) {
+    if (!f.attack) return 0;
+    const spec = f.currentAttackSpec || attackData[f.attack], p = clamp(1 - f.attackTimer / spec.duration, 0, 1);
+    if (p < .16) return -.16 * (1 - p / .16);
+    if (p < .45) return easing((p - .16) / .29);
+    if (p < .62) return 1;
+    return 1 - easing((p - .62) / .28);
+  }
+  function drawFighter(f, time) {
+    const crouch = f.crouching ? 17 : 0, walking = f.grounded && Math.abs(f.vx) > 45 && !f.attack;
+    const stride = walking ? Math.sin(f.step) * 13 : 0, bob = f.grounded && !f.attack ? Math.sin(f.anim) * (walking ? 3.5 : 2) : 0;
+    const flash = f.hurtFlash > 0 && Math.floor(f.hurtFlash * 25) % 2 === 0;
+    const body = flash ? "#fff" : f.color, dark = flash ? "#fff" : f.dark, accent = flash ? "#fff" : f.accent;
+    const extension = strikeExtension(f), punch = f.attack === "punch", kick = f.attack === "kick", supering = f.attack === "super";
+    const airborne = !f.grounded, tuck = airborne ? clamp(Math.abs(f.vy) / 710, 0, 1) * 10 : 0;
+    const hitPose = f.hitstun > 0, hipY = -59, shoulderY = -110 + crouch;
+    const tilt = hitPose ? -.19 : punch ? .08 + Math.max(0, extension) * .11 : kick ? -.10 : f.attack === "grab" ? .07 : 0;
+    const lift = supering && f.id === "mitraman" ? 18 + Math.sin(time * 15) * 6 : 0;
+    const spin = f.specialSpin > 0 ? Math.sin(f.specialSpinAngle) * .62 : 0;
+
+    ctx.save(); ctx.globalAlpha = .3; ctx.fillStyle = "#080a16"; ctx.beginPath(); ctx.ellipse(f.x, GROUND + 7, f.crouching ? 42 : 34, 9, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.translate(f.x, f.y + bob - lift); ctx.scale(f.facing, 1); ctx.rotate(tilt + spin);
+
+    // Rear leg and the active leg have separate hip, knee, ankle and foot joints.
+    let kneeBack = [-18 - stride * .65, -30 - tuck + (f.crouching ? 7 : 0)], ankleBack = [-28 - stride, -5 - tuck * .45];
+    let kneeFront = [18 + stride * .65, -30 - tuck + (f.crouching ? 7 : 0)], ankleFront = [28 + stride, -5 - tuck * .45];
+    if (airborne && !kick) { kneeFront = [22 + stride * .35, -34 - tuck]; ankleFront = [34 + stride * .45, -8 - tuck * .55]; }
+    if (kick) { const drive = Math.max(0, extension); kneeFront = [18 + drive * 34, -43 - drive * 8]; ankleFront = [29 + drive * 74, -7 - drive * 39]; }
+    rigLine(-12, hipY, kneeBack[0], kneeBack[1], 16, dark, "#111622"); rigJoint(kneeBack[0], kneeBack[1], 8, body, "#111622");
+    rigLine(kneeBack[0], kneeBack[1], ankleBack[0], ankleBack[1], 12, body, dark);
+    ctx.fillStyle = accent; roundedRect(ctx, ankleBack[0] - 13, ankleBack[1] - 1, 26, 10, 4); ctx.fill();
+    rigLine(12, hipY, kneeFront[0], kneeFront[1], 17, body, dark); rigJoint(kneeFront[0], kneeFront[1], 8, body, "#171b27");
+    rigLine(kneeFront[0], kneeFront[1], ankleFront[0], ankleFront[1], 13, body, dark);
+    ctx.fillStyle = accent; roundedRect(ctx, ankleFront[0] - 2, ankleFront[1] - 5, 28, 11, 5);
+    ctx.fillStyle = accent; ctx.fill(); ctx.globalAlpha = .6; ctx.fillStyle = "#fff0d2"; ctx.fillRect(ankleFront[0] + 9, ankleFront[1] - 3, 7, 3); ctx.globalAlpha = 1;
+
+    // Guard arm swings opposite the feet and snaps up on block or hit recoil.
+    let rearElbow = [-37 - stride * .35, -88 + crouch], rearHand = [-44 - stride * .55, -68 + crouch];
+    if (f.blocking) { rearElbow = [-28, -126 + crouch]; rearHand = [-8, -140 + crouch]; }
+    if (hitPose) { rearElbow = [-44, -124 + crouch]; rearHand = [-56, -145 + crouch]; }
+    rigLine(-22, shoulderY + 3, rearElbow[0], rearElbow[1], 14, dark, "#151925"); rigJoint(rearElbow[0], rearElbow[1], 7, body, dark);
+    rigLine(rearElbow[0], rearElbow[1], rearHand[0], rearHand[1], 11, body, dark);
+
+    // Torso keeps the fighter's color and festival sash while staying independent from the limbs.
+    ctx.fillStyle = "#111622"; roundedRect(ctx, -34, -136 + crouch, 68, 86, 21); ctx.fill();
+    ctx.fillStyle = body; roundedRect(ctx, -29, -132 + crouch, 58, 78, 18); ctx.fill();
+    if (f.style === "sage") {
+      ctx.fillStyle = "#fff9e8"; ctx.beginPath(); ctx.moveTo(-27, -57 + crouch); ctx.lineTo(-18, -78 + crouch); ctx.lineTo(0, -67 + crouch); ctx.lineTo(18, -78 + crouch); ctx.lineTo(28, -57 + crouch); ctx.lineTo(20, -49); ctx.lineTo(0, -57); ctx.lineTo(-20, -49); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = "#d8bc88"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-6, -122 + crouch); ctx.lineTo(16, -76 + crouch); ctx.stroke();
+    } else {
+      ctx.fillStyle = "#f2e6d0"; ctx.fillRect(-24, -60 + crouch, 48, 8); ctx.fillStyle = accent;
+      ctx.beginPath(); ctx.moveTo(-20, -123 + crouch); ctx.lineTo(-7, -90 + crouch); ctx.lineTo(-21, -68 + crouch); ctx.lineTo(-27, -74 + crouch); ctx.lineTo(-15, -91 + crouch); ctx.lineTo(-27, -118 + crouch); ctx.fill();
+      ctx.fillStyle = "#edc66f"; roundedRect(ctx, -8, -105 + crouch, 16, 8, 3); ctx.fill();
+    }
+    ctx.fillStyle = accent; roundedRect(ctx, -27, -118 + crouch, 54, 12, 4); ctx.fill();
+    ctx.fillStyle = f.skin; roundedRect(ctx, -7, -151 + crouch, 14, 18, 5); ctx.fill();
+
+    // Use the existing character art only as a face crop; the combat body is live-animated.
+    ctx.fillStyle = dark; ctx.beginPath(); ctx.ellipse(0, -164 + crouch, 28, 31, 0, 0, Math.PI * 2); ctx.fill();
+    const faceImage = f.sprite && f.sprite.complete && f.sprite.naturalWidth > 0 ? f.sprite : f.portraitImage && f.portraitImage.complete && f.portraitImage.naturalWidth > 0 ? f.portraitImage : null;
+    if (faceImage) {
+      ctx.save(); ctx.beginPath(); ctx.ellipse(0, -164 + crouch, 25, 28, 0, 0, Math.PI * 2); ctx.clip();
+      if (faceImage === f.sprite) {
+        const sw = faceImage.naturalWidth * .40, sh = faceImage.naturalHeight * .24;
+        ctx.drawImage(faceImage, (faceImage.naturalWidth - sw) / 2, faceImage.naturalHeight * .045, sw, sh, -25, -192 + crouch, 50, 56);
+      } else {
+        const [cx, cy, cw, ch] = f.faceCrop || [.1, .05, .8, .72];
+        ctx.drawImage(faceImage, cx * faceImage.naturalWidth, cy * faceImage.naturalHeight, cw * faceImage.naturalWidth, ch * faceImage.naturalHeight, -25, -192 + crouch, 50, 56);
+      }
+      ctx.restore(); ctx.strokeStyle = accent; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(0, -164 + crouch, 25, 28, 0, 0, Math.PI * 2); ctx.stroke();
+    } else {
+      ctx.fillStyle = f.skin; ctx.beginPath(); ctx.ellipse(0, -164 + crouch, 23, 26, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = f.hair; ctx.beginPath(); ctx.arc(0, -182 + crouch, 22, Math.PI, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = dark; ctx.fillRect(-12, -167 + crouch, 7, 2); ctx.fillRect(5, -167 + crouch, 7, 2);
+    }
+    if (supering) {
+      ctx.save(); ctx.globalAlpha = .28 + Math.sin(time * 16) * .08; ctx.strokeStyle = accent; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(0, -108 + crouch, 67 + Math.sin(time * 15) * 6, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    }
+
+    // Lead arm winds back, extends through the strike, then recoils to guard.
+    let elbow = [38 - Math.max(0, extension) * 9, -91 + crouch], hand = [48 - Math.max(0, extension) * 6, -94 + crouch];
+    if (punch) { elbow = [38 + extension * 18, -92 - extension * 5 + crouch]; hand = [50 + extension * 55, -96 - extension * 18 + crouch]; }
+    else if (f.attack === "grab") { elbow = [42 + Math.max(0, extension) * 8, -99 + crouch]; hand = [55 + Math.max(0, extension) * 36, -103 + crouch]; }
+    else if (supering) { elbow = [31 + Math.max(0, extension) * 13, -131 + crouch]; hand = [43 + Math.max(0, extension) * 28, -159 + crouch]; }
+    if (f.blocking) { elbow = [24, -128 + crouch]; hand = [34, -145 + crouch]; }
+    if (hitPose) { elbow = [41, -126 + crouch]; hand = [53, -143 + crouch]; }
+    if ((punch || f.attack === "grab" || supering) && extension > .48) { ctx.strokeStyle = `${accent}88`; ctx.lineWidth = punch ? 4 : 6; ctx.beginPath(); ctx.arc(hand[0] - 17, hand[1] + 7, 28, -.72, .42); ctx.stroke(); }
+    rigLine(22, shoulderY, elbow[0], elbow[1], 15, body, "#111622"); rigJoint(elbow[0], elbow[1], 7, body, dark);
+    rigLine(elbow[0], elbow[1], hand[0] - 3, hand[1], 12, body, dark);
+    ctx.fillStyle = accent; roundedRect(ctx, hand[0] - 10, hand[1] - 8, 20, 16, 7); ctx.fill();
+    ctx.fillStyle = f.skin; ctx.beginPath(); ctx.ellipse(hand[0] + 2, hand[1], 6, 5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#fff3d2aa"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(hand[0] - 5, hand[1] - 4); ctx.lineTo(hand[0] + 4, hand[1] - 4); ctx.stroke();
+    if (f.blocking) { ctx.strokeStyle = "#fff1bd"; ctx.lineWidth = 4; ctx.globalAlpha = .8; ctx.beginPath(); ctx.arc(28, -112 + crouch, 42, -1.1, 1.1); ctx.stroke(); ctx.globalAlpha = 1; }
+    ctx.fillStyle = accent; ctx.font = "bold 8px Trebuchet MS"; ctx.textAlign = "center"; ctx.fillText(f.name.split(" ")[0], 0, -72 + crouch);
+    ctx.restore();
+  }
+
   function drawBomb(time) {
     if (!game || !game.bomb) return;
     const bomb = game.bomb; const pulse = 1 + Math.sin(time * 18) * .15;
@@ -701,9 +880,10 @@
   }
 
   function togglePause() {
-    if (screen !== "fight" || !game || game.phase !== "fight") return;
+    if (screen !== "fight" || !game || game.phase !== "fight" || game.phase === "orientation") return;
     game.paused = !game.paused; ui.pause.classList.toggle("hidden", !game.paused);
-    if (game.paused) { playTone(175, 0.06, "square"); keys.clear(); }
+    if (game.paused) { stopMusic(); stopAnnouncerClips(); playTone(175, 0.06, "square"); keys.clear(); }
+    else startMusic();
   }
   function normalizeKey(key) { return key.length === 1 ? key.toLowerCase() : key; }
 
@@ -736,6 +916,7 @@
     const key = normalizeKey(event.key);
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(key)) event.preventDefault();
     if (!ui.legalGate.classList.contains("hidden")) { if (key === "Enter") ui.acceptNotice.click(); return; }
+    if (!ui.orientationGate.classList.contains("hidden")) return;
     if (key === "Escape") { togglePause(); return; }
     if (key === "m") { toggleSound(); return; }
     if (key === "n") { cycleMusic(); return; }
@@ -746,6 +927,11 @@
   });
   window.addEventListener("keyup", (event) => keys.delete(normalizeKey(event.key)));
   window.addEventListener("blur", () => keys.clear());
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && screen === "fight" && game && game.phase === "fight" && !game.paused) {
+      game.paused = true; game.pausedByVisibility = true; ui.pause.classList.remove("hidden"); stopMusic(); stopAnnouncerClips(); keys.clear();
+    }
+  });
 
   document.getElementById("startButton").addEventListener("click", startSelect);
   document.getElementById("backToTitle").addEventListener("click", () => setScreen("title"));
@@ -754,9 +940,17 @@
   document.getElementById("selectAgainButton").addEventListener("click", () => setScreen("select"));
   document.getElementById("resumeButton").addEventListener("click", togglePause);
   document.getElementById("quitButton").addEventListener("click", () => { if (game) game.phase = "quit"; setScreen("select"); });
+  document.querySelectorAll("[data-fullscreen]").forEach((button) => button.addEventListener("click", toggleFullscreen));
+  ui.fullScreen.addEventListener("click", toggleFullscreen);
+  document.addEventListener("fullscreenchange", updateFullscreenButton);
+  document.addEventListener("webkitfullscreenchange", updateFullscreenButton);
+  window.addEventListener("resize", () => { cancelAnimationFrame(orientationChangeFrame); orientationChangeFrame = requestAnimationFrame(syncOrientationGate); });
+  window.addEventListener("orientationchange", syncOrientationGate);
+  if (screen.orientation && screen.orientation.addEventListener) screen.orientation.addEventListener("change", syncOrientationGate);
   ui.acceptNotice.addEventListener("click", () => {
     try { localStorage.setItem("rally-rumble-satire-acknowledged", "yes"); } catch (_) { /* Storage may be disabled. */ }
-    ui.legalGate.classList.add("hidden"); document.getElementById("startButton").focus();
+    ui.legalGate.classList.add("hidden"); syncOrientationGate();
+    if (ui.orientationGate.classList.contains("hidden")) document.getElementById("startButton").focus();
   });
   document.querySelectorAll("[data-post-action]").forEach((button) => button.addEventListener("click", async () => {
     const action = button.dataset.postAction;
@@ -819,6 +1013,23 @@
     ui.stick.addEventListener("pointermove", setStick); ui.stick.addEventListener("pointerup", releaseStick); ui.stick.addEventListener("pointercancel", releaseStick);
   }
 
+  function primeAnnouncerClips() {
+    if (!soundOn) return;
+    Object.values(announcerClips).forEach((audio) => { try { audio.load(); } catch (_) { /* Optional audio preload. */ } });
+  }
+  function stopAnnouncerClips() {
+    Object.values(announcerClips).forEach((audio) => { audio.pause(); try { audio.currentTime = 0; } catch (_) { /* Media may not be ready. */ } });
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  }
+  function playVoice(id, fallbackText, lang = "hi-IN") {
+    if (!soundOn) return;
+    const audio = id ? announcerClips[id] : null;
+    if (!audio) { speakAnnouncement(fallbackText, lang); return; }
+    stopAnnouncerClips();
+    try { audio.currentTime = 0; } catch (_) { /* Newly loaded clip. */ }
+    const playback = audio.play();
+    if (playback && typeof playback.catch === "function") playback.catch(() => speakAnnouncement(fallbackText, lang));
+  }
   function ensureAudio() {
     if (!soundOn) return null;
     try {
@@ -876,8 +1087,8 @@
   function toggleSound() {
     soundOn = !soundOn; ui.sound.textContent = soundOn ? "AUDIO ON" : "AUDIO OFF";
     ui.sound.setAttribute("aria-pressed", String(soundOn));
-    if (soundOn) { ensureAudio(); startMusic(); playTone(490, .055, "triangle"); }
-    else { stopMusic(); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); }
+    if (soundOn) { ensureAudio(); primeAnnouncerClips(); startMusic(); playTone(490, .055, "triangle"); }
+    else { stopMusic(); stopAnnouncerClips(); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); }
   }
   function speakAnnouncement(text, lang) {
     if (!soundOn || !("speechSynthesis" in window)) return;
@@ -889,5 +1100,5 @@
   }
 
   try { if (localStorage.getItem("rally-rumble-satire-acknowledged") === "yes") ui.legalGate.classList.add("hidden"); } catch (_) { /* Storage may be disabled. */ }
-  updateSelectionUI(); updateMusicButton(); setScreen("title"); requestAnimationFrame(gameLoop);
+  updateSelectionUI(); updateMusicButton(); setScreen("title"); updateFullscreenButton(); syncOrientationGate(); requestAnimationFrame(gameLoop);
 })();
