@@ -36,7 +36,8 @@
 - Added a touch-phone portrait gate before play, automatic return to landscape play after rotation, a portrait re-gate/pause during a match, safe-area touch control presentation and optional user-triggered fullscreen. Desktop is not orientation-gated. Hidden-tab fights pause and require an explicit resume.
 - Added 11 original locally bundled Hindi announcer clips from one generic non-imitative voice for rounds, super moves, meme-style combo/block lines, match results and the Sutli Bomb cue. All clips decode and return HTTP 200 locally; the supplied video audio was not copied.
 - Local Chromium checks passed at phone portrait/landscape and desktop sizes. A focused media-hook regression check verified the round-one clip triggers, manual and portrait pauses stop the active announcer, orientation gate hides touch input, and landscape resumes without page errors. `node --check`, `git diff --check` and the 11-clip decode check pass.
-- Physical Android/fullscreen testing remains unverified. The user-supplied `rally-rumble-i8od.vercel.app` URL still needs a post-push live check; no `.vercel/project.json` or Vercel CLI project binding is present in this repository, so a successful GitHub push alone must not be reported as a live deployment.
+- Physical Android/fullscreen testing remains unverified.
+- Pushed to GitHub `main` as `2349a42dd45e34a3ace8023d236ef58f2e67ffd0`; a post-push fetch confirmed the remote SHA matches and the working tree was clean. The exact user-supplied `https://rally-rumble-i8od.vercel.app/` URL returned HTTP 404 (`NOT_FOUND`) after the push. This repo has no `.vercel/project.json` or Vercel CLI project binding; do not claim the code is live or repoint a domain without a verified project mapping.
 
 ## Remaining work / acceptance gaps
 
