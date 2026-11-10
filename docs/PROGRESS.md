@@ -14,3 +14,11 @@
 The game update was pushed to GitHub `main` in commit `f6db0bdff7277b5c979fd758bb05c04f1c2a85da`. The exact production URL `https://rally-rumble-i8od.vercel.app/` returned HTTP 200 with title `Rally Rumble — Select Your Neta`. Its deployed `game.js` SHA-256 was exactly identical to this repository's file (`ca4f7c823f4fa69f7fb3e792dfa100334712fb6420272b781fc0b4dad59845bf`). New pose/effect/stage assets and all 12 announcer URLs returned HTTP 200; the browser's audio streaming responses were successful partial-content responses. A fresh production-browser session reached the fight HUD with no page errors or failed requests.
 
 No Vercel domains were changed or repointed. Physical Android/fullscreen behavior and performance on real devices remain unverified.
+
+
+## 2026-11-10 — spelling and Rail Raja artwork fix
+
+- Corrected `TARIFF TAIL` to `TARIFF TAAU` in the fighter data and select card; confirmed the `DEEDEE` label is spelled correctly.
+- Replaced Rail Raja's reused Tariff Taau card/sprite/preview image with an original, hand-authored fictional conductor illustration at `public/assets/fighters/rail-raja-original.svg`.
+- Validation: `node --check game.js`, `git diff --check`, HTML/SVG and label assertions, and a 1280×720 headless Chromium render all passed. The first-run bilingual satire notice appeared as expected. The only Chromium stderr was a missing sandbox host UPower D-Bus service, unrelated to the game.
+- This is a focused bug-fix slice; the additional scope in the new Sansad Showdown brief remains unfinished and is not claimed complete.
