@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384">
+ <defs><linearGradient id="vest" x2="0" y2="1"><stop stop-color="#e5f0e8"/><stop offset="1" stop-color="#9ccac1"/></linearGradient><linearGradient id="scarf" x2="0" y2="1"><stop stop-color="#35a6b6"/><stop offset="1" stop-color="#176275"/></linearGradient></defs>
+ <ellipse cx="128" cy="370" rx="59" ry="9" fill="#090d17" opacity=".4"/>
+ <!-- Original fictional fact-checker with a magnifier, teal scarf and pocket notebook. -->
+ <path d="M89 251 64 350q-1 12 11 14h36l17-75 18 75h39q11-4 7-16l-26-105z" fill="#273645" stroke="#17232f" stroke-width="8" stroke-linejoin="round"/>
+ <path d="M67 351h42l-2 15H66q-8-7 1-15m82 0h42q8 8 0 15h-40z" fill="#ece5d4" stroke="#263340" stroke-width="5"/>
+ <path d="M82 146q45-23 91 2l18 121q-61 27-126-1z" fill="url(#vest)" stroke="#263645" stroke-width="9" stroke-linejoin="round"/>
+ <path d="m112 151 15 18 17-18 6 115-22 17-20-17z" fill="url(#scarf)" stroke="#263645" stroke-width="5" stroke-linejoin="round"/>
+ <path d="M89 176 54 215q-8 10 0 20l25 12 25-41m68-30 34 30q8 10 0 19l-25 15-27-39" fill="#d7e3dc" stroke="#263645" stroke-width="11" stroke-linejoin="round"/>
+ <path d="m52 224 24 12-12 25-26-10q-8-14 14-27z" fill="#b98166" stroke="#263645" stroke-width="6"/>
+ <path d="m203 228 22-13q15 8 5 21l-22 14z" fill="#b98166" stroke="#263645" stroke-width="6"/>
+ <rect x="157" y="226" width="49" height="54" rx="5" fill="#243b50" stroke="#172733" stroke-width="6" transform="rotate(9 157 226)"/>
+ <path d="m169 242 23 4m-24 7 20 4" stroke="#86eee0" stroke-width="4" stroke-linecap="round"/>
+ <circle cx="190" cy="113" r="25" fill="none" stroke="#f3d169" stroke-width="8"/><path d="m208 132 19 22" stroke="#f3d169" stroke-width="9" stroke-linecap="round"/>
+ <path d="M83 83q5-38 44-43 41 2 45 46l-7 45q-8 43-40 45-34-3-42-44z" fill="#b98166" stroke="#263645" stroke-width="8"/>
+ <path d="M79 112q-11-52 19-73 18-14 48-7 31 6 39 37l-6 46-17-29-61 8-12 39z" fill="#272827" stroke="#263645" stroke-width="7" stroke-linejoin="round"/>
+ <path d="M99 120q9-6 20 0m15 0q11-6 20 0" fill="none" stroke="#263645" stroke-width="5" stroke-linecap="round"/>
+ <path d="M118 149q10 7 21 0" fill="none" stroke="#684238" stroke-width="4" stroke-linecap="round"/>
+ <path d="M94 98q13-9 24 0m18 0q12-9 24 0" fill="none" stroke="#273744" stroke-width="4" stroke-linecap="round"/>
+ <path d="M116 181h22" stroke="#e8d07a" stroke-width="4" stroke-linecap="round"/>
+</svg>

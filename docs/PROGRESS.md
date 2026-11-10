@@ -22,3 +22,12 @@ No Vercel domains were changed or repointed. Physical Android/fullscreen behavio
 - Replaced Rail Raja's reused Tariff Taau card/sprite/preview image with an original, hand-authored fictional conductor illustration at `public/assets/fighters/rail-raja-original.svg`.
 - Validation: `node --check game.js`, `git diff --check`, HTML/SVG and label assertions, and a 1280×720 headless Chromium render all passed. The first-run bilingual satire notice appeared as expected. The only Chromium stderr was a missing sandbox host UPower D-Bus service, unrelated to the game.
 - This is a focused bug-fix slice; the additional scope in the new Sansad Showdown brief remains unfinished and is not claimed complete.
+
+
+## 2026-11-10 — roster and combat-feel improvement pass
+
+Added original full-body SVG designs for Ghar Mantri, Fact Bhai, and Toll Man; Rail Raja also retains his original artwork. That makes the Toll Man and Rail Raja select portraits/body art independent from previously reused roster art. The expanded roster now contains eleven selectable parody fighters, a disabled boss slot, and Random, arranged in two rows. Random selection no longer includes hidden or non-roster character definitions. Every fighter has a distinct speed, power, vitality, and jump profile; Ghar Mantri and Fact Bhai have their own named supers and themed visual effects.
+
+The combat simulation now advances on a capped 60 Hz fixed timestep, adds short hit-stop on clean hits, uses fighter power for attack damage and fighter speed/jump/vitality in movement and HUD, and shows a delayed red vitality trail. CPU reaction targets are aligned to the specified 25/14/6-frame difficulty values. Canvas requests desynchronized rendering when supported.
+
+Validation passed: JavaScript syntax and diff checks; assertions for the 11 roster entries, four original SVG character assets, special moves, stats, fixed-step loop, hit-stop, locked boss slot, and removal of hidden non-parody roster entries; desktop Chromium loaded all 11 distinct roster portraits, selected Ghar Mantri vs Fact Bhai, advanced the fight timer, and verified an attack reduced vitality from 100% to 85.2%; and 844×390 touch-landscape layout checks confirmed no rotation gate and visible touch controls. No page errors or failed network requests were observed. These are emulator/browser checks, not physical Android or sustained-device FPS measurements.

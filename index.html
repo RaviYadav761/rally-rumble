@@ -20,7 +20,7 @@
           <div class="fighter-hud player-hud">
             <div class="hud-details">
               <div class="hud-name"><span id="playerName">DOZER DADA</span><span class="player-tag">1P</span></div>
-              <div class="bar health-bar" aria-label="Player vitality"><span id="playerHealth"></span></div>
+              <div class="bar health-bar" aria-label="Player vitality"><i class="health-ghost" id="playerHealthGhost"></i><span id="playerHealth"></span></div>
               <div class="meter-caption"><span>SHAKTI</span><span>VITALITY</span></div>
               <div class="bar energy-bar" aria-label="Player Shakti meter"><span id="playerEnergy"></span></div>
               <div id="playerRounds" class="round-pips" aria-label="Player round wins"><i></i><i></i></div>
@@ -37,7 +37,7 @@
             <img class="hud-portrait" id="cpuPortrait" alt="" />
             <div class="hud-details">
               <div class="hud-name"><span class="cpu-tag" id="cpuTag">CPU</span><span id="cpuName">YATRA BOY</span></div>
-              <div class="bar health-bar" aria-label="Opponent vitality"><span id="cpuHealth"></span></div>
+              <div class="bar health-bar" aria-label="Opponent vitality"><i class="health-ghost" id="cpuHealthGhost"></i><span id="cpuHealth"></span></div>
               <div class="meter-caption"><span>VITALITY</span><span>SHAKTI</span></div>
               <div class="bar energy-bar" aria-label="Opponent Shakti meter"><span id="cpuEnergy"></span></div>
               <div id="cpuRounds" class="round-pips cpu-pips" aria-label="Opponent round wins"><i></i><i></i></div>
@@ -90,10 +90,13 @@
             <button class="fighter-card" data-fighter="deedee" aria-label="Choose Deedee"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/deedee.webp" alt="" /><strong>DEEDEE</strong></button>
             <button class="fighter-card" data-fighter="tariff" aria-label="Choose Tariff Taau"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/tariff-taau.webp" alt="" /><strong>TARIFF TAAU</strong></button>
             <button class="fighter-card" data-fighter="dozer" aria-label="Choose Dozer Dada"><span class="card-ribbon">1P · YOU</span><img class="card-portrait" src="public/assets/fighters/dozer-reference-cutout.webp" alt="" /><strong>DOZER DADA</strong></button>
-            <button class="fighter-card" data-fighter="tollman" aria-label="Choose Toll Man"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/toka-man.webp" alt="" /><strong>TOLL MAN</strong></button>
+            <button class="fighter-card" data-fighter="tollman" aria-label="Choose Toll Man"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/toll-man-original.svg" alt="" /><strong>TOLL MAN</strong></button>
             <button class="fighter-card" data-fighter="suttibabu" aria-label="Choose Sutti Babu"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/sutti-babu.webp" alt="" /><strong>SUTTI BABU</strong></button>
             <button class="fighter-card" data-fighter="railraja" aria-label="Choose Rail Raja"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/rail-raja-original.svg" alt="" /><strong>RAIL RAJA</strong></button>
             <button class="fighter-card" data-fighter="mbapu" aria-label="Choose Mbapu"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/mbapu.webp" alt="" /><strong>MBAPU</strong></button>
+            <button class="fighter-card" data-fighter="gharmantri" aria-label="Choose Ghar Mantri"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/ghar-mantri-original.svg" alt="" /><strong>GHAR MANTRI</strong></button>
+            <button class="fighter-card" data-fighter="factbhai" aria-label="Choose Fact Bhai"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/fact-bhai-original.svg" alt="" /><strong>FACT BHAI</strong></button>
+            <button class="fighter-card locked-card" type="button" disabled aria-label="Boss slot locked"><span class="card-ribbon">LOCKED</span><span class="random-mark">?</span><strong>BOSS</strong></button>
             <button class="fighter-card random-card" data-fighter="random" aria-label="Choose random fighter"><span class="card-ribbon">SURPRISE</span><span class="random-mark">?</span><strong>RANDOM</strong></button>
           </div>
           <div class="select-controls">

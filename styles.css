@@ -54,9 +54,10 @@ button:focus-visible { outline: 2px solid #fff2a3; outline-offset: 2px; }
 .select-loading { position: absolute; z-index: 3; left: 38%; right: 38%; bottom: 28%; display: flex; flex-direction: column; gap: 4px; padding: 4px 8px; border: 1px solid #f4c75599; background: #100d16e8; color: #ffd867; text-align: left; font-size: 7px; letter-spacing: .09em; }
 .loading-track { height: 4px; background: #33303a; }
 .loading-track i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, #e78c31, #ffe774); transition: width .35s ease; }
-.roster-row { flex: 0 0 clamp(58px, 16.2vh, 84px); display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; padding: 3px 0 4px; }
+.roster-row { flex: 0 0 clamp(112px, 20vh, 148px); display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 3px 0 4px; }
 .fighter-card { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-width: 0; min-height: 0; overflow: hidden; border: 1px solid #f2d48962; border-radius: 3px; padding: 3px 2px 4px; background: linear-gradient(180deg, #13203bdd, #111320f2); color: #fff4d5; box-shadow: 0 2px 3px #02040d88; transition: border-color .12s, transform .12s, background .12s; }
 .fighter-card:hover { transform: translateY(-2px); }
+.fighter-card:disabled { cursor: not-allowed; filter: grayscale(.78); opacity: .72; }
 .fighter-card.selected { border: 2px solid #ffd54a; background: linear-gradient(180deg, #263b57f0, #201b28f7); box-shadow: 0 0 9px #ffce4a77, inset 0 0 12px #ffca3d18; }
 .fighter-card.cpu-opponent:not(.selected) { border: 2px solid #65c0e8; box-shadow: 0 0 8px #65c0e866; }
 .card-ribbon { position: absolute; z-index: 2; top: 2px; left: 2px; right: 2px; overflow: hidden; color: #ffd86c; font-size: clamp(5px, 1vh, 7px); font-weight: 1000; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
@@ -86,9 +87,10 @@ button:focus-visible { outline: 2px solid #fff2a3; outline-offset: 2px; }
 .hud-portrait { flex: 0 0 31px; width: 31px; height: 33px; border: 1px solid #f4d26e; border-radius: 3px; object-fit: cover; object-position: center 13%; background: #172239; box-shadow: 0 1px 4px #0009; }
 .hud-portrait[hidden] { display: none; }
 .health-bar { position: relative; height: clamp(10px, 2.4vh, 17px); overflow: hidden; border: 1px solid #fff0c0; background: #16111b; clip-path: polygon(0 0,100% 0,98% 100%,0 100%); box-shadow: 0 1px 4px #000a; }
-.health-bar span { display: block; width: 100%; height: 100%; background: linear-gradient(180deg, #ffeb75 0%, #f0a624 60%, #db761d 100%); transition: width .12s linear; }
+.health-bar span { position: relative; z-index: 2; display: block; width: 100%; height: 100%; background: linear-gradient(180deg, #ffeb75 0%, #f0a624 60%, #db761d 100%); transition: width .08s linear; }
+.health-bar .health-ghost { position: absolute; z-index: 1; top: 0; bottom: 0; left: 0; display: block; width: 100%; height: 100%; background: linear-gradient(180deg,#ff766d,#bc2537); transition: width .08s linear; }
 .cpu-hud .health-bar { clip-path: polygon(2% 0,100% 0,100% 100%,0 100%); }
-.cpu-hud .health-bar span { margin-left: auto; }
+.cpu-hud .health-bar span, .cpu-hud .health-bar .health-ghost { left: auto; right: 0; margin-left: auto; }
 .meter-caption { display: flex; justify-content: space-between; color: #f8e6b5; font-size: 5px; font-weight: 900; letter-spacing: .12em; text-shadow: 1px 1px #060814; }
 .energy-bar { height: 4px; margin-top: 1px; overflow: hidden; background: #121423; }
 .energy-bar span { display: block; height: 100%; width: 20%; background: linear-gradient(90deg,#49b9d4,#93f0e2); transition: width .12s; }
@@ -186,7 +188,7 @@ button:focus-visible { outline: 2px solid #fff2a3; outline-offset: 2px; }
   .preview-fighter small { font-size: 5px; }
   .preview-badge { top: 4px; padding: 2px 4px; font-size: 5px; }
   .preview-vs { font-size: clamp(28px,8vh,55px); }
-  .roster-row { flex-basis: clamp(50px,16vh,66px); gap: 2px; padding: 2px 0 3px; }
+  .roster-row { flex-basis: clamp(84px,22vh,112px); gap: 2px; padding: 2px 0 3px; }
   .fighter-card { padding: 2px 1px; }
   .card-portrait { width: 70%; height: clamp(24px,8vh,36px); min-height: 22px; margin: 5px auto 1px; }
   .card-ribbon { font-size: 5px; }
@@ -235,8 +237,8 @@ button:focus-visible { outline: 2px solid #fff2a3; outline-offset: 2px; }
   .select-help { font-size: 4px; }
   .select-heading h1 { font-size: 23px; }
   .preview-fighter img { height: min(29vh,118px); }
-  .roster-row { flex-basis: 48px; }
-  .card-portrait { height: 25px; min-height: 22px; margin-top: 4px; }
+  .roster-row { flex-basis: 90px; }
+  .card-portrait { height: 22px; min-height: 19px; margin-top: 4px; }
   .select-controls { flex-basis: 39px; }
   .option { min-height: 17px; }
   #fightButton { min-height: 20px; }

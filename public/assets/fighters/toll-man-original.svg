@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384">
+ <defs><linearGradient id="uniform" x2="0" y2="1"><stop stop-color="#3289c8"/><stop offset="1" stop-color="#17517f"/></linearGradient><linearGradient id="barrier" x2="0" y2="1"><stop stop-color="#ffe07a"/><stop offset="1" stop-color="#e56b4d"/></linearGradient></defs>
+ <ellipse cx="128" cy="370" rx="60" ry="9" fill="#090d17" opacity=".4"/>
+ <!-- Original fictional toll-lane marshal with ticket roll and striped gate baton. -->
+ <path d="M88 251 65 350q0 12 12 14h35l16-76 17 76h39q11-4 7-16l-27-106z" fill="#202d3c" stroke="#17222e" stroke-width="8" stroke-linejoin="round"/>
+ <path d="M68 351h43l-2 15H67q-8-7 1-15m82 0h42q8 8 0 15h-40z" fill="#eae2cd" stroke="#22313b" stroke-width="5"/>
+ <path d="M82 147q46-23 92 3l17 122q-62 27-126-2z" fill="url(#uniform)" stroke="#1b2a3a" stroke-width="9" stroke-linejoin="round"/>
+ <path d="m111 152 17 17 16-17 5 114-21 17-19-17z" fill="#e8ece5" stroke="#253341" stroke-width="5"/>
+ <path d="M92 174 56 214q-8 11 1 20l25 12 23-42m68-30 35 36q8 10 0 20l-25 13-25-39" fill="#287db8" stroke="#1b2a3a" stroke-width="11" stroke-linejoin="round"/>
+ <path d="m55 224 25 10-9 25-27-8q-9-14 11-27z" fill="#c18a70" stroke="#253341" stroke-width="6"/>
+ <path d="m199 227 23-14q15 8 5 21l-23 15z" fill="#c18a70" stroke="#253341" stroke-width="6"/>
+ <path d="M43 268q4-10 14-7l33 11-5 21-36-7q-12-8-6-18z" fill="#f3d15d" stroke="#263440" stroke-width="5"/>
+ <path d="m58 270-5 18m20-13-5 17" stroke="#d94f4b" stroke-width="8"/>
+ <path d="M83 82q4-40 44-43 42 3 46 45l-7 47q-8 42-40 44-34-3-42-44z" fill="#c18a70" stroke="#263544" stroke-width="8"/>
+ <path d="M79 112q-10-49 18-72 18-16 49-9 30 6 39 36l-7 47-17-27-60 9-12 37z" fill="#302b2b" stroke="#263544" stroke-width="7" stroke-linejoin="round"/>
+ <path d="M83 79q19-23 50-23 33 0 49 25l-5 17q-49-17-97 6z" fill="#2276bd" stroke="#263544" stroke-width="7"/>
+ <path d="M93 86h77" stroke="#f2cf68" stroke-width="6"/><path d="M105 118q9-6 20 0m15 0q10-6 20 0" fill="none" stroke="#263544" stroke-width="5" stroke-linecap="round"/>
+ <path d="M118 148q10 7 21 0" fill="none" stroke="#75493d" stroke-width="4" stroke-linecap="round"/>
+ <circle cx="151" cy="200" r="8" fill="#f2cd67" stroke="#263440" stroke-width="3"/><path d="M145 223h26m-25 9h21" stroke="#d4e8e5" stroke-width="4" stroke-linecap="round"/>
+</svg>

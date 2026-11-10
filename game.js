@@ -2,7 +2,7 @@
   "use strict";
 
   const canvas = document.getElementById("gameCanvas");
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
   const W = canvas.width;
   const H = canvas.height;
   const GROUND = 430;
@@ -13,6 +13,8 @@
   let soundOn = true;
   let musicIndex = 0;
   let lastFrame = performance.now();
+  let frameAccumulator = 0;
+  const FIXED_STEP = 1 / 60;
   let screen = "title";
   let player = null;
   let cpu = null;
@@ -31,13 +33,24 @@
     mbapu: { id: "mbapu", name: "MBAPU", title: "THE SAGE OF SABAR", color: "#f4eee1", accent: "#e8c96d", dark: "#756c62", skin: "#c99c81", hair: "#ece5d7", style: "sage", special: "MANCH CHHODO", sprite: "public/assets/fighters/mbapu.webp", portrait: "public/assets/fighters/mbapu.webp" },
     mitraman: { id: "mitraman", name: "MITRAMAN", title: "THE FESTIVAL STATESMAN", color: "#fff1d2", accent: "#ef9d45", dark: "#633d31", skin: "#bd8066", hair: "#eee7dc", style: "politician", special: "MITRA CHAKRA", sprite: "public/assets/fighters/mitraman.webp", portrait: "public/assets/fighters/mitraman.webp" },
     deedee: { id: "deedee", name: "DEEDEE", title: "THE BLUE-BORDER BOSS", color: "#f2eee2", accent: "#55a9ca", dark: "#344251", skin: "#bb826b", hair: "#28221e", style: "politician", special: "BENGAL BOUNCE", sprite: "public/assets/fighters/deedee.webp", portrait: "public/assets/fighters/deedee.webp" },
-    toka: { id: "toka", name: "TOKA MAN", title: "THE PEOPLE'S AUDITOR", color: "#d7e7df", accent: "#6cbca2", dark: "#34444a", skin: "#bd8066", hair: "#262322", style: "politician", special: "MOHALLA METER", sprite: "public/assets/fighters/toka-man.webp", portrait: "public/assets/fighters/toka-man.webp" },
     suttibabu: { id: "suttibabu", name: "SUTTI BABU", title: "THE QUIET TACTICIAN", color: "#ece7d9", accent: "#b5b0a2", dark: "#4b4a49", skin: "#b9846a", hair: "#d9d5ca", style: "politician", special: "SUSHASAN SHUFFLE", sprite: "public/assets/fighters/sutti-babu.webp", portrait: "public/assets/fighters/sutti-babu.webp" },
-    akhilesh: { id: "akhilesh", name: "AKHILESH YADAV", title: "THE CYCLE RALLY ACE", color: "#f1eadb", accent: "#ee6870", dark: "#293849", skin: "#b9775a", hair: "#26201e", style: "politician", special: "CYCLE RALLY", portrait: "public/assets/portraits/akhilesh-yadav.webp", faceCrop: [.10, .05, .80, .72] },
-    shanti: { id: "shanti", name: "SHANTI SAGE", title: "THE PEACEFUL PUGILIST", color: "#f4e9d0", accent: "#e9ae40", dark: "#7b6548", skin: "#bd805f", hair: "#f4eadc", style: "sage", special: "SABAR & SHANTI" },
-    kesar: { id: "kesar", name: "KESAR KAKA", title: "THE FESTIVAL FRONTMAN", color: "#f17834", accent: "#ffdc76", dark: "#963d2b", skin: "#a96048", hair: "#eee7d7", style: "performer", special: "CHAKRA UTSAV" },
-    tollman: { id: "tollman", name: "TOLL MAN", title: "THE BLUE GATEKEEPER", color: "#2276bd", accent: "#7ccef5", dark: "#183c67", skin: "#c28b72", hair: "#302b2b", style: "politician", special: "TOLL PLAZA TAKEDOWN", sprite: "public/assets/fighters/toka-man.webp", portrait: "public/assets/fighters/toka-man.webp" },
-    railraja: { id: "railraja", name: "RAIL RAJA", title: "THE PLATFORM PUNCHER", color: "#e6e5de", accent: "#e45e5f", dark: "#263247", skin: "#be8469", hair: "#2a2523", style: "politician", special: "RAILWAY RUSH", sprite: "public/assets/fighters/rail-raja-original.svg", portrait: "public/assets/fighters/rail-raja-original.svg", fullBody: "public/assets/fighters/rail-raja-original.svg" }
+    tollman: { id: "tollman", name: "TOLL MAN", title: "THE BLUE GATEKEEPER", color: "#2276bd", accent: "#7ccef5", dark: "#183c67", skin: "#c28b72", hair: "#302b2b", style: "politician", special: "TOLL PLAZA TAKEDOWN", sprite: "public/assets/fighters/toll-man-original.svg", portrait: "public/assets/fighters/toll-man-original.svg", fullBody: "public/assets/fighters/toll-man-original.svg" },
+    railraja: { id: "railraja", name: "RAIL RAJA", title: "THE PLATFORM PUNCHER", color: "#e6e5de", accent: "#e45e5f", dark: "#263247", skin: "#be8469", hair: "#2a2523", style: "politician", special: "RAILWAY RUSH", sprite: "public/assets/fighters/rail-raja-original.svg", portrait: "public/assets/fighters/rail-raja-original.svg", fullBody: "public/assets/fighters/rail-raja-original.svg", speed: 292, power: 1.02 },
+    gharmantri: { id: "gharmantri", name: "GHAR MANTRI", title: "THE SHADOW STRATEGIST", color: "#378d66", accent: "#f2d477", dark: "#172d32", skin: "#b97f61", hair: "#282522", style: "politician", special: "SHADOW STRATEGY", portrait: "public/assets/fighters/ghar-mantri-original.svg", fullBody: "public/assets/fighters/ghar-mantri-original.svg", speed: 255, power: 1.12, health: 108 },
+    factbhai: { id: "factbhai", name: "FACT BHAI", title: "THE RECEIPT INSPECTOR", color: "#9ccac1", accent: "#35a6b6", dark: "#263645", skin: "#b98166", hair: "#272827", style: "politician", special: "FACT-CHECK FLASH", portrait: "public/assets/fighters/fact-bhai-original.svg", fullBody: "public/assets/fighters/fact-bhai-original.svg" }
+  };
+  const fighterBalance = {
+    dozer: { speed: 260, power: 1.13, health: 112, jumpHeight: 655 },
+    yatra: { speed: 315, power: .93, health: 96, jumpHeight: 755 },
+    tariff: { speed: 274, power: 1.06, health: 103, jumpHeight: 675 },
+    mbapu: { speed: 238, power: 1.18, health: 120, jumpHeight: 585 },
+    mitraman: { speed: 300, power: 1, health: 100, jumpHeight: 725 },
+    deedee: { speed: 283, power: 1.04, health: 102, jumpHeight: 690 },
+    suttibabu: { speed: 275, power: 1.03, health: 105, jumpHeight: 680 },
+    tollman: { speed: 280, power: 1.04, health: 105, jumpHeight: 665 },
+    railraja: { speed: 292, power: 1.02, health: 101, jumpHeight: 700 },
+    gharmantri: { speed: 255, power: 1.12, health: 108, jumpHeight: 640 },
+    factbhai: { speed: 305, power: .91, health: 96, jumpHeight: 745 }
   };
 
   const portraitImages = {};
@@ -93,7 +106,7 @@
     pauseButton: document.getElementById("pauseButton"), gameStatus: document.getElementById("gameStatus"),
     musicPlayer: document.getElementById("musicPlayer"), playerPortrait: document.getElementById("playerPortrait"),
     cpuPortrait: document.getElementById("cpuPortrait"), cpuCycle: document.getElementById("cpuCycle"), playerHealth: document.getElementById("playerHealth"),
-    playerEnergy: document.getElementById("playerEnergy"), cpuHealth: document.getElementById("cpuHealth"),
+    playerHealthGhost: document.getElementById("playerHealthGhost"), playerEnergy: document.getElementById("playerEnergy"), cpuHealth: document.getElementById("cpuHealth"), cpuHealthGhost: document.getElementById("cpuHealthGhost"),
     cpuEnergy: document.getElementById("cpuEnergy"), playerName: document.getElementById("playerName"),
     cpuName: document.getElementById("cpuName"), cpuTag: document.getElementById("cpuTag"), timer: document.getElementById("timer"),
     round: document.getElementById("roundLabel"), combo: document.getElementById("comboText"),
@@ -234,11 +247,11 @@
     cpu = new Fighter(fighterData[settings.cpuFighter], 702, -1, settings.mode === "friend");
     game = {
       matchId,
-      time: 60, intro: 2.1, paused: false, phase: "fight", effects: [], shake: 0, roundAnnounced: false, orientationReturnPhase: null, orientationWasPaused: false,
+      time: 60, intro: 2.1, paused: false, phase: "fight", effects: [], shake: 0, hitStop: 0, roundAnnounced: false, orientationReturnPhase: null, orientationWasPaused: false,
       round: 1, playerRounds: 0, cpuRounds: 0, breakTimer: 0, nextRound: false,
       winner: null, message: "", bomb: null, bombClock: settings.stage === "sansar" ? 999 : 10, callout: null, elapsed: 0, lastVoiceAt: -Infinity,
       commentaryClock: 0, commentaryIndex: 0, lastAccessibleSecond: null,
-      lastWinner: null
+      lastWinner: null, healthGhost: null
     };
     ui.playerName.textContent = fighterData[settings.playerFighter].name;
     ui.cpuName.textContent = fighterData[settings.cpuFighter].name;
@@ -363,7 +376,10 @@
       this.sprite = fighterSprites[data.id] || null; this.fullBodyImage = fullBodyImages[data.id] || null; this.currentAttackSpec = null;
       this.portraitImage = data.portrait ? portraitImages[data.id] : null; this.faceCrop = data.faceCrop || null;
       this.x = x; this.y = GROUND; this.vx = 0; this.vy = 0; this.facing = facing;
-      this.health = 100; this.energy = 20; this.damageDealt = 0; this.isPlayer = isPlayer; this.height = data.fullBody ? 234 : 160;
+      const balance = fighterBalance[data.id] || {};
+      this.maxHealth = data.health || balance.health || 100; this.health = this.maxHealth;
+      this.speed = data.speed || balance.speed || 285; this.power = data.power || balance.power || 1; this.jumpHeight = data.jumpHeight || balance.jumpHeight || 710;
+      this.energy = 20; this.damageDealt = 0; this.isPlayer = isPlayer; this.height = data.fullBody ? 234 : 160;
       this.attack = null; this.attackTimer = 0; this.attackHit = false; this.hitstun = 0;
       this.hurtFlash = 0; this.blocking = false; this.crouching = false; this.comboCount = 0;
       this.comboTimer = 0; this.aiClock = 0; this.aiBlock = 0; this.aiAttack = null;
@@ -371,7 +387,7 @@
     }
     get grounded() { return this.y >= GROUND - 1; }
     reset(x, facing) {
-      this.x = x; this.y = GROUND; this.vx = 0; this.vy = 0; this.facing = facing; this.health = 100; this.energy = 20; this.damageDealt = 0;
+      this.x = x; this.y = GROUND; this.vx = 0; this.vy = 0; this.facing = facing; this.health = this.maxHealth; this.energy = 20; this.damageDealt = 0;
       this.attack = null; this.attackTimer = 0; this.attackHit = false; this.hurtFlash = 0; this.currentAttackSpec = null;
       this.blocking = false; this.crouching = false; this.comboCount = 0; this.comboTimer = 0;
       this.aiClock = 0; this.aiBlock = 0; this.aiAttack = null; this.aiMove = 0; this.specialSpin = 0; this.specialSpinAngle = 0;
@@ -380,11 +396,14 @@
       if (!type || this.attack || this.hitstun > 0 || !this.grounded || !attackData[type]) return false;
       if (type === "super" && this.energy < 100) { if (this.isPlayer) announce("SHAKTI NOT READY", 0.65, "#f1cb73"); return false; }
       this.attack = type;
-      this.currentAttackSpec = type === "super" && this.id === "dozer" ? { ...attackData.super, duration: 1.30, activeStart: .64, activeEnd: .96, damage: 38, range: 310, knockback: 480 }
+      const baseSpec = type === "super" && this.id === "dozer" ? { ...attackData.super, duration: 1.30, activeStart: .64, activeEnd: .96, damage: 38, range: 310, knockback: 480 }
         : type === "super" && this.id === "yatra" ? { ...attackData.super, duration: 1.28, activeStart: .58, activeEnd: .91, damage: 34, range: 280, knockback: 365 }
-          : type === "super" && this.id === "mbapu" ? { ...attackData.super, duration: 1.18, activeStart: .53, activeEnd: .79, damage: 36, range: 168, knockback: 280 }
+        : type === "super" && this.id === "mbapu" ? { ...attackData.super, duration: 1.18, activeStart: .53, activeEnd: .79, damage: 36, range: 168, knockback: 280 }
         : type === "super" && this.id === "mitraman" ? { ...attackData.super, duration: 1.02, activeStart: .34, activeEnd: .68, damage: 28, range: 286, knockback: 330 }
+        : type === "super" && this.id === "gharmantri" ? { ...attackData.super, duration: 1.12, activeStart: .42, activeEnd: .72, damage: 33, range: 268, knockback: 325 }
+        : type === "super" && this.id === "factbhai" ? { ...attackData.super, duration: 1.04, activeStart: .38, activeEnd: .70, damage: 30, range: 290, knockback: 300 }
           : attackData[type];
+      this.currentAttackSpec = { ...baseSpec, damage: Math.round(baseSpec.damage * this.power) };
       this.attackTimer = this.currentAttackSpec.duration; this.attackHit = false; this.blocking = false;
       if (type === "super") {
         this.energy = 0; announce(this.special, 1.05, this.accent);
@@ -394,6 +413,8 @@
         if (this.id === "mitraman") this.vy = -255;
         if (this.id === "dozer") game.effects.push({ type: "bulldozer", x: this.x - this.facing * 170, y: GROUND - 31, vx: this.facing * 540, life: 1.62, max: 1.62, facing: this.facing, color: "#f0a92e" });
         if (this.id === "yatra") game.effects.push({ type: "aloo-machine", x: this.x + this.facing * 138, y: GROUND, life: 1.35, max: 1.35, age: 0, facing: this.facing, color: "#d9983d" });
+        if (this.id === "gharmantri") game.effects.push({ type: "shadow-step", x: this.x + this.facing * 86, y: GROUND - 12, life: .58, max: .58, color: this.accent });
+        if (this.id === "factbhai") game.effects.push({ type: "fact-flash", x: this.x + this.facing * 132, y: this.y - 112, life: .62, max: .62, color: this.accent, dir: this.facing });
       }
       playActionSound(type); return true;
     }
@@ -401,15 +422,16 @@
       if (this.hitstun > 0 || this.health <= 0) return;
       const blocked = this.blocking && this.grounded && attackType !== "grab" && attackType !== "super";
       const actual = blocked ? amount * 0.18 : amount;
-      this.health = clamp(this.health - actual, 0, 100);
+      this.health = clamp(this.health - actual, 0, this.maxHealth);
       if (attacker && typeof attacker.damageDealt === "number") attacker.damageDealt += actual;
       this.energy = clamp(this.energy + (blocked ? 7 : amount * 0.92), 0, 100);
       this.hitstun = blocked ? 0.10 : attackType === "super" ? 0.48 : 0.24;
       this.hurtFlash = blocked ? 0.10 : 0.18;
-      this.vx = attacker.facing * (blocked ? 42 : attackData[attackType].knockback);
+      this.vx = attacker.facing * (blocked ? 42 : attacker.currentAttackSpec?.knockback || attackData[attackType].knockback);
       if (!blocked) {
         this.vy = attackType === "super" ? -220 : attackType === "kick" ? -95 : -65;
         game.shake = attackType === "super" ? 17 : 6;
+        game.hitStop = Math.max(game.hitStop || 0, attackType === "super" ? .11 : .075);
         spawnImpact(this.x, this.y - 94, attackData[attackType].color, attackType === "super" ? 1.55 : 1);
         playImpactSound(attackType);
       } else {
@@ -458,8 +480,8 @@
         this.crouching = !!input.down && this.grounded;
         this.blocking = !!input.block && this.grounded && !this.crouching;
         if (input.attack) this.perform(input.attack);
-        if (input.jump && this.grounded && !this.crouching) { this.vy = -710; playTone(360, 0.055, "sine"); }
-        if (!this.blocking && !this.crouching && !this.attack) this.vx = lerp(this.vx, dir * 285, Math.min(1, dt * 12));
+        if (input.jump && this.grounded && !this.crouching) { this.vy = -this.jumpHeight; playTone(360, 0.055, "sine"); }
+        if (!this.blocking && !this.crouching && !this.attack) this.vx = lerp(this.vx, dir * this.speed, Math.min(1, dt * 12));
         else if (this.blocking) this.vx = lerp(this.vx, 0, Math.min(1, dt * 16));
         else this.vx = lerp(this.vx, 0, Math.min(1, dt * 14));
       } else { this.blocking = false; this.crouching = false; this.vx = lerp(this.vx, 0, Math.min(1, dt * 4)); }
@@ -494,8 +516,8 @@
     const distance = Math.abs(player.x - cpu.x); cpu.aiClock -= dt;
     if (cpu.aiClock <= 0) {
       const difficulty = settings.difficulty;
-      const reaction = difficulty === "easy" ? 0.50 : difficulty === "hard" ? 0.20 : 0.33;
-      cpu.aiClock = reaction + Math.random() * 0.19; cpu.aiMove = distance > 142 ? Math.sign(player.x - cpu.x) : 0; cpu.aiAttack = null;
+      const reactionFrames = difficulty === "easy" ? 25 : difficulty === "hard" ? 6 : 14;
+      cpu.aiClock = reactionFrames / 60 + Math.random() * (difficulty === "easy" ? .05 : .035); cpu.aiMove = distance > 142 ? Math.sign(player.x - cpu.x) : 0; cpu.aiAttack = null;
       const blockChance = difficulty === "easy" ? 0.32 : difficulty === "hard" ? 0.72 : 0.52;
       if (player.attack && distance < 160 && Math.random() < blockChance) cpu.aiBlock = difficulty === "hard" ? 0.42 : 0.26;
       else if (distance < 152) {
@@ -577,6 +599,7 @@
 
   function updateFight(dt) {
     if (!game || game.phase === "result" || game.phase === "orientation" || game.paused) return;
+    if (game.hitStop > 0 && game.phase === "fight" && game.intro <= 0) { game.hitStop = Math.max(0, game.hitStop - dt); return; }
     game.elapsed += dt;
     game.commentaryClock -= dt;
     if (game.commentaryClock <= 0) updateCommentary();
@@ -597,7 +620,12 @@
 
   function updateHud() {
     if (!player || !cpu || !game) return;
-    ui.playerHealth.style.width = `${player.health}%`; ui.cpuHealth.style.width = `${cpu.health}%`;
+    const playerVitality = player.health / player.maxHealth * 100, cpuVitality = cpu.health / cpu.maxHealth * 100;
+    if (!game.healthGhost) game.healthGhost = { player: playerVitality, cpu: cpuVitality };
+    game.healthGhost.player = playerVitality >= game.healthGhost.player ? playerVitality : Math.max(playerVitality, game.healthGhost.player - 40 / 60);
+    game.healthGhost.cpu = cpuVitality >= game.healthGhost.cpu ? cpuVitality : Math.max(cpuVitality, game.healthGhost.cpu - 40 / 60);
+    ui.playerHealth.style.width = `${playerVitality}%`; ui.cpuHealth.style.width = `${cpuVitality}%`;
+    ui.playerHealthGhost.style.width = `${game.healthGhost.player}%`; ui.cpuHealthGhost.style.width = `${game.healthGhost.cpu}%`;
     ui.playerEnergy.style.width = `${player.energy}%`; ui.cpuEnergy.style.width = `${cpu.energy}%`;
     ui.playerEnergy.parentElement.classList.toggle("super-ready", player.energy >= 100);
     ui.cpuEnergy.parentElement.classList.toggle("super-ready", cpu.energy >= 100);
@@ -990,6 +1018,16 @@
         const radius = 24 + (1 - alpha) * 120; ctx.translate(effect.x, effect.y); ctx.rotate(effect.spin);
         ctx.strokeStyle = effect.color; ctx.shadowColor = effect.color; ctx.shadowBlur = 20; ctx.lineWidth = 8 * alpha + 2;
         ctx.beginPath(); ctx.ellipse(0, 0, radius, radius * .25, 0, 0, Math.PI * 2); ctx.stroke();
+      } else if (effect.type === "shadow-step") {
+        ctx.translate(effect.x, effect.y); ctx.shadowColor = effect.color; ctx.shadowBlur = 24;
+        ctx.fillStyle = "#101a22"; ctx.beginPath(); ctx.ellipse(0, 0, 36 + (1 - alpha) * 40, 10 + (1 - alpha) * 13, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = effect.color; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(0, -5, 31 + (1 - alpha) * 33, 11 + (1 - alpha) * 13, 0, 0, Math.PI * 2); ctx.stroke();
+        for (let i = 0; i < 4; i += 1) { ctx.fillStyle = effect.color; ctx.globalAlpha *= .72; ctx.fillRect(-22 + i * 13, -43 - i * 8, 4, 23); }
+      } else if (effect.type === "fact-flash") {
+        ctx.translate(effect.x, effect.y); ctx.scale(effect.dir, 1); ctx.shadowColor = effect.color; ctx.shadowBlur = 24;
+        ctx.fillStyle = "#e9fffc"; ctx.beginPath(); ctx.moveTo(-15, -7); ctx.lineTo(48, -14); ctx.lineTo(146, 0); ctx.lineTo(48, 14); ctx.lineTo(-15, 7); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = effect.color; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(146, 0); ctx.stroke();
+        ctx.fillStyle = "#15394a"; ctx.font = "1000 12px Trebuchet MS"; ctx.textAlign = "center"; ctx.fillText("FACT CHECK", 64, -20);
       } else if (effect.type === "paper") {
         ctx.translate(effect.x, effect.y); ctx.rotate(effect.spin); ctx.fillStyle = effect.color; ctx.fillRect(-7, -4, 14, 9); ctx.strokeStyle = "#c9bda3"; ctx.lineWidth = .7; ctx.strokeRect(-7, -4, 14, 9);
       } else if (effect.type === "blast") {
@@ -1073,8 +1111,15 @@
   }
 
   function gameLoop(now) {
-    const dt = Math.min(.034, (now - lastFrame) / 1000); lastFrame = now;
-    updateFight(dt); render(now / 1000); justPressed.clear(); requestAnimationFrame(gameLoop);
+    const elapsed = Math.min(.10, Math.max(0, (now - lastFrame) / 1000)); lastFrame = now;
+    frameAccumulator = Math.min(frameAccumulator + elapsed, FIXED_STEP * 5);
+    let steps = 0;
+    while (frameAccumulator >= FIXED_STEP && steps < 5) {
+      updateFight(FIXED_STEP);
+      frameAccumulator -= FIXED_STEP; steps += 1;
+      justPressed.clear();
+    }
+    render(now / 1000); requestAnimationFrame(gameLoop);
   }
 
   function togglePause() {

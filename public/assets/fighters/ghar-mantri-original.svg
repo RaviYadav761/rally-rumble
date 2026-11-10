@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384">
+ <defs><linearGradient id="coat" x2="0" y2="1"><stop stop-color="#378d66"/><stop offset="1" stop-color="#14503f"/></linearGradient><linearGradient id="cape" x2="0" y2="1"><stop stop-color="#253c46"/><stop offset="1" stop-color="#101e2a"/></linearGradient></defs>
+ <ellipse cx="128" cy="370" rx="61" ry="9" fill="#090d17" opacity=".4"/>
+ <!-- Original fictional strategist with a chess-inspired shoulder cape and briefing folio. -->
+ <path d="M87 243 57 349q0 13 12 15h40l18-76 17 76h42q11-5 8-16l-31-109z" fill="#172d32" stroke="#111821" stroke-width="8" stroke-linejoin="round"/>
+ <path d="M62 349h47l-3 17H62q-9-7 0-17m83 0h45q9 8 0 17h-43z" fill="#b8a57e" stroke="#18252b" stroke-width="5"/>
+ <path d="M82 146 53 195l22 105q50 23 107 0l20-104-29-50z" fill="url(#coat)" stroke="#18252b" stroke-width="9" stroke-linejoin="round"/>
+ <path d="M83 150 43 174l-6 49 39 8 22-49m77-31 38 28 4 45-39 7-21-47" fill="url(#cape)" stroke="#111a25" stroke-width="10" stroke-linejoin="round"/>
+ <path d="m112 151 16 18 17-18-5 119-13 14-15-14z" fill="#d7c79e" stroke="#273438" stroke-width="5"/>
+ <path d="M101 189h53m-50 15h47m-45 15h42" stroke="#285b47" stroke-width="5"/>
+ <path d="M89 242 66 256l15 20 27-10m57-24 27 12-13 20-28-12" fill="#3d9d70" stroke="#17252d" stroke-width="9" stroke-linejoin="round"/>
+ <rect x="42" y="235" width="43" height="54" rx="5" fill="#bfab7a" stroke="#243537" stroke-width="6" transform="rotate(-9 42 235)"/>
+ <path d="M53 250h21m-22 9h19m-17 9h15" stroke="#4b604a" stroke-width="4" stroke-linecap="round"/>
+ <path d="M84 81q3-39 44-43 43 3 46 46l-7 47q-8 43-40 45-35-3-42-44z" fill="#b97f61" stroke="#263338" stroke-width="8"/>
+ <path d="M79 110q-12-50 17-72 18-14 48-8 29 5 39 33l-3 47-17-27-61 9-11 37z" fill="#282522" stroke="#263338" stroke-width="7" stroke-linejoin="round"/>
+ <path d="M85 85q15-28 48-29 34 0 48 25l-2 12q-52-16-96 8z" fill="#d6b46c" stroke="#263338" stroke-width="7"/>
+ <path d="M101 119q10-6 20 0m15 0q10-6 20 0" fill="none" stroke="#263338" stroke-width="5" stroke-linecap="round"/>
+ <path d="M117 148q10 7 21 0" fill="none" stroke="#684238" stroke-width="4" stroke-linecap="round"/>
+ <path d="M165 112h12" stroke="#f2d477" stroke-width="4"/><circle cx="181" cy="112" r="4" fill="#f2d477"/>
+ <path d="m125 173 3 9 10 1-8 6 3 10-8-6-9 5 4-10-7-6 10-1z" fill="#efc75f"/>
+</svg>
