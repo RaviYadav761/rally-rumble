@@ -16,11 +16,11 @@ Recreate the supplied 3D-looking browser fighting game as closely as practical f
 - [x] **Rounds/results:** announce Round 1/2, show timer resets and arena-integrated round/result text, with a large `YOU LOSE`/winner pose and working rematch/character-select actions.
 - [x] **Audio:** original generic Hindi/Hinglish narrator clips for round starts and signature specials, plus light fight impacts/crowd feel. Reference video audio is not bundled and no identifiable real voice is cloned.
 - [x] **Performance/responsiveness:** touch-safe controls, usable desktop keyboard, portrait gate/landscape resume, optional fullscreen, frame delta cap and no console errors in local browser smoke checks.
-- [ ] **Publish and verify:** push the final build to GitHub and confirm the exact Vercel production URL serves it. Local syntax, desktop/mobile-browser flow, special-move rendering, and new-asset HTTP checks passed. Physical Android validation has not been performed.
+- [x] **Publish and verify:** final game build pushed to GitHub `main`; `https://rally-rumble-i8od.vercel.app/` returned HTTP 200, served JavaScript matched the local file exactly, all new game assets and 12 announcer URLs resolved, and a fresh browser reached the fight HUD without page errors. Physical Android validation has not been performed.
 
-## Verified local evidence
+## Verified evidence
 
-Desktop Chromium completed selection → loading → fight → pause/resume → two rounds → result with no page errors or failed requests. Portrait touch emulation displayed the rotate gate and hid touch controls; rotating to landscape removed the gate and enabled touch controls once play began. Dozer's bulldozer and Yatra's machine/potato/gold-bar specials were visually checked. New pose, stage, special-effect and announcer assets returned HTTP 200 locally.
+Desktop Chromium completed selection → loading → fight → pause/resume → two rounds → result with no page errors or failed requests. Portrait touch emulation displayed the rotate gate and hid touch controls; rotating to landscape removed the gate and enabled touch controls once play began. Dozer's bulldozer and Yatra's machine/potato/gold-bar specials were visually checked. New pose, stage, special-effect and announcer assets returned HTTP 200 locally and online.
 
 ## Known fidelity boundary
 

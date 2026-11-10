@@ -45,4 +45,4 @@ Dozer/Yatra cutouts and pose variants, the Sansad arena, and special-move props 
 
 ## Deployment
 
-The Vercel static-output configuration is in `vercel.json` (`outputDirectory: "."`). The requested production URL is `https://rally-rumble-i8od.vercel.app/`; its status must be checked after the final GitHub push before claiming this revision is live. No domain has been changed or repointed.
+The Vercel static-output configuration is in `vercel.json` (`outputDirectory: "."`). The requested production URL is [`rally-rumble-i8od.vercel.app`](https://rally-rumble-i8od.vercel.app/). After the final game-code push, the public homepage returned HTTP 200, the served `game.js` SHA-256 matched the repository exactly, the new pose/effect assets and all 12 announcer URLs returned HTTP 200, and a desktop browser reached the fight HUD without page errors. No domain was changed or repointed.

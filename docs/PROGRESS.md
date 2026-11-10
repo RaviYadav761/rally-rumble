@@ -1,15 +1,16 @@
 # Rally Rumble — progress
 
-## 2026-11-10 — reference pose and final local QA pass
+## 2026-11-10 — reference pose, local QA and public release
 
-- Added four optimized transparent WebP pose assets: Dozer idle/punch and Yatra idle/kick. Dozer switches to the attack silhouette during the punch's active timing window; Yatra switches to the extended kick silhouette during the kick's active window. Idle sprites and the full-body fallback remain in place. Other fighters retain the Canvas joint rig.
-- Rechecked the Dozer bulldozer and Yatra aloo-to-sona supers in Chromium. The Yatra sequence shows the custom green machine, potato and falling gold bars; generated props and pose cutouts are shipped as optimized WebP rather than multi-megabyte PNG intermediates.
-- Added the locally bundled `aloo-sona.mp3` cue; the announcer set now contains 12 original generic Hindi clips for round starts, specials, meme-style cues, warnings and results. No real-person voice is cloned and no source-video audio is copied.
+- Added four optimized transparent WebP pose assets: Dozer idle/punch and Yatra idle/kick. Dozer switches to the attack silhouette during the punch's active timing window; Yatra switches to the extended kick silhouette during the kick's active window. Other fighters retain the Canvas joint rig.
+- The Dozer bulldozer and Yatra aloo-to-sona supers were visually checked in Chromium. Yatra's sequence shows the custom green machine, potato and falling gold bars. Generated props and pose cutouts are shipped as optimized WebP rather than multi-megabyte PNG intermediates.
+- Added the locally bundled `aloo-sona.mp3` cue; there are 12 original generic Hindi clips for round starts, specials, meme-style cues, warnings and results. No real-person voice is cloned and no source-video audio is copied.
 - Desktop Chromium passed selection → loading → fight → pause/resume → two round wins → result. The test verified the default Dozer Dada vs Yatra Boy selection, all four pose images loaded, and no browser exceptions or failed requests.
 - Touch-phone emulation verified that portrait displays the rotate gate and hides touch controls; after switching to landscape, the gate closes, the match can start, and touch controls appear. This is a browser emulation check, not physical Android testing.
-- `node --check game.js`, `git diff --check`, and local HTTP 200 checks for the new pose, special-effect, stage and announcer assets passed.
+- `node --check game.js`, `git diff --check`, all 12 MP3 decode checks, and local HTTP 200 checks for the new pose, special-effect, stage and announcer assets passed.
 
-## Deployment status
+## Public deployment verification
 
-- `vercel.json` uses `outputDirectory: "."`; that configuration is already committed on `main`. The remaining release step is to push the new game/asset changes and smoke-test the exact user URL `https://rally-rumble-i8od.vercel.app/` for the new build. Do not claim the revision is live until that public check passes.
-- No Vercel domains are to be repointed. Physical Android/fullscreen behavior and performance on real devices remain unverified.
+The game update was pushed to GitHub `main` in commit `f6db0bdff7277b5c979fd758bb05c04f1c2a85da`. The exact production URL `https://rally-rumble-i8od.vercel.app/` returned HTTP 200 with title `Rally Rumble — Select Your Neta`. Its deployed `game.js` SHA-256 was exactly identical to this repository's file (`ca4f7c823f4fa69f7fb3e792dfa100334712fb6420272b781fc0b4dad59845bf`). New pose/effect/stage assets and all 12 announcer URLs returned HTTP 200; the browser's audio streaming responses were successful partial-content responses. A fresh production-browser session reached the fight HUD with no page errors or failed requests.
+
+No Vercel domains were changed or repointed. Physical Android/fullscreen behavior and performance on real devices remain unverified.
