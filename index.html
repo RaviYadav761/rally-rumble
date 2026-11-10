@@ -3,174 +3,148 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#080f2a" />
-    <meta name="description" content="Sansad Showdown: a fictional political-satire Diwali fighter. Pick a neta, dodge the Sutli Bomb, and win the night." />
-    <title>Sansad Showdown — Diwali Fight Night</title>
+    <meta name="theme-color" content="#090b1a" />
+    <meta name="description" content="A fictional political-satire fighting game inspired by a user-supplied gameplay sample." />
+    <title>Rally Rumble — Select Your Neta</title>
     <link rel="icon" type="image/png" sizes="64x64" href="favicon.png" />
     <link rel="alternate icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="preload" as="image" href="public/assets/stages/sansar-diwas.webp" />
+    <link rel="preload" as="image" href="public/assets/stages/sansad-match-reference.webp" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="game-shell" aria-label="Rally Rumble browser game">
-      <div class="topbar">
-        <div class="brand"><span class="brand-mark">RR</span><span>RALLY RUMBLE</span></div>
-        <div class="topbar-note">SANSAD SHOWDOWN <i></i> DIWALI FIGHT NIGHT</div>
-        <div class="topbar-actions">
-          <button class="icon-button" id="musicTrackToggle" aria-label="Change soundtrack">MUSIC · TRACK</button>
-          <button class="icon-button" id="fullScreenToggle" aria-label="Enter full screen">⛶ FULLSCREEN</button>
-          <button class="icon-button" id="soundToggle" aria-label="Toggle music and game sound" aria-pressed="true">AUDIO ON</button>
-        </div>
-      </div>
+    <main class="game-shell" aria-label="Rally Rumble fictional satire fighting game">
       <section class="game-wrap" aria-label="Game arena">
-        <canvas id="gameCanvas" width="960" height="540" aria-label="Rally Rumble fictional satire fighting arena"></canvas>
-        <div id="hud" class="hud hidden" aria-live="polite">
+        <canvas id="gameCanvas" width="960" height="540" aria-label="Fictional fighting game arena"></canvas>
+
+        <div id="hud" class="hud hidden">
           <div class="fighter-hud player-hud">
-            <img class="hud-portrait" id="playerPortrait" alt="" />
             <div class="hud-details">
-              <div class="hud-name"><span id="playerName">MBAPU</span><span class="player-tag">1P</span></div>
-              <div class="meter-caption"><span>SHAKTI</span><span>VITALITY</span></div>
+              <div class="hud-name"><span id="playerName">DOZER DADA</span><span class="player-tag">1P</span></div>
               <div class="bar health-bar" aria-label="Player vitality"><span id="playerHealth"></span></div>
+              <div class="meter-caption"><span>SHAKTI</span><span>VITALITY</span></div>
               <div class="bar energy-bar" aria-label="Player Shakti meter"><span id="playerEnergy"></span></div>
               <div id="playerRounds" class="round-pips" aria-label="Player round wins"><i></i><i></i></div>
             </div>
+            <img class="hud-portrait" id="playerPortrait" alt="" />
           </div>
-          <div class="round-center"><span id="roundLabel">ROUND 1</span><strong id="timer">60</strong><small id="comboText"></small></div>
+          <div class="round-center">
+            <strong id="timer">60</strong>
+            <button id="pauseButton" class="pause-button" aria-label="Pause match">Ⅱ</button>
+            <span id="roundLabel">ROUND 1</span>
+            <small id="comboText"></small>
+          </div>
           <div class="fighter-hud cpu-hud">
             <img class="hud-portrait" id="cpuPortrait" alt="" />
             <div class="hud-details">
-              <div class="hud-name"><span class="cpu-tag" id="cpuTag">CPU</span><span id="cpuName">MITRAMAN</span></div>
-              <div class="meter-caption"><span>VITALITY</span><span>SHAKTI</span></div>
+              <div class="hud-name"><span class="cpu-tag" id="cpuTag">CPU</span><span id="cpuName">YATRA BOY</span></div>
               <div class="bar health-bar" aria-label="Opponent vitality"><span id="cpuHealth"></span></div>
+              <div class="meter-caption"><span>VITALITY</span><span>SHAKTI</span></div>
               <div class="bar energy-bar" aria-label="Opponent Shakti meter"><span id="cpuEnergy"></span></div>
               <div id="cpuRounds" class="round-pips cpu-pips" aria-label="Opponent round wins"><i></i><i></i></div>
             </div>
           </div>
         </div>
+        <div id="gameStatus" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
         <div id="fightAnnouncement" class="fight-announcement hidden" aria-live="assertive"></div>
         <div id="bombWarning" class="bomb-warning hidden" role="alert"><b>SUTLI BOMB</b><span>Ring se bahar bhaago!</span></div>
+        <div id="shaktiReady" class="shakti-ready hidden">SHAKTI READY</div>
+        <div id="battleResult" class="battle-result hidden" role="status" aria-live="assertive"><strong id="battleResultTitle">YOU LOSE</strong><span id="battleResultLine">YATRA BOY WINS THE ROUND</span></div>
 
-        <div id="titleScreen" class="screen title-screen">
-          <div class="title-copy">
-            <p class="eyebrow">SANSAR · DIWALI NIGHT</p>
-            <h1>SANSAD<br /><em>SHOWDOWN</em></h1>
-            <p class="lede">Diyas lit. Gloves on. One unforgettable, fictional fight night beneath the Sansad lights.</p>
-            <button class="primary-button" id="startButton">SELECT YOUR NETA <span>ENTER ↗</span></button>
-            <p class="microcopy">A / D MOVE · W JUMP · J PUNCH · K KICK · I GRAB · L SUPER</p>
-            <p class="satire-note">A playful game parody. All fight scenarios and announcer lines are fictional; no person or party is affiliated with or endorsing the game.</p>
-            <details class="credits-panel"><summary>ASSET CREDITS & LICENSES</summary><p>Original generated arenas. Licensed portraits and tracks are credited in the <a href="public/assets/CREDITS.md" target="_blank" rel="noopener">full credits file</a>; no person or creator endorses this game.</p></details>
-          </div>
-          <div class="title-art" aria-hidden="true">
-            <div class="sun-disc"></div><div class="poster-word">FIGHT!</div>
-            <div class="hero-silhouette hero-neon"></div><div class="hero-silhouette hero-road"></div>
-            <div class="burst burst-a"></div><div class="burst burst-b"></div>
-            <div class="art-lantern lantern-a"></div><div class="art-lantern lantern-b"></div>
-          </div>
+        <div id="titleScreen" class="screen title-screen hidden" aria-hidden="true">
+          <div class="title-copy"><p class="eyebrow">RALLY RUMBLE</p><h1>SANSAD SHOWDOWN</h1><button class="primary-button" id="startButton">SELECT YOUR NETA</button></div>
         </div>
 
-        <div id="selectScreen" class="screen select-screen hidden">
-          <div class="select-heading">
-            <div><p class="eyebrow">PICK YOUR CORNER · <span id="modeLabel">1P VS CPU</span></p><h2>SELECT YOUR NETA</h2></div>
-            <span class="roster-hint">SCROLL ROSTER ↓</span>
-            <button class="text-button" id="backToTitle">BACK</button>
-          </div>
-          <div class="select-grid" aria-label="Fighter roster">
-            <button class="fighter-card" data-fighter="tariff" aria-label="Choose Tariff Taau">
-              <span class="card-ribbon">1P · YOU</span><img class="card-portrait" src="public/assets/fighters/tariff-taau.webp" alt="" /><strong>TARIFF TAAU</strong><small>THE DEALMAKER</small>
-              <span class="stats" aria-label="Speed, power, spirit"><i style="width:71%"></i><i style="width:88%"></i><i style="width:74%"></i></span>
-            </button>
-            <button class="fighter-card" data-fighter="yatra" aria-label="Choose Yatra Boy">
-              <span class="card-ribbon">CPU RIVAL</span><img class="card-portrait" src="public/assets/fighters/yatra-boy.webp" alt="" /><strong>YATRA BOY</strong><small>THE PEOPLE'S ROADRUNNER</small>
-              <span class="stats" aria-label="Speed, power, spirit"><i style="width:86%"></i><i style="width:72%"></i><i style="width:80%"></i></span>
-            </button>
-            <button class="fighter-card" data-fighter="mbapu" aria-label="Choose Mbapu">
-              <span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/mbapu.webp" alt="" /><strong>MBAPU</strong><small>THE SAGE OF SABAR</small>
-              <span class="stats" aria-label="Speed, power, spirit"><i style="width:91%"></i><i style="width:62%"></i><i style="width:96%"></i></span>
-            </button>
-            <button class="fighter-card" data-fighter="mitraman" aria-label="Choose Mitraman">
-              <span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/mitraman.webp" alt="" /><strong>MITRAMAN</strong><small>THE FESTIVAL STATESMAN</small>
-              <span class="stats" aria-label="Speed, power, spirit"><i style="width:74%"></i><i style="width:86%"></i><i style="width:88%"></i></span>
-            </button>
-            <button class="fighter-card" data-fighter="deedee" aria-label="Choose Deedee">
-              <span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/deedee.webp" alt="" /><strong>DEEDEE</strong><small>THE BLUE-BORDER BOSS</small>
-              <span class="stats" aria-label="Speed, power, spirit"><i style="width:89%"></i><i style="width:70%"></i><i style="width:82%"></i></span>
-            </button>
-            <button class="fighter-card" data-fighter="toka" aria-label="Choose Toka Man">
-              <span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/toka-man.webp" alt="" /><strong>TOKA MAN</strong><small>THE PEOPLE'S AUDITOR</small>
-              <span class="stats" aria-label="Speed, power, spirit"><i style="width:82%"></i><i style="width:75%"></i><i style="width:84%"></i></span>
-            </button>
-            <button class="fighter-card" data-fighter="suttibabu" aria-label="Choose Sutti Babu">
-              <span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/sutti-babu.webp" alt="" /><strong>SUTTI BABU</strong><small>THE QUIET TACTICIAN</small>
-              <span class="stats" aria-label="Speed, power, spirit"><i style="width:68%"></i><i style="width:80%"></i><i style="width:91%"></i></span>
-            </button>
-            <button class="fighter-card" data-fighter="akhilesh" aria-label="Choose Akhilesh Yadav">
-              <span class="card-ribbon">CPU RIVAL</span><img class="card-portrait" src="public/assets/portraits/akhilesh-yadav.webp" alt="" /><strong>AKHILESH YADAV</strong><small>THE CYCLE RALLY ACE</small>
-              <span class="stats" aria-label="Speed, power, spirit"><i style="width:84%"></i><i style="width:75%"></i><i style="width:78%"></i></span>
-            </button>
-            <button class="fighter-card" data-fighter="shanti" aria-label="Choose Shanti Sage">
-              <span class="card-ribbon">AVAILABLE</span><span class="card-avatar avatar-shanti" aria-hidden="true"></span><strong>SHANTI SAGE</strong><small>THE PEACEFUL PUGILIST</small>
-              <span class="stats" aria-label="Speed, power, spirit"><i style="width:78%"></i><i style="width:62%"></i><i style="width:88%"></i></span>
-            </button>
-            <button class="fighter-card" data-fighter="kesar" aria-label="Choose Kesar Kaka">
-              <span class="card-ribbon">AVAILABLE</span><span class="card-avatar avatar-kesar" aria-hidden="true"></span><strong>KESAR KAKA</strong><small>THE FESTIVAL FRONTMAN</small>
-              <span class="stats" aria-label="Speed, power, spirit"><i style="width:70%"></i><i style="width:86%"></i><i style="width:76%"></i></span>
-            </button>
-            <div class="cpu-preview">
-              <span class="vs-stamp">VS</span><p id="rivalLabel">CPU OPPONENT</p><strong id="cpuPreviewName">YATRA BOY</strong>
-              <button class="cpu-cycle" id="cpuCycle" aria-label="Choose next CPU opponent">CHANGE RIVAL ↻</button>
-              <small>SMART STREET AI</small>
+        <div id="selectScreen" class="screen select-screen">
+          <header class="select-heading">
+            <div class="select-help">PICK A FACE: 1P, THEN CPU · A/D OR ←/→ MOVE · W/↑ JUMP · J PUNCH · K KICK · L/SPACE SUPER</div>
+            <h1>SELECT YOUR NETA</h1>
+            <span class="mode-label" id="modeLabel">1P VS CPU</span>
+            <div class="select-tools" aria-label="Game settings">
+              <button class="icon-button" id="musicTrackToggle" aria-label="Change soundtrack">MUSIC</button>
+              <button class="icon-button" id="fullScreenToggle" aria-label="Enter full screen">⛶</button>
+              <button class="icon-button" id="soundToggle" aria-label="Toggle music and game sound" aria-pressed="true">SOUND ON</button>
+            </div>
+          </header>
+          <div class="select-preview">
+            <div class="preview-fighter preview-player">
+              <span class="preview-badge">1P · YOU</span>
+              <img id="selectPlayerImage" src="public/assets/fighters/dozer-reference-cutout.webp" alt="Dozer Dada full-body preview" />
+              <strong id="selectPlayerName">DOZER DADA</strong>
+              <small>PLAYER ONE</small>
+            </div>
+            <div class="preview-vs">VS</div>
+            <div class="preview-fighter preview-cpu">
+              <span class="preview-badge cpu-badge">CPU · RIVAL</span>
+              <img id="selectCpuImage" src="public/assets/fighters/yatra-reference-cutout.webp" alt="Yatra Boy full-body preview" />
+              <strong id="selectCpuName">YATRA BOY</strong>
+              <small id="rivalLabel">CPU OPPONENT</small>
             </div>
           </div>
+          <div id="selectLoading" class="select-loading hidden" aria-live="polite">
+            <strong id="selectLoadingText">DOWNLOADING DOZER DADA…</strong>
+            <span class="loading-track"><i id="selectLoadingBar"></i></span>
+          </div>
+          <div class="roster-row" aria-label="Fighter roster">
+            <button class="fighter-card" data-fighter="mitraman" aria-label="Choose Mitraman"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/mitraman.webp" alt="" /><strong>MITRAMAN</strong></button>
+            <button class="fighter-card" data-fighter="yatra" aria-label="Choose Yatra Boy"><span class="card-ribbon">CPU</span><img class="card-portrait" src="public/assets/fighters/yatra-boy.webp" alt="" /><strong>YATRA BOY</strong></button>
+            <button class="fighter-card" data-fighter="deedee" aria-label="Choose Deedee"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/deedee.webp" alt="" /><strong>DEDEE</strong></button>
+            <button class="fighter-card" data-fighter="tariff" aria-label="Choose Tariff Tail"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/tariff-taau.webp" alt="" /><strong>TARIFF TAIL</strong></button>
+            <button class="fighter-card" data-fighter="dozer" aria-label="Choose Dozer Dada"><span class="card-ribbon">1P · YOU</span><img class="card-portrait" src="public/assets/fighters/dozer-reference-cutout.webp" alt="" /><strong>DOZER DADA</strong></button>
+            <button class="fighter-card" data-fighter="tollman" aria-label="Choose Toll Man"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/toka-man.webp" alt="" /><strong>TOLL MAN</strong></button>
+            <button class="fighter-card" data-fighter="suttibabu" aria-label="Choose Sutti Babu"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/sutti-babu.webp" alt="" /><strong>SUTTI BABU</strong></button>
+            <button class="fighter-card" data-fighter="railraja" aria-label="Choose Rail Raja"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/tariff-taau.webp" alt="" /><strong>RAIL RAJA</strong></button>
+            <button class="fighter-card" data-fighter="mbapu" aria-label="Choose Mbapu"><span class="card-ribbon">AVAILABLE</span><img class="card-portrait" src="public/assets/fighters/mbapu.webp" alt="" /><strong>MBAPU</strong></button>
+            <button class="fighter-card random-card" data-fighter="random" aria-label="Choose random fighter"><span class="card-ribbon">SURPRISE</span><span class="random-mark">?</span><strong>RANDOM</strong></button>
+          </div>
           <div class="select-controls">
-            <div class="option-row"><span>ARENA</span><button class="option active" data-stage="sansar">SANSAR</button><button class="option" data-stage="assembly">JAN SABHA MAIDAN</button><button class="option" data-stage="market">JANTAR PLAZA</button></div>
-            <div class="option-row"><span>MODE</span><button class="option active" data-mode="cpu">PLAY VS CPU</button><button class="option" data-mode="friend">PLAY WITH A FRIEND</button></div>
-            <div class="option-row"><span>CPU</span><button class="option" data-difficulty="easy">EASY</button><button class="option active" data-difficulty="normal">NORMAL</button><button class="option" data-difficulty="hard">HARD</button></div>
+            <div class="option-row stage-options"><b>STAGE</b><button class="option active" data-stage="sansar">SANSAD</button><button class="option" data-stage="assembly">JANTAR MANTAR</button><button class="option" data-stage="market">DESI SADAK</button></div>
+            <div class="option-row mode-options"><b>MODE</b><button class="option active" data-mode="cpu">CPU</button><button class="option" data-mode="friend">PLAY WITH A FRIEND</button></div>
+            <div class="option-row difficulty-options"><b>CPU</b><button class="option" data-difficulty="easy">EASY</button><button class="option active" data-difficulty="normal">NORMAL</button><button class="option" data-difficulty="hard">HARD</button></div>
+            <button class="select-target" id="cpuCycle" aria-label="Switch selection between Player 1 and CPU">PICK: 1P · TAP TO SWITCH</button>
             <button class="primary-button compact" id="fightButton">FIGHT! <span>ENTER</span></button>
           </div>
         </div>
 
+        <div id="livePanel" class="live-panel hidden" aria-label="Live commentary">
+          <span class="live-pill"><i></i> LIVE</span>
+          <div class="commentary-side"><b>BREAKING BAKWAS</b><span id="commentaryLeft">SHOR SHARMA · Strategy retreat. 4D chess hai!</span></div>
+          <strong class="commentary-vs">VS</strong>
+          <div class="commentary-side troll-side"><b>TROLL ARMY</b><span id="commentaryRight">TWEETY TROLLWALA · Yatra route se direct delivery!</span></div>
+        </div>
+        <div id="headlineTicker" class="headline-ticker hidden" aria-hidden="true"><div id="tickerTrack" class="ticker-track"></div></div>
+
         <div id="resultScreen" class="screen result-screen hidden">
-          <div class="newspaper">
-            <p class="paper-masthead">SANSAD TIMES <span>EXTRA · DIWALI FIGHT EDITION</span></p>
-            <div class="paper-rule"></div>
-            <p class="eyebrow">THE DUST HAS SETTLED</p>
-            <h2 id="resultTitle">YOU WIN!</h2>
-            <h3 id="paperHeadline">MBAPU WINS WITH SABAR &amp; SHANTI!</h3>
-            <p class="paper-sub">ROUND SCORE <strong id="resultRounds">2 — 0</strong></p>
-            <p id="resultSub" class="result-copy">ONE LAST PERFECT COMBO.</p>
+          <div class="result-lockup">
+            <p class="eyebrow">SANSAD TIMES · FIGHT NIGHT</p>
+            <h2 id="resultTitle">YOU LOSE</h2>
+            <h3 id="paperHeadline">YATRA BOY WINS!</h3>
+            <p class="scoreline">ROUND SCORE <strong id="resultRounds">0 — 2</strong></p>
+            <p id="resultSub" class="result-copy">THE ARENA GOES TO THE CPU.</p>
             <div class="result-actions"><button class="primary-button compact" id="rematchButton">REMATCH</button><button class="secondary-button" id="selectAgainButton">CHARACTER SELECT</button></div>
-            <div class="result-actions extras"><button class="secondary-button" data-post-action="card">DIWALI CARD BHEJO</button><button class="secondary-button" data-post-action="feedback">MAZA AAYA?</button><button class="secondary-button" data-post-action="chai">EK CHAI PILAAO</button></div>
+            <div class="result-actions extras"><button class="secondary-button" data-post-action="card">DIWALI CARD BHEJO</button></div>
             <p id="postActionMessage" class="post-action-message" aria-live="polite"></p>
-            <p class="paper-footer">A FICTIONAL GAME · NO ENDORSEMENT IMPLIED</p>
           </div>
         </div>
+
         <div id="pauseOverlay" class="pause-overlay hidden">
           <p class="eyebrow">TIME OUT</p><h2>FIGHT PAUSED</h2>
-          <button class="primary-button compact" id="resumeButton">RESUME</button><button class="text-button" id="quitButton">QUIT TO SELECT</button>
+          <button class="primary-button compact" id="resumeButton">RESUME</button>
+          <div class="pause-tools"><button class="icon-button" id="musicTrackTogglePause" aria-label="Change soundtrack">MUSIC</button><button class="icon-button" id="soundTogglePause" aria-label="Toggle game sound" aria-pressed="true">SOUND ON</button></div>
+          <button class="text-button" id="quitButton">CHARACTER SELECT</button>
         </div>
+
         <div id="touchControls" class="touch-controls hidden" aria-label="Touch controls">
           <div id="virtualStick" class="virtual-stick" aria-label="Movement joystick"><span id="stickKnob"></span><b class="stick-up">▲</b><b class="stick-left">◀</b><b class="stick-down">▼</b><b class="stick-right">▶</b></div>
-          <div class="touch-actions" aria-label="Attack buttons">
-            <button class="grab" data-action="grab">GRAB</button><button class="super" data-action="super">SUPER</button>
-            <button class="kick" data-action="kick">KICK</button><button class="punch" data-action="punch">PUNCH</button>
-          </div>
+          <div class="touch-actions" aria-label="Attack buttons"><button class="grab" data-action="grab">GRAB</button><button class="super" data-action="super">SUPER</button><button class="kick" data-action="kick">KICK</button><button class="punch" data-action="punch">PUNCH</button></div>
         </div>
         <audio id="musicPlayer" preload="none" loop></audio>
-        <div id="orientationGate" class="orientation-gate hidden" role="dialog" aria-modal="true" aria-labelledby="orientationTitle" aria-live="assertive">
-          <div class="orientation-card">
-            <span class="rotate-mark" aria-hidden="true">↻</span>
-            <p class="eyebrow">LANDSCAPE MODE · GAME READY</p>
-            <h2 id="orientationTitle">ROTATE YOUR PHONE</h2>
-            <p>Turn your phone sideways to open the fight arena. The match waits here until landscape is ready.</p>
-            <button class="secondary-button" data-fullscreen>ENTER FULLSCREEN</button>
-            <small>ROTATE ONCE · THE GAME RESUMES AUTOMATICALLY</small>
-          </div>
-        </div>
-        <div id="legalGate" class="legal-gate" role="dialog" aria-modal="true" aria-labelledby="legalTitle">
-          <div class="legal-card"><p class="eyebrow">IMPORTANT · ZAROORI SUCHNA</p><h2 id="legalTitle">A SATIRE GAME</h2><p>This is a fictional parody made for humour and entertainment. Characters, fights and announcer lines are invented; no real person, political party, government body or organization is affiliated with or endorsing this game.</p><p lang="hi">यह केवल काल्पनिक व्यंग्य-खेल है। पात्र, मुकाबले और संवाद मनोरंजन के लिए बनाए गए हैं; किसी वास्तविक व्यक्ति, दल या संस्था का समर्थन/संबंध निहित नहीं है।</p><button class="primary-button" id="acceptNotice">I UNDERSTAND · CONTINUE</button></div>
-        </div>
       </section>
-      <footer class="footer-note"><span>FICTIONAL SATIRE · NO ENDORSEMENT OR AFFILIATION IMPLIED</span><span>ESC PAUSE · M AUDIO · N MUSIC</span></footer>
+        <div id="orientationGate" class="orientation-gate hidden" role="dialog" aria-modal="true" aria-labelledby="orientationTitle" aria-live="assertive">
+        <div class="orientation-card"><span class="rotate-mark" aria-hidden="true">↻</span><p class="eyebrow">LANDSCAPE MODE · GAME READY</p><h2 id="orientationTitle">ROTATE YOUR PHONE</h2><p>Turn your phone sideways to open the fight arena. The game waits here until landscape is ready.</p><button class="secondary-button" id="orientationFullscreen" data-fullscreen>ENTER FULLSCREEN</button><small>ROTATE ONCE · THE GAME RESUMES AUTOMATICALLY</small></div>
+      </div>
+      <div id="legalGate" class="legal-gate" role="dialog" aria-modal="true" aria-labelledby="legalTitle">
+        <div class="legal-card"><p class="eyebrow">IMPORTANT · ZAROORI SUCHNA</p><h2 id="legalTitle">A SATIRE GAME</h2><p>This is a fictional parody made for humour and entertainment. Characters, fights and announcer lines are invented; no real person, political party, government body or organization is affiliated with or endorsing this game.</p><p lang="hi">यह केवल काल्पनिक व्यंग्य-खेल है। पात्र, मुकाबले और संवाद मनोरंजन के लिए बनाए गए हैं; किसी वास्तविक व्यक्ति, दल या संस्था का समर्थन/संबंध निहित नहीं है।</p><button class="primary-button" id="acceptNotice">I UNDERSTAND · CONTINUE</button></div>
+      </div>
     </main>
     <script src="game.js"></script>
   </body>

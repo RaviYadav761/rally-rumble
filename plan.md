@@ -1,71 +1,53 @@
-# Rally Rumble — reference-driven rebuild plan
+# Rally Rumble — video-based close remake plan
 
-## उद्देश्य और दायरा
+## सही reference और scope
 
-`RaviYadav761/rally-rumble` के मौजूदा browser-native Canvas गेम को दिए गए 2:48 के gameplay video और `https://fightkaro.com/` के दृश्य संदर्भ के अनुरूप नया रूप देना। उपयोगकर्ता ने character art को 2D animation में बदलने का उल्लेख किया है, इसलिए मौजूदा HTML/CSS/Canvas आधार को बनाए रखते हुए 2D sprite और layered stage से reference का 2.5D प्रभाव बनाया जाएगा; Three.js/Godot migration या नया backend इस चरण में शामिल नहीं है। लक्ष्य video के gameplay flow, UI, characters, arena, special attacks, round results और mobile controls का उच्च-साम्य वाला playable recreation है, न कि video को वेबसाइट पर चलाना।
+यह काम `/home/ubuntu/upload/VID_20261107_224523_118.mp4` पर आधारित है (1280×720, लगभग 78:57)। शुरुआती OBS/YouTube capture खेल का हिस्सा नहीं है; वास्तविक game flow लगभग 56 सेकंड से शुरू होने वाले `SELECT YOUR NETA` screen और उसके बाद के Sansad matches में दिखता है। विस्तृत निरीक्षण लगभग 56–181 सेकंड के segment पर आधारित है।
 
-`fightkaro.com` पर अभी `Sansad Showdown — Political Satire Fighter` शीर्षक का WebGL/Canvas पेज, “Loading neta assets…” state, audio control और Hindi/English satire notice दिखता है। कानूनी notice को स्वीकार किए बिना gameplay स्क्रीन तक navigation नहीं की गई। इसलिए gameplay के विस्तृत व्यवहार का प्राथमिक reference उपयोगकर्ता का वीडियो है; वेबसाइट का URL शीर्षक/brand context और legal notice के लिए है।
+उपयोगकर्ता ने साफ़ किया है कि original playable source उपलब्ध नहीं है और video से जितना close हो सके remake चाहिए। इसलिए लक्ष्य **high-fidelity approximation** है, pixel-perfect/bit-for-bit clone नहीं। Reference में 3D-जैसे full-body models हैं; इस offline HTML/Canvas project में paid 3D model generation नहीं मानेंगे। मौजूदा Canvas/combat engine को बनाए रखते हुए reference frame से inspired 2.5D stage, cutout/portrait character presentation, better posing and special-move props बनाए जाएँगे। जहाँ exact rig/model/voice source मौजूद नहीं है, वहाँ approximation साफ़ बताई जाएगी।
 
-इस संशोधन का user-provided current deployment URL `https://rally-rumble-i8od.vercel.app/` है। GitHub source update और Vercel पर उस specific URL का deployment mapping अलग से verify होगा; repository push को live publish होने का प्रमाण नहीं माना जाएगा।
+## Reference में दिखाई देने वाले मुख्य facts
 
-## इस सुधार अनुरोध का कार्यक्षेत्र
+- Character select heading `SELECT YOUR NETA`; roster: `MITRAMAN`, `YATRA BOY`, `DEDEE`, `TARIFF TAIL`, `DOZER DADA`, `TOLL MAN`, `SUTTI BABU`, `RAIL RAJA`, `MBAPU`, `RANDOM`.
+- Select fields: 1P और CPU picks, `SANSAD`, `JANTAR MANTAR`, `DESI SADAK`; difficulty `EASY / NORMAL / HARD`; friend/local-play option और fight/loading action. Sample match: Dozer Dada (1P) vs Yatra Boy (CPU), उसके बाद Dozer Dada vs Toll Man.
+- Sansad arena: रात का, चौड़ा side-view; curved/cylindrical Parliament-like colonnade, side crowd bays/signs, झंडे और colored hanging lights; foreground में checkerboard floor और बड़ा multicolor rangoli.
+- Battle HUD: screen-edge के पास लंबी angled health bars और fighter names, बीच में बड़ा timer (60 से start) तथा नीचे compact pause button; corner portraits/round indicators; नीचे `SHAKTI READY` cue.
+- Bottom overlays: red scrolling satirical headline strip और उसके ऊपर छोटा `LIVE / BREAKING BAKWAS` vs `TROLL ARMY` commentary panel.
+- Round flow: `ROUND 1` → 60-second fight → `ROUND 2`; best-of-three और final result. हारने वाले पर बड़ा `YOU LOSE`, winner victory pose.
+- विशिष्ट moves: Dozer Dada का `DOZER KA DHAMAKA`/bulldozer sequence; Yatra Boy का `ALOO → SONA` machine sequence और gold-bar shower. Speech pass में `Round one fight`, `Round two fight`, `You lose`, तथा aloo/sona machine dialogue सुनाई देता है; Hindi ASR अपूर्ण है।
 
-- वर्तमान लड़ाई में full-body fighter art स्थिर है, इसलिए fight render में अलग animated head/torso/arm/leg parts वाला Canvas rig बनेगा। Idle breathing, directional footwork, jump/crouch/block, punch wind-up → impact → follow-through, kick chamber → extension → recovery, grab और hit-recoil की अलग timing होगी; selection cards और HUD में मौजूदा artwork सुरक्षित रहेगा।
-- Touch-capable मोबाइल पर match portrait orientation में शुरू नहीं होगा। Match screen पर rotate 안내 दिखेगा; landscape होते ही केवल एक बार gate बंद होकर लड़ाई सामान्य रूप से शुरू होगी। लड़ते समय portrait में लौटने पर match pause होकर यही gate दिखाएगा; हर frame या बार-बार popup नहीं आएगा। Desktop और keyboard play पर orientation gate नहीं लगेगा।
-- मोबाइल को browser page जैसा कम महसूस कराने के लिए user gesture के बाद optional Full Screen control और canvas-preserving 16:9 fight layout होगा; fullscreen/orientation API अनुपलब्ध हो तो सामान्य browser play चलता रहेगा।
-- Sample की timing से प्रेरित short fictional meme/callout lines और signature-super voice cues शामिल होंगे। एक consistent generic Hindi arcade-announcer voice और synthesized fight SFX उपयोग होंगे; sample की असली आवाज़, किसी पहचाने जाने वाले व्यक्ति की imitation, या unlicensed video audio को bundle नहीं किया जाएगा।
-- Lag घटाने के लिए visible-tab frame updates, fixed animation delta cap, सीमित transient particles, gesture-gated audio और existing lightweight Canvas pipeline ही रखे जाएँगे; नया heavy engine/backend नहीं जोड़ा जाएगा।
+## Implementation priorities
 
-## आवश्यक gameplay और सामग्री
+1. **Live Vercel पहले:** `vercel.json` में root output ठीक किया गया है; अब updates के बाद उसी `rally-rumble-i8od.vercel.app` पर नया deploy और वास्तविक route/assets verify करना है।
+2. **Game shell और selection:** active game 16:9 viewport भरता है, outer branded webpage chrome नहीं; legal satire notice और mobile portrait rotate gate सुरक्षित। Notice के बाद सीधे reference-style selection screen खुले। Horizontal roster, बड़े VS previews, सही labels/default pair, stage और difficulty controls.
+3. **Stage/camera:** supplied segment से प्रेरित close curved Sansad colonnade, side crowd/signs, strings/flags और floor rangoli. Image is a 2.5D backdrop; Canvas depth cues, floor shadows and parallax remain lightweight.
+4. **Battle presentation:** top edge angled bars, timer, portraits/round markers, central intro/round callouts, bottom ticker + live commentary panel and Shakti-ready cue. Camera/character scale should match the sample's medium-full-body framing.
+5. **Characters and animation:** Dozer, Yatra, Toll Man prioritized. Use sample frames as visual anchors; the Dozer/Yatra transparent full-body and separate idle/strike pose images are generated approximations, not extracted game sprites. Switch the available Dozer punch and Yatra kick poses during their active frames, and keep the authored Canvas joint rig for the wider roster. Make punch/kick wind-up, guard, recovery, recoil, knockback, knockdown and victory states readable; avoid implying a paid 3D rig where none exists.
+6. **Sample-specific specials:** bulldozer entry/impact for Dozer; aloo-to-sona machine + gold bars for Yatra. Use short callout typography, hit sparks and separate original generic Hindi/Hinglish voice cues. Do not clone an identifiable real voice or bundle sample audio as a game asset.
+7. **Mobile/desktop and performance:** only start play on phone in landscape; pause on returning to portrait; pointer/touch safe areas and optional fullscreen; keyboard remains fully playable on desktop; keep Canvas animation delta capped and avoid unnecessary heavy dependencies.
+8. **QA/publication:** `node --check`, `git diff --check`, local Chromium desktop/portrait/landscape, selection/fight/special/result transitions, requested asset HTTP status, then push to the authorized GitHub main and verify the exact Vercel URL. Report only checks actually run; physical Android checks are separate.
 
-- शुरुआत में “SELECT YOUR NETA” स्क्रीन, fighter portrait/cards, VS प्रस्तुति और CPU rival चयन हो। मुख्य video roster में Tariff Taau, Yatra Boy, Mbapu, Mitraman, Deedee, Toka Man और Sutti Babu शामिल हों; मौजूदा Shanti Sage और Kesar Kaka भी roster में बने रहें। नाम parody-style हों और स्पष्ट fictional satire notice रहे।
-- Match में 60-सेकंड timer, best-of-three rounds, player/CPU health और Shakti meter, round pips, win/lose overlays तथा निर्णायक “GHEE KHATAM!”/“YOU WIN!” अवस्थाएँ हों।
-- “Sansar” को मुख्य stage बनाना है: रात का courtyard, संसद-सदृश silhouette, रंगीन mandala/rangoli floor, दीवाली lamps/candles, string lights और sign पकड़े crowd silhouettes। मौजूदा Jan Sabha Maidan और Jantar Plaza stages सुरक्षित रहें।
-- Punch, kick, grab, jump, block, hit/counter और CPU behavior चले। Mitraman का “Mitra Chakra” स्वर्ण चक्र और उछाल/impact effect के साथ हो; Mbapu का “Manch Chhodo” grab-spin-slam और light-ring/particle finish के साथ हो। “Lamba Bhashan Combo” और “Vikas Uppercut” जैसे short move callouts तथा “SUTLI BOMB — Ring se bahar bhaago!” hazard warning भी दिखें।
-- Keyboard और touch UI में movement joystick तथा GRAB, SUPER, PUNCH, KICK actions उपलब्ध हों। चयन में EASY/NORMAL/HARD, stage चयन, “Play with a Friend” और “Fight!” entry शामिल हों। “Play with a Friend” इस offline static build में same-device local two-player mode होगा; online accounts/multiplayer service नहीं जोड़ी जाएगी।
-- जीत स्क्रीन Sansad Times अख़बार रूप में हो, जिसमें “MBAPU WINS WITH SABAR & SHANTI!”, match score और Rematch/Character Select/Diwali card/feedback/chai जैसे विकल्प हों।
-- Music और SFX user gesture के बाद चलें। मौजूदा attributed Bhangra और comedic tracks तथा synthesized hit effects को बनाए रखें। Video में सुनाई देने वाली lines से प्रेरित fictional text-to-speech callouts लिखे जा सकते हैं; किसी वास्तविक व्यक्ति की आवाज़ clone या बिना लाइसेंस का external meme audio import नहीं करना है।
+## Design direction
 
-## कार्यान्वयन का तरीका
+**Visual movement:** 3D-game-inspired 2.5D political-parody fighter; warm amber lights against a purple/navy night, vivid rangoli floor, punchy gold/cream HUD typography. This is materially closer to the supplied scene than the prior flat poster/menu treatment, but full 3D models require unavailable source assets and are not claimed.
 
-मौजूदा `game.js` के fighter state/CPU/combat loop के साथ fight rendering 2D articulated Canvas rig से होगी: generated character art से head/identity crop होगा, जबकि arms/hands, legs/feet, torso sway, guard, recovery, hit-recoil और signature attack poses independently animate होंगे। `index.html` में selection/options/HUD/results के साथ orientation/fullscreen layer है; `styles.css` में 16:9 arena, compact HUD, touch safe-area और landscape prompt होंगे। Existing stages, cards, music aur credits सुरक्षित रहेंगे; नई original announcer MP3s `public/assets/audio/announcer/` में हैं और CREDITS में सूचीबद्ध हैं।
+**Selection paradigm:** top centered italic heading/instructions; player and CPU previews facing one another with `VS`; 10 compact horizontal character cards across the lower portion; stage/difficulty/actions below them. Current selection badges explicitly say 1P/CPU.
 
-## Design दिशा
+**Fight paradigm:** full viewport stage; grounded full-body fighters occupying the center; long top bars and central timer; bottom edge carries ticker/commentary. No newspaper-style result card in the battle flow.
 
-**Design movement:** दीवाली-रात का satirical 2D arcade fighter, reference video के low-poly/volumetric appearance को hand-painted sprite art और layered lighting से संकेतित करे।
+**Audio policy:** original generic announcer voice for Hindi/Hinglish lines; timing and concepts follow the reference. A real-person or recognizable actor voice will not be cloned, and user-video audio is reference-only unless separately licensed original source files are supplied.
 
-**Core principles:** पहचानने योग्य, स्पष्ट parody silhouettes; combat के लिए साफ foreground contrast; छोटे स्क्रीन पर readable HUD; हर special move का अलग visual/audio cue।
+## Architecture and files
 
-**Color philosophy:** गहरा indigo/navy रात का आधार है; saffron/gold festival lighting और Shakti को दर्शाता है; mandala में सीमित magenta, teal और vivid रंग combat plane से अलग रहते हैं।
+- `index.html`: legal notice, selection screen, edge HUD, ticker/commentary, round/result overlay, touch controls, pause and orientation gate.
+- `styles.css`: viewport-first 16:9 stage and reference-style HUD/selection composition; responsive landscape play.
+- `game.js`: existing Canvas combat/AI/round loop plus Dozer/Yatra special sequences and UI updates.
+- `public/assets/stages/`: reference-inspired Sansad stage and existing backup stages.
+- `public/assets/fighters/`: existing original roster art and any extracted/edited user-video cutouts; credits must distinguish source vs generated assets.
+- `public/assets/audio/announcer/`: original generic Hindi clips, not the source video's voice.
+- `docs/REFERENCE_SPEC.md`: verified observations from the actual attachment and limits.
+- `README.md`, `TODO.md`, `plan.md`: updated usage, acceptance and progress.
 
-**Layout paradigm:** 16:9 playfield के ऊपर किनारों पर fighter HUD, नीचे सुरक्षित touch controls; selection में left/right rivalry और scrollable roster; results में newspaper front-page।
+## Hosting
 
-**Signature elements:** Mandala floor ring; kandil/दीये और संसद silhouette; gold circular Shakti/special-move traces।
-
-**Interaction philosophy:** हर action को छोटा, स्पष्ट feedback; selection पर तुरंत fighter/rival पहचान; mobile controls बड़े और screen safe-areas से दूर।
-
-**Animation:** idle breathing/bob और opposition footwork; hip/knee/ankle leg articulation; shoulder/elbow/wrist/fist arm articulation; jump, punch, kick, grab, block और hitstun के anticipation → active effect → impact → recovery poses; reduced-motion preference का सम्मान।
-
-**Typography system:** bold condensed system face for HUD/announcer; newspaper result में serif masthead; Hindi/Hinglish labels को छोटे HUD आकार पर भी पढ़ने योग्य रखा जाए।
-
-**Brand essence:** फोन और desktop पर जल्दी शुरू होने वाला दीवाली-रात political-parody brawler; स्वभाव: रंगीन, शरारती, arcade-जैसा।
-
-**Brand voice:** छोटी, स्पष्ट, काल्पनिक Hinglish callouts। उदाहरण: “ROUND 1 — FIGHT!” और “SUTLI BOMB — RING SE BAHAR!”
-
-**Wordmark / signature color:** repo का `RR` mark बना रहे; गेम स्क्रीन के अंदर Sansad Showdown/Sansad Times संदर्भ video के अनुरूप आए। Ownable Rally Rumble color `#f4ca68` रहेगा।
-
-## Project structure
-
-- `index.html`: title, satire notice, roster, CPU/friend mode, difficulty/stage options, HUD, touch controls, results और pause UI।
-- `styles.css`: responsive shell, fighter-select cards, HUD, mobile safe-area और reduced-motion presentation।
-- `game.js`: existing Canvas fighter/AI/input/audio loop, round state machine, attacks, hazards, stage and sprite rendering।
-- `public/assets/portraits/`: वर्तमान licensed portrait assets।
-- `public/assets/fighters/`: roster cards और battle-face crops के लिए generated fictional fighter identity art।
-- `public/assets/stages/`: Sansar का नया generated background; पुराने arena images root assets में फिलहाल सुरक्षित रहेंगे।
-- `public/assets/audio/` और `public/assets/CREDITS.md`: मौजूदा licensed music, generated Hindi announcer MP3 clips, synthesized effects की जानकारी और नए asset credits।
-- `docs/REFERENCE_SPEC.md`: video frame/timeline observations और live page audit।
-- `README.md`, `TODO.md`, `plan.md`: उपयोग, acceptance clauses, प्रगति और architecture के दस्तावेज़।
-
-## GitHub और hosting सीमा
-
-काम छोटे, स्पष्ट milestones में `main` पर commit/push किया जाएगा ताकि प्रत्येक पूरा भाग GitHub पर उपलब्ध रहे। `fightkaro.com` पर मौजूद production game को बदलना अलग कार्रवाई है; Vercel परियोजना, domain mapping और सफल deployment evidence जाँचे बिना domain को overwrite या repoint नहीं किया जाएगा।
+Repository: `RaviYadav761/rally-rumble`, branch `main`. User's production URL: `https://rally-rumble-i8od.vercel.app/`. The Vercel root-output configuration is already repaired and the public URL was smoke-tested; each subsequent push still requires fresh deployment verification. Do not repoint `fightkaro.com` or another production domain.

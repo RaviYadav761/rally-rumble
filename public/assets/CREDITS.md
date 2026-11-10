@@ -6,10 +6,13 @@ The political characters are presented as fictional, satirical game characters. 
 
 - `arena-sansad.webp` and `arena-jantar.webp` — original AI-generated illustrations created for the earlier Rally Rumble build, November 2026. Compressed from generated PNGs to WebP for browser delivery.
 - `stages/sansar-diwas.webp` — original AI-generated Sansar/Diwali night-arena illustration created for the reference-driven update, November 2026. No third-party stage background was copied.
+- `stages/sansad-match-reference.webp` — generated reconstruction of the Sansad-night scene, based on frames from the user-supplied gameplay video. It is an approximation, not an extracted original game background.
 
 ## Generated fictional fighter art
 
 - `fighters/tariff-taau.webp`, `fighters/yatra-boy.webp`, `fighters/mbapu.webp`, `fighters/mitraman.webp`, `fighters/deedee.webp`, `fighters/toka-man.webp`, and `fighters/sutti-babu.webp` — original AI-generated fictional fighter illustrations created for this game update, November 2026. These stylized characters are game parody art, not photographs, official portraits or endorsements. The code may apply simple pose transforms and combat effects at runtime; the images themselves are not sprite sheets.
+- `fighters/dozer-reference-cutout.webp` and `fighters/yatra-reference-cutout.webp` — AI-generated transparent full-body cutouts based on character frames from the user-supplied gameplay video. They are video-derived visual approximations used as game assets, not original source-game model files or rigged 3D models; the cutouts are re-encoded to WebP for delivery.
+- `fighters/dozer-idle-reference.webp`, `fighters/dozer-attack-reference.webp`, `fighters/yatra-idle-reference.webp`, and `fighters/yatra-kick-reference.webp` — additional transparent pose illustrations generated for this remake from the same video reference, optimized as WebP and switched at attack timing windows. They are separate static poses, not extracted frames, original game sprites, or rigged 3D models.
 
 ## Portraits
 
@@ -28,4 +31,4 @@ The political characters are presented as fictional, satirical game characters. 
 
 ## Reference and scope
 
-The user supplied a 168.3-second gameplay clip and named [fightkaro.com](https://fightkaro.com/) as references; both were inspected for visual direction. The update is an original implementation inside the separate Rally Rumble repository, not the public game's bundled code. A pixel-perfect frame-by-frame match has not yet been verified.
+The user-supplied `VID_20261107_224523_118.mp4` is approximately 78:57; the character-select and early fight sequence around source seconds 56–181 was reviewed for visual direction. The update is an original implementation inside the separate Rally Rumble repository, not the source game's bundled code. Pixel-perfect, frame-by-frame parity has not been achieved or claimed.
