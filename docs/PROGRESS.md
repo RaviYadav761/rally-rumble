@@ -41,3 +41,8 @@ Validation passed: JavaScript syntax and diff checks; assertions for the 11 rost
 - Independent per-fighter source audits covered all 11 IDs and confirmed complete WebGL mesh bodies, two articulated arms and legs per fighter, shared state-based pose wiring and the articulated fallback. The audit's shared idle/crouch/winner-fall findings were corrected; the 11-rig browser regression then passed with 40+ meshes per character and no page errors or failed requests.
 - Desktop Chromium verified live keyboard-driven walk, punch, kick, jump and crouch joint changes. A separate forced-WebGL-failure browser run entered combat with the articulated Canvas fallback and no page exceptions. Phone-landscape WebGL startup, touch layout, rotate gate and <=1.2 device-pixel-ratio cap passed in browser emulation.
 - `node --check game.js`, ES-module syntax check, `git diff --check`, and the vendored Three.js MIT license assertion passed. These are local Chromium/emulator checks only; physical Android and sustained real-device FPS testing have not been performed. The rigs are stylized original procedural mesh models, not imported skinned GLBs or motion capture.
+
+
+### Production verification — 2026-11-11
+
+Commit `4c679f9` (`Add articulated 3D fighter rigs and pose polish`) was pushed to authorized GitHub `main`. The production root and the deployed `index.html`, `game.js`, `styles.css`, `fight-rig3d.js`, both self-hosted Three.js modules and `THREE-LICENSE.txt` all returned HTTP 200; each file matched the committed local bytes exactly. A production Chromium session loaded all 11 complete rigs and verified live walking/punching with no page exceptions or failed requests. No domains were changed.

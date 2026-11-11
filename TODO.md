@@ -16,7 +16,7 @@ Recreate the supplied browser fighting game as closely as practical from its vid
 - [x] **Rounds/results:** announce Round 1/2, show timer resets and arena-integrated round/result text, with a large `YOU LOSE`/winner pose and working rematch/character-select actions.
 - [x] **Audio:** original generic Hindi/Hinglish narrator clips for round starts and signature specials, plus light fight impacts/crowd feel. Reference video audio is not bundled and no identifiable real voice is cloned.
 - [x] **Performance/responsiveness:** touch-safe controls, usable desktop keyboard, portrait gate/landscape resume, optional fullscreen, frame delta cap, capped WebGL pixel ratio and reused fighter pose state. No page errors in the local browser regression checks.
-- [x] **Publish and verify:** previous production build was pushed to GitHub `main` and `https://rally-rumble-i8od.vercel.app/` returned HTTP 200 with the JavaScript/assets and fight HUD working. The new 3D commit still requires its own push and fresh deployment verification; physical Android validation has not been performed.
+- [x] **Publish and verify:** 3D build commit `4c679f9` is pushed to GitHub `main`; `https://rally-rumble-i8od.vercel.app/` returned HTTP 200 for HTML, CSS, game/rig scripts and both local Three.js modules. Deployed files matched local bytes exactly; production Chromium loaded all 11 rigs and completed walk/punch checks with no page errors or failed requests. Physical Android validation has not been performed.
 
 ## Verified evidence
 
