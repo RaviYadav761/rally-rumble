@@ -39,6 +39,7 @@
     gharmantri: { id: "gharmantri", name: "GHAR MANTRI", title: "THE SHADOW STRATEGIST", color: "#378d66", accent: "#f2d477", dark: "#172d32", skin: "#b97f61", hair: "#282522", style: "politician", special: "SHADOW STRATEGY", portrait: "public/assets/fighters/ghar-mantri-original.svg", fullBody: "public/assets/fighters/ghar-mantri-original.svg", speed: 255, power: 1.12, health: 108 },
     factbhai: { id: "factbhai", name: "FACT BHAI", title: "THE RECEIPT INSPECTOR", color: "#9ccac1", accent: "#35a6b6", dark: "#263645", skin: "#b98166", hair: "#272827", style: "politician", special: "FACT-CHECK FLASH", portrait: "public/assets/fighters/fact-bhai-original.svg", fullBody: "public/assets/fighters/fact-bhai-original.svg" }
   };
+  window.rallyFighterData = fighterData;
   const fighterBalance = {
     dozer: { speed: 260, power: 1.13, health: 112, jumpHeight: 655 },
     yatra: { speed: 315, power: .93, health: 96, jumpHeight: 755 },
@@ -896,26 +897,33 @@
     ctx.restore();
   }
   function drawFighter(f, time) {
-    if (f.fullBodyImage && f.fullBodyImage.complete && f.fullBodyImage.naturalWidth > 0) { drawReferenceFighter(f, time); return; }
     const crouch = f.crouching ? 17 : 0, walking = f.grounded && Math.abs(f.vx) > 45 && !f.attack;
-    const stride = walking ? Math.sin(f.step) * 13 : 0, bob = f.grounded && !f.attack ? Math.sin(f.anim) * (walking ? 3.5 : 2) : 0;
+    const idleStep = f.grounded && !f.attack && !f.crouching ? Math.sin(time * 2.15 + (f.isPlayer ? .4 : 1.7)) * 1.6 : 0;
+    const stride = walking ? Math.sin(f.step) * 13 : idleStep, idleArm = Math.sin(time * 2.45 + (f.isPlayer ? .4 : 1.7)) * 1.2;
+    const bob = f.grounded && !f.attack ? Math.sin(f.anim) * (walking ? 3.5 : 2) : 0;
     const flash = f.hurtFlash > 0 && Math.floor(f.hurtFlash * 25) % 2 === 0;
     const body = flash ? "#fff" : f.color, dark = flash ? "#fff" : f.dark, accent = flash ? "#fff" : f.accent;
     const extension = strikeExtension(f), punch = f.attack === "punch", kick = f.attack === "kick", supering = f.attack === "super";
     const airborne = !f.grounded, tuck = airborne ? clamp(Math.abs(f.vy) / 710, 0, 1) * 10 : 0;
     const hitPose = f.hitstun > 0, hipY = -59, shoulderY = -110 + crouch;
-    const tilt = hitPose ? -.19 : punch ? .08 + Math.max(0, extension) * .11 : kick ? -.10 : f.attack === "grab" ? .07 : 0;
-    const lift = supering && f.id === "mitraman" ? 18 + Math.sin(time * 15) * 6 : 0;
+    const roundEnded = !!game && (game.phase === "round-end" || screen === "result");
+    const winning = roundEnded && (f.isPlayer ? game.lastWinner === "PLAYER" : game.lastWinner === "CPU" || game.lastWinner === "P2");
+    const fallen = f.health <= 0 || roundEnded && !winning;
+    const tilt = fallen ? (f.facing > 0 ? .92 : -.92) : winning ? -.08 : hitPose ? -.19 : punch ? .08 + Math.max(0, extension) * .11 : kick ? -.10 : f.attack === "grab" ? .07 : 0;
+    const lift = supering && f.id === "mitraman" ? 18 + Math.sin(time * 15) * 6 : winning ? 14 + Math.sin(time * 5) * 3 : 0;
+    const fallDrop = fallen ? 10 : 0;
     const spin = f.specialSpin > 0 ? Math.sin(f.specialSpinAngle) * .62 : 0;
 
     ctx.save(); ctx.globalAlpha = .3; ctx.fillStyle = "#080a16"; ctx.beginPath(); ctx.ellipse(f.x, GROUND + 7, f.crouching ? 42 : 34, 9, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-    ctx.save(); ctx.translate(f.x, f.y + bob - lift); ctx.scale(f.facing, 1); ctx.rotate(tilt + spin);
+    ctx.save(); ctx.translate(f.x, f.y + bob - lift + fallDrop); ctx.scale(f.facing, 1); ctx.rotate(tilt + spin);
 
     // Rear leg and the active leg have separate hip, knee, ankle and foot joints.
     let kneeBack = [-18 - stride * .65, -30 - tuck + (f.crouching ? 7 : 0)], ankleBack = [-28 - stride, -5 - tuck * .45];
     let kneeFront = [18 + stride * .65, -30 - tuck + (f.crouching ? 7 : 0)], ankleFront = [28 + stride, -5 - tuck * .45];
     if (airborne && !kick) { kneeFront = [22 + stride * .35, -34 - tuck]; ankleFront = [34 + stride * .45, -8 - tuck * .55]; }
     if (kick) { const drive = Math.max(0, extension); kneeFront = [18 + drive * 34, -43 - drive * 8]; ankleFront = [29 + drive * 74, -7 - drive * 39]; }
+    if (winning) { kneeBack = [-16, -39]; ankleBack = [-24, -7]; kneeFront = [14, -39]; ankleFront = [26, -7]; }
+    if (fallen) { kneeBack = [-32, -14]; ankleBack = [-53, -4]; kneeFront = [29, -9]; ankleFront = [65, -3]; }
     rigLine(-12, hipY, kneeBack[0], kneeBack[1], 16, dark, "#111622"); rigJoint(kneeBack[0], kneeBack[1], 8, body, "#111622");
     rigLine(kneeBack[0], kneeBack[1], ankleBack[0], ankleBack[1], 12, body, dark);
     ctx.fillStyle = accent; roundedRect(ctx, ankleBack[0] - 13, ankleBack[1] - 1, 26, 10, 4); ctx.fill();
@@ -925,9 +933,12 @@
     ctx.fillStyle = accent; ctx.fill(); ctx.globalAlpha = .6; ctx.fillStyle = "#fff0d2"; ctx.fillRect(ankleFront[0] + 9, ankleFront[1] - 3, 7, 3); ctx.globalAlpha = 1;
 
     // Guard arm swings opposite the feet and snaps up on block or hit recoil.
-    let rearElbow = [-37 - stride * .35, -88 + crouch], rearHand = [-44 - stride * .55, -68 + crouch];
+    const crouchArm = f.crouching ? 5 : 0;
+    let rearElbow = [-37 - stride * .35, -88 + crouch - crouchArm + idleArm * .25], rearHand = [-44 - stride * .55, -68 + crouch + crouchArm + idleArm];
     if (f.blocking) { rearElbow = [-28, -126 + crouch]; rearHand = [-8, -140 + crouch]; }
     if (hitPose) { rearElbow = [-44, -124 + crouch]; rearHand = [-56, -145 + crouch]; }
+    if (winning) { rearElbow = [-43, -143 + crouch]; rearHand = [-55, -174 + crouch]; }
+    if (fallen) { rearElbow = [-48, -122 + crouch]; rearHand = [-70, -137 + crouch]; }
     rigLine(-22, shoulderY + 3, rearElbow[0], rearElbow[1], 14, dark, "#151925"); rigJoint(rearElbow[0], rearElbow[1], 7, body, dark);
     rigLine(rearElbow[0], rearElbow[1], rearHand[0], rearHand[1], 11, body, dark);
 
@@ -968,12 +979,14 @@
     }
 
     // Lead arm winds back, extends through the strike, then recoils to guard.
-    let elbow = [38 - Math.max(0, extension) * 9, -91 + crouch], hand = [48 - Math.max(0, extension) * 6, -94 + crouch];
+    let elbow = [38 - Math.max(0, extension) * 9, -91 + crouch - crouchArm + idleArm * .2], hand = [48 - Math.max(0, extension) * 6, -94 + crouch + crouchArm + idleArm];
     if (punch) { elbow = [38 + extension * 18, -92 - extension * 5 + crouch]; hand = [50 + extension * 55, -96 - extension * 18 + crouch]; }
     else if (f.attack === "grab") { elbow = [42 + Math.max(0, extension) * 8, -99 + crouch]; hand = [55 + Math.max(0, extension) * 36, -103 + crouch]; }
     else if (supering) { elbow = [31 + Math.max(0, extension) * 13, -131 + crouch]; hand = [43 + Math.max(0, extension) * 28, -159 + crouch]; }
     if (f.blocking) { elbow = [24, -128 + crouch]; hand = [34, -145 + crouch]; }
     if (hitPose) { elbow = [41, -126 + crouch]; hand = [53, -143 + crouch]; }
+    if (winning) { elbow = [44, -143 + crouch]; hand = [57, -174 + crouch]; }
+    if (fallen) { elbow = [44, -120 + crouch]; hand = [70, -122 + crouch]; }
     if ((punch || f.attack === "grab" || supering) && extension > .48) { ctx.strokeStyle = `${accent}88`; ctx.lineWidth = punch ? 4 : 6; ctx.beginPath(); ctx.arc(hand[0] - 17, hand[1] + 7, 28, -.72, .42); ctx.stroke(); }
     rigLine(22, shoulderY, elbow[0], elbow[1], 15, body, "#111622"); rigJoint(elbow[0], elbow[1], 7, body, dark);
     rigLine(elbow[0], elbow[1], hand[0] - 3, hand[1], 12, body, dark);
@@ -1082,15 +1095,16 @@
     });
   }
 
+  const frameTransform = { zoom: 1, shakeX: 0, shakeY: 0, phase: "", winner: null, intro: 0, hidden: false, dt: 0 };
   function drawFight(time) {
     const specialEffect = game && game.effects.find((effect) => effect.type === "bulldozer" || effect.type === "aloo-machine");
     const zoom = specialEffect ? 1 + .09 * Math.sin(clamp(1 - specialEffect.life / specialEffect.max, 0, 1) * Math.PI) : 1;
+    const shakeX = game ? (Math.random() - .5) * game.shake : 0; const shakeY = game ? (Math.random() - .5) * game.shake : 0;
     ctx.save(); ctx.translate(W / 2, H / 2); ctx.scale(zoom, zoom); ctx.translate(-W / 2, -H / 2);
     drawBackdrop(time, settings.stage);
-    const shakeX = game ? (Math.random() - .5) * game.shake : 0; const shakeY = game ? (Math.random() - .5) * game.shake : 0;
     ctx.save(); ctx.translate(shakeX, shakeY);
     drawBomb(time);
-    if (player && cpu) { drawFighter(player, time); drawFighter(cpu, time); }
+    if (player && cpu && !window.rallyThree?.isReady) { drawFighter(player, time); drawFighter(cpu, time); }
     if (game) drawEffects();
     if (game && game.intro > 0) {
       ctx.fillStyle = "#080d20a8"; ctx.fillRect(0, 0, W, H);
@@ -1100,13 +1114,26 @@
     }
     ctx.restore();
     ctx.restore();
+    frameTransform.zoom = zoom; frameTransform.shakeX = shakeX; frameTransform.shakeY = shakeY;
+    return frameTransform;
   }
 
   function render(time) {
     ctx.clearRect(0, 0, W, H);
-    if (screen === "fight" || screen === "result" && game) drawFight(time); else drawMenuCanvas(time);
+    const transform = frameTransform;
+    if (screen === "fight" || screen === "result" && game) drawFight(time);
+    else { transform.zoom = 1; transform.shakeX = 0; transform.shakeY = 0; drawMenuCanvas(time); }
     if (screen === "title") {
       ctx.save(); ctx.globalAlpha = .18; ctx.fillStyle = "#f3cf75"; ctx.font = "900 118px Trebuchet MS"; ctx.textAlign = "left"; ctx.fillText("RR", 60, 150); ctx.restore();
+    }
+    if (window.rallyThree?.isReady) {
+      if (screen === "select") {
+        window.rallyThree.setSelection(fighterData[settings.playerFighter], fighterData[settings.cpuFighter]);
+        window.rallyThree.renderSelection(time);
+      } else if ((screen === "fight" || screen === "result") && game) {
+        transform.phase = game.phase; transform.winner = game.lastWinner; transform.intro = game.intro; transform.hidden = game.phase === "orientation";
+        window.rallyThree.renderFight(player, cpu, time, transform);
+      } else window.rallyThree.hide();
     }
   }
 

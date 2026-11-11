@@ -21,6 +21,8 @@ button:focus-visible { outline: 2px solid #fff2a3; outline-offset: 2px; }
 .game-shell { position: relative; display: grid; place-items: center; width: 100vw; height: 100vh; height: 100svh; margin: 0; padding: 0; overflow: hidden; background: #060812; }
 .game-wrap { position: relative; width: min(100vw, 177.78svh); height: min(100svh, 56.25vw); aspect-ratio: 16 / 9; overflow: hidden; background: #0b1024; box-shadow: 0 0 0 1px #342d39; isolation: isolate; }
 #gameCanvas { display: block; width: 100%; height: 100%; image-rendering: auto; }
+.fight-3d-canvas { position: absolute; z-index: 1; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; }
+.three-fighters-ready .preview-fighter img { opacity: 0; }
 .hidden { display: none !important; }
 .visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
 .screen { position: absolute; inset: 0; z-index: 4; overflow: hidden; }
